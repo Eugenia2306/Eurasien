@@ -1,0 +1,34 @@
+<section class="sec"><div class="wrap">
+    <div class="grid grid-2" style="align-items:start">
+      <div>
+        <p class="eyebrow"><span class="de">Mitgliederbereich</span><span class="en" hidden>Members’ area</span></p>
+        <h2 style="font-size:1.4rem;margin:.2em 0 1em"><span class="de">Als Mitglied anmelden</span><span class="en" hidden>Sign in as a member</span></h2>
+        <div style="max-width:400px">
+          <div class="field"><label for="l-mail"><span class="de">E-Mail</span><span class="en" hidden>Email</span></label><input id="l-mail" type="email" autocomplete="email"></div>
+          <div class="field"><label for="l-pass"><span class="de">Passwort</span><span class="en" hidden>Password</span></label><input id="l-pass" type="password" autocomplete="current-password"></div>
+          <button class="btn btn--accent" type="button"><span class="de">Anmelden</span><span class="en" hidden>Sign in</span></button>
+          <p class="small" style="margin-top:14px"><a href="#" id="l-forgot" class="link-more"><span class="de">Passwort vergessen?</span><span class="en" hidden>Forgot password?</span></a></p>
+          <div class="notice" id="l-reset" hidden style="margin-top:12px"><span class="de">Geben Sie Ihre E-Mail-Adresse ein; wir senden Ihnen einen Link zum Zurücksetzen. <em>(Prototyp: keine E-Mail wird versendet.)</em></span><span class="en" hidden>Enter your email address and we will send you a reset link. <em>(Prototype: no email is sent.)</em></span></div>
+          <p class="small muted" style="margin-top:16px"><span class="de">Noch kein Zugang? <a href="/mitgliedschaft/" data-analytics="membership_click">Mitglied werden</a>.</span><span class="en" hidden>No access yet? <a href="/mitgliedschaft/" data-analytics="membership_click">Become a member</a>.</span></p>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow"><span class="de">Redaktion &amp; Verwaltung</span><span class="en" hidden>Editorial &amp; administration</span></p>
+        <h2 style="font-size:1.4rem;margin:.2em 0 1em"><span class="de">Redaktioneller Zugang</span><span class="en" hidden>Editorial access</span></h2>
+        <p class="small"><span class="de">Redaktion und Verwaltung pflegen Inhalte über das WordPress-Backend. Die Anmeldung erfolgt getrennt vom öffentlichen Mitgliederbereich unter <code>/wp-admin</code>.</span><span class="en" hidden>Editorial and administrative staff maintain content via the WordPress back end. Sign-in is separate from the public members’ area, at <code>/wp-admin</code>.</span></p>
+        <a class="btn btn--ghost btn--sm" href="/wp-admin/"><span class="de">Zum Redaktionslogin (/wp-admin)</span><span class="en" hidden>Editorial login (/wp-admin)</span></a>
+
+        <h3 style="font-size:1.05rem;margin:26px 0 12px"><span class="de">Rollen &amp; Rechte</span><span class="en" hidden>Roles &amp; permissions</span></h3>
+        <div class="roles">
+          <div class="role"><h4>Administrator</h4><p class="small muted"><span class="de">Vollzugriff: Konfiguration, Benutzer, alle Inhalte.</span><span class="en" hidden>Full access: configuration, users, all content.</span></p></div>
+          <div class="role"><h4>Editor</h4><p class="small muted"><span class="de">Redaktionelle Freigabe und Veröffentlichung aller Beiträge.</span><span class="en" hidden>Editorial approval and publishing of all content.</span></p></div>
+          <div class="role"><h4>Author</h4><p class="small muted"><span class="de">Erstellt und pflegt eigene Beiträge, Analysen und Events.</span><span class="en" hidden>Creates and maintains own posts, analyses and events.</span></p></div>
+          <div class="role"><h4><span class="de">Vorstandsmitglied</span><span class="en" hidden>Board Member</span></h4><p class="small muted"><span class="de">Interne Vorstandsinhalte und Entwürfe vor Freigabe.</span><span class="en" hidden>Internal board content and drafts before approval.</span></p></div>
+          <div class="role"><h4><span class="de">Mitglied</span><span class="en" hidden>Member</span></h4><p class="small muted"><span class="de">Liest geschützte Inhalte (Positionen, Dossiers, Studien).</span><span class="en" hidden>Reads protected content (positions, dossiers, studies).</span></p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-top:28px"><span class="de"><strong>Prototyp-Hinweis:</strong> Anmeldung, Passwort-Reset und Antrag sind hier nur als Ablauf dargestellt und ohne Funktion. Die produktive Umsetzung erfolgt in WordPress (öffentlicher Mitgliederbereich mit Zugriffsebenen via <em>access_level</em>; Redaktion über <code>/wp-admin</code>).</span><span class="en" hidden><strong>Prototype note:</strong> Sign-in, password reset and application here only illustrate the flow and are non-functional. The production implementation runs in WordPress (public members’ area with access levels via <em>access_level</em>; editorial via <code>/wp-admin</code>).</span></div>
+  </div></section>
+</section>

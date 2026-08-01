@@ -1,0 +1,253 @@
+/* WordPress-specific overrides for Eurasien Gesellschaft theme */
+
+/* ---- Fluid layout: use more width on large / ultra-wide screens ---- */
+:root {
+  --wrap: min(1216px, calc(100vw - 48px));
+  --wrap-narrow: min(840px, calc(100vw - 48px));
+  --page-gutter: clamp(16px, 2.2vw, 40px);
+}
+
+@media (min-width: 1400px) {
+  :root { --wrap: min(1360px, calc(100vw - 64px)); }
+  .hero__in { gap: 64px; padding-top: 72px; padding-bottom: 68px; }
+  h1 { font-size: clamp(2.2rem, 2.6vw, 3.5rem); }
+}
+
+@media (min-width: 1680px) {
+  :root { --wrap: min(1520px, calc(100vw - 80px)); }
+  .hero__in { gap: 72px; padding-top: 80px; padding-bottom: 76px; }
+  .sec { padding-top: 84px; padding-bottom: 84px; }
+}
+
+@media (min-width: 1920px) {
+  :root { --wrap: min(1680px, calc(100vw - 96px)); }
+  .hero__in { max-width: var(--wrap); }
+}
+
+@media (min-width: 2200px) {
+  :root { --wrap: min(1840px, 86vw); }
+}
+
+.wrap,
+.ubar__in,
+.hd__in,
+.hero__in {
+  max-width: var(--wrap) !important;
+  padding-left: var(--page-gutter) !important;
+  padding-right: var(--page-gutter) !important;
+}
+
+.wrap-narrow {
+  max-width: var(--wrap-narrow) !important;
+  padding-left: var(--page-gutter) !important;
+  padding-right: var(--page-gutter) !important;
+}
+
+/* Hero map presentation */
+.hero__map-link {
+  display: block;
+  width: 100%;
+}
+.hero__map-link .eg-region-map,
+.hero__map-link .hero__map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+  background: #fff;
+}
+
+body.admin-bar .hd { top: 32px; }
+@media screen and (max-width: 782px) {
+  body.admin-bar .hd { top: 46px; }
+}
+
+/* ---- Bilingual (body class is source of truth; html[lang|=] as fallback) ---- */
+body:not(.lang-en) .en,
+html:not([lang|="en"]):not(.lang-en) .en {
+  display: none !important;
+}
+body.lang-en .de,
+html[lang|="en"] .de {
+  display: none !important;
+}
+
+body.lang-en .en,
+html[lang|="en"] .en {
+  /* reset hidden attribute visually */
+}
+
+body.lang-en span.en,
+body.lang-en a.en,
+body.lang-en small.en,
+body.lang-en strong.en,
+body.lang-en em.en,
+body.lang-en b.en,
+body.lang-en button.en,
+html[lang|="en"] span.en,
+html[lang|="en"] a.en,
+html[lang|="en"] small.en,
+html[lang|="en"] b.en {
+  display: inline !important;
+}
+
+body.lang-en p.en,
+body.lang-en div.en,
+body.lang-en li.en,
+body.lang-en ul.en,
+body.lang-en ol.en,
+body.lang-en h1.en,
+body.lang-en h2.en,
+body.lang-en h3.en,
+body.lang-en h4.en,
+html[lang|="en"] p.en,
+html[lang|="en"] div.en,
+html[lang|="en"] li.en,
+html[lang|="en"] ul.en {
+  display: block !important;
+}
+
+/* Language toggle affordance */
+.lang button {
+  min-width: 36px;
+}
+.lang button[aria-pressed="true"] {
+  background: #fff !important;
+  color: var(--navy, #12233b) !important;
+}
+
+.search-form.search {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 6px 10px;
+  gap: 7px;
+  color: var(--muted);
+  margin: 0;
+}
+.search-form.search .search-field {
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-size: .85rem;
+  width: 98px;
+  background: transparent;
+  color: var(--ink);
+}
+.search-form.search .search-submit { display: none; }
+
+.entry-content > *:first-child { margin-top: 0; }
+.entry-content img { height: auto; }
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.nav.menu { list-style: none; margin: 0; padding: 0; display: flex; align-items: stretch; gap: 1px; }
+.nav .menu-item { position: relative; display: flex; }
+.nav .menu-item > a {
+  display: flex; align-items: center; gap: 5px; padding: 0 9px; height: 78px;
+  font-weight: 600; font-size: .9rem; color: var(--ink); text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+.nav .menu-item:hover > a,
+.nav .menu-item:focus-within > a { color: var(--oxblood); border-bottom-color: var(--oxblood); }
+.nav .sub-menu {
+  position: absolute; top: 100%; left: 0; min-width: 264px; background: var(--surface);
+  border: 1px solid var(--line); border-top: 3px solid var(--oxblood);
+  box-shadow: 0 24px 44px -20px rgba(16,26,42,.45); padding: 10px;
+  opacity: 0; visibility: hidden; transform: translateY(6px); transition: .16s; z-index: 70;
+  list-style: none; margin: 0;
+}
+.nav .menu-item:hover > .sub-menu,
+.nav .menu-item:focus-within > .sub-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.nav .sub-menu a {
+  display: block; padding: 9px 13px; font-size: .9rem; font-weight: 500;
+  color: var(--ink); text-decoration: none; border-radius: 2px;
+}
+.nav .sub-menu a:hover { background: var(--stone2); color: var(--oxblood); }
+
+.eg-migrated > .sec:first-child { padding-top: 40px; }
+.eg-region-map-wrap { margin: 0 0 24px; }
+.eg-region-map { width: 100%; height: auto; display: block; }
+
+.brand__logo {
+  display: block;
+  height: 52px;
+  width: auto;
+  max-width: min(220px, 42vw);
+  object-fit: contain;
+}
+.ft__logo img {
+  height: 44px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+/* Regions interactive map: match prototype #p-regionen (light map on dark explorer) */
+.regions-explorer__map {
+  min-height: 220px;
+}
+#p-regionen .regions-explorer__map,
+.eg-regions-root .regions-explorer__map {
+  background: var(--brand-white, #fff);
+  border: 1px solid rgba(0, 50, 160, 0.14);
+  border-radius: 10px;
+}
+#p-regionen .regions-explorer__map .wm,
+.eg-regions-root .regions-explorer__map .wm {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+#p-regionen .wm-bg,
+.eg-regions-root .wm-bg {
+  fill: var(--brand-white, #fff);
+}
+#p-regionen .reg-zone,
+.eg-regions-root .reg-zone {
+  cursor: pointer;
+}
+#p-regionen .reg-zone path,
+.eg-regions-root .reg-zone path {
+  fill: rgba(0, 50, 160, 0.14);
+  stroke: rgba(0, 50, 160, 0.6);
+  stroke-width: 0.8;
+  transition: fill 0.14s ease, stroke 0.14s ease;
+}
+#p-regionen .reg-zone:hover path,
+#p-regionen .reg-zone.is-hot:not(.on) path,
+.eg-regions-root .reg-zone:hover path,
+.eg-regions-root .reg-zone.is-hot:not(.on) path {
+  fill: rgba(225, 167, 52, 0.32);
+}
+#p-regionen .reg-zone.on path,
+.eg-regions-root .reg-zone.on path {
+  fill: rgba(218, 41, 28, 0.18);
+  stroke: var(--brand-red, #da291c);
+  stroke-width: 1.1;
+}
+
+/* Home teaser maps linking to Regionen */
+a.hero__map-link img,
+a.reg-map-link img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+/* Membership benefits (#p-mitgliedschaft-vorteile) from prototype 47 */
+#p-mitgliedschaft-vorteile .plan__name{font-family:var(--serif);font-size:1.28rem;line-height:1.2;color:var(--navy);font-weight:600;margin:0 0 6px}
+#p-mitgliedschaft-vorteile .plan--expert{background:var(--surface)}
+#p-mitgliedschaft-vorteile .plan__inc{font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--ink);margin:2px 0 10px}
+#p-mitgliedschaft-vorteile .plan__note{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;line-height:1.5;color:var(--muted)}
