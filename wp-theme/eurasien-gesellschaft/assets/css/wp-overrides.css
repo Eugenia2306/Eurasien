@@ -251,3 +251,14 @@ a.reg-map-link img {
 #p-mitgliedschaft-vorteile .plan--expert{background:var(--surface)}
 #p-mitgliedschaft-vorteile .plan__inc{font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--ink);margin:2px 0 10px}
 #p-mitgliedschaft-vorteile .plan__note{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;line-height:1.5;color:var(--muted)}
+
+/* Elementor: full-bleed canvas inside theme chrome */
+.eg-elementor-canvas,
+body.eg-elementor-page .eg-elementor-canvas {
+  width: 100%;
+  max-width: none;
+}
+body.eg-elementor-page .wrap-narrow.entry-content {
+  max-width: none;
+  width: 100%;
+}
