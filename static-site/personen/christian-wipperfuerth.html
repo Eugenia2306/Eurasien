@@ -62,7 +62,7 @@
 <link rel="stylesheet" href="../assets/css/fluid-layout.css">
 </head>
 <body>
-<script>(function(){var id='p-person-wipperfurth';if(!location.hash){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
+<script>(function(){var id='p-person-wipperfurth';var h=location.hash||'';if(!h){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
 
 <div class="site-progress" aria-hidden="true"><span></span></div>
 <!-- Hausform des Vereinsnamens: im gesamten Prototyp einheitlich "Eurasien Gesellschaft e. V." (ohne Bindestrich; siehe Logo, Impressum, Footer). Domain/E-Mail nutzen die Bindestrich-Form "eurasien-gesellschaft". Finale Hausschreibweise vor Veroeffentlichung bestaetigen. // House spelling: consistently "Eurasien Gesellschaft e. V." (no hyphen) per logo, imprint, footer; domain/email use the hyphenated form. Confirm before publication. -->
@@ -141,9 +141,8 @@
       <div class="nav-item">
         <a class="nav-link" href="../mediathek.html"><span class="de">Mediathek</span><span class="en" hidden>Media Library</span></a>
         <div class="mega">
-          <a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
+          <a href="../mediathek.html#mediathek-videoarchiv" data-scrollto="mediathek-videoarchiv"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
           <a href="../aufzeichnungen.html"><span class="de">Aufzeichnungen</span><span class="en" hidden>Recordings</span></a>
-          <a href="../mediathek.html"><span class="de">Presse</span><span class="en" hidden>Press</span></a>
         </div>
       </div>
       <div class="nav-item">
@@ -373,5 +372,6 @@
 <script src="../assets/js/site-08.js"></script>
 <script src="../assets/js/site-09.js"></script>
 <script src="../assets/js/site-10.js"></script>
+<script src="../assets/js/multipage-deeplink.js"></script>
 </body>
 </html>

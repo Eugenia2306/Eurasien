@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Faithful static multipage split of eurasien_gesellschaft_53.html.
+Faithful static multipage split of eurasien_gesellschaft_54.html.
 
 Rules:
 - Page section bodies are byte-identical to source (only hash links rewritten).
@@ -17,10 +17,17 @@ import shutil
 import zipfile
 from pathlib import Path
 
-SRC = Path(r"c:\Users\HP\Downloads\eurasien_gesellschaft_53.html")
-OUT = Path(r"c:\Users\HP\Documents\Eurasian\Eurasien\static-site")
-ZIP_OUT = Path(r"c:\Users\HP\Documents\Eurasian\Eurasien\Eurasien-static-site.zip")
+REPO = Path(r"c:\Users\HP\Documents\Eurasian\Eurasien")
+SRC_CANDIDATES = [
+    REPO / "eurasien_gesellschaft_54.html",
+    Path(r"c:\Users\HP\Downloads\eurasien_gesellschaft_54.html"),
+    REPO / "eurasien_gesellschaft_53.html",
+]
+SRC = next((p for p in SRC_CANDIDATES if p.is_file()), SRC_CANDIDATES[0])
+OUT = REPO / "static-site"
+ZIP_OUT = REPO / "Eurasien-static-site.zip"
 FLUID = Path(__file__).resolve().parent / "static-assets" / "fluid-layout.css"
+DEEPLINK = Path(__file__).resolve().parent / "static-assets" / "multipage-deeplink.js"
 
 SLUGS: dict[str, str] = {
     "p-home": "index.html",
@@ -119,16 +126,37 @@ def extract_balanced_section(html: str, start: int) -> tuple[str, int]:
 
 
 def rewrite_hash_links(html: str, from_page: str) -> str:
-    """Only change href=\"#p-...\" targets. Never touch copy."""
+    """Rewrite href=\"#p-...\" to real pages. Preserve deep-links via fragment ids."""
 
-    def repl(m: re.Match[str]) -> str:
-        pid = m.group(1)
+    def repl_anchor(m: re.Match[str]) -> str:
+        tag = m.group(0)
+        href_m = re.search(r'href="#(p-[a-z0-9\-]+)"', tag)
+        if not href_m:
+            return tag
+        pid = href_m.group(1)
         target = SLUGS.get(pid)
         if not target:
-            return m.group(0)
-        return f'href="{rel_href(from_page, target)}"'
+            return tag
 
-    return re.sub(r'href="#(p-[a-z0-9\-]+)"', repl, html)
+        fragment = ""
+        partner = re.search(r'data-partner-target="([^"]+)"', tag)
+        scroll_to = re.search(r'data-scrollto="([^"]+)"', tag)
+        if partner:
+            # Partner accordion ids are partner-{key}
+            fragment = f"#partner-{partner.group(1)}"
+        elif scroll_to:
+            fragment = f"#{scroll_to.group(1)}"
+
+        new_href = rel_href(from_page, target) + fragment
+        return re.sub(r'href="#p-[a-z0-9\-]+"', f'href="{new_href}"', tag, count=1)
+
+    # Only rewrite <a ...> tags that still use prototype hash routes
+    return re.sub(
+        r"<a\b[^>]*href=\"#p-[a-z0-9\-]+\"[^>]*>",
+        repl_anchor,
+        html,
+        flags=re.I,
+    )
 
 
 def extract_base64_images(html: str, img_dir: Path, path_prefix: str) -> str:
@@ -293,7 +321,11 @@ def build() -> None:
 
     (OUT / "assets" / "css" / "main.css").write_text(css, encoding="utf-8", newline="\n")
     shutil.copy2(FLUID, OUT / "assets" / "css" / "fluid-layout.css")
+    if not DEEPLINK.is_file():
+        raise SystemExit(f"Missing deeplink helper: {DEEPLINK}")
+    shutil.copy2(DEEPLINK, OUT / "assets" / "js" / "multipage-deeplink.js")
     print("CSS", len(css), "inline JS files", js_n, "total script tags", len(js_tags_template))
+    print("Source file:", SRC)
 
     # ---- Pages ----
     page_iter = list(re.finditer(r'<section\b[^>]*\bid="(p-[^"]+)"[^>]*>', html))
@@ -331,6 +363,7 @@ def build() -> None:
             else tag
             for tag in js_tags_template
         )
+        js_html += f'\n<script src="{prefix}assets/js/multipage-deeplink.js"></script>'
 
         # Head: keep source metas/fonts/ld+json; strip duplicate charset/viewport we set
         hi = head_inner
@@ -339,11 +372,14 @@ def build() -> None:
         hi = re.sub(r"\n{3,}", "\n\n", hi)
 
         title = TITLES.get(pid, "Eurasien Gesellschaft e. V.")
-        # Hash shim so legacy scripts that read location.hash keep working
+        # Hash shim for legacy scripts that expect #p-* page ids.
+        # Do not overwrite deep-link fragments (#partner-*, #mediathek-videoarchiv, ...).
         shim = (
             "<script>(function(){var id="
             + repr(pid)
-            + ";if(!location.hash){try{history.replaceState(null,\"\",\"#\"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>"
+            + ";var h=location.hash||'';"
+            + "if(!h){try{history.replaceState(null,\"\",\"#\"+id);}catch(e){try{location.hash=id;}catch(e2){}}}"
+            + "})();</script>"
         )
 
         page_html = f"""<!DOCTYPE html>
@@ -370,11 +406,12 @@ def build() -> None:
 
     (OUT / "README.txt").write_text(
         """Eurasien Gesellschaft – static multipage site
-Source of truth: eurasien_gesellschaft_53.html
+Source of truth: eurasien_gesellschaft_54.html
 
 This folder is a faithful split of that single file:
 - UI markup and DE/EN copy come from the source unchanged
 - Only #p-* links were rewritten to real .html paths
+- Deep-links preserved (partner cards, Mediathek video archive)
 - CSS/JS are the source assets (plus additive fluid-layout.css for large screens)
 - Interactive behaviour (language switch, Regionen map, forms, search) is preserved
 

@@ -2240,7 +2240,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Homepage teaser: compact five-organisation overview (unchanged). */
 .eg-coopteaser{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.eg-coopteaser li{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);box-shadow:0 5px 14px rgba(0,50,160,.05);padding:11px 15px}
+.eg-coopteaser li{display:flex;min-width:0}
 .eg-coopteaser .eg-orgname{font-weight:650;color:var(--brand-blue);font-size:.92rem;min-width:0}
 .eg-coopteaser .eg-count{flex:0 0 auto;font-size:.76rem;font-weight:650;color:var(--brand-blue);background:rgba(225,167,52,.16);border:1px solid rgba(225,167,52,.4);border-radius:999px;padding:3px 10px;white-space:nowrap}
 
@@ -2255,6 +2255,51 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   #p-partner .partner-event__link{display:inline-flex;align-items:center;min-height:44px}
   #p-partner .partner-accordion__website{display:inline-flex;align-items:center;min-height:44px}
   .eg-coopteaser{grid-template-columns:1fr}
+}
+
+
+
+/* Single consolidated correction block for the v54 changes:
+   nav YouTube -> internal Videoarchiv deep-link, retirement of the obsolete
+   info card, Mediathek info-card layout, clickable homepage cooperation teaser,
+   partner-accordion deep-link clearance. Approved four-colour palette
+   only (white / --brand-blue / --brand-red / --brand-gold); no new visual style. */
+
+/* Grid children can always shrink -> no overflow at any width (mirrors .grid>*) */
+.media>*{min-width:0}
+
+/* Videoarchiv deep-link target: keep the heading clear of the sticky header */
+#p-mediathek #mediathek-videoarchiv{scroll-margin-top:100px}
+
+/* Mediathek info cards (Podcast etc.): stable layout after the obsolete info
+   card was retired. Cards keep normal proportions; a lone card never spans a
+   full-width banner, and multiple cards align at equal height. */
+#p-mediathek .media-info{display:flex;flex-wrap:wrap;gap:22px;margin-top:26px;align-items:stretch}
+#p-mediathek .media-info>.card{flex:1 1 300px;min-width:0;max-width:380px}
+
+/* Homepage cooperation teaser: the whole card is one accessible link */
+.eg-coopteaser__link{flex:1 1 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0;min-height:44px;padding:11px 15px;border:1px solid var(--line);border-radius:9px;background:var(--surface);box-shadow:0 5px 14px rgba(0,50,160,.05);text-decoration:none;color:inherit;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.eg-coopteaser__link:hover{border-color:var(--brand-blue);box-shadow:0 10px 24px rgba(0,50,160,.12);transform:translateY(-2px)}
+.eg-coopteaser__link:focus-visible{outline:2px solid var(--brand-blue);outline-offset:2px}
+
+/* Partner accordions: the opened summary stays clear of the sticky header
+   across desktop, tablet (two-row header) and phone (burger) modes. */
+#p-partner .partner-accordion{scroll-margin-top:100px}
+
+@media(max-width:1260px){
+  #p-partner .partner-accordion{scroll-margin-top:120px}
+  #p-mediathek #mediathek-videoarchiv{scroll-margin-top:120px}
+}
+@media(max-width:767px){
+  #p-partner .partner-accordion{scroll-margin-top:150px}
+  #p-mediathek #mediathek-videoarchiv{scroll-margin-top:150px}
+}
+@media(max-width:640px){
+  #p-mediathek .media-info>.card{max-width:none;flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .eg-coopteaser__link{transition:none}
+  .eg-coopteaser__link:hover{transform:none}
 }
 
 

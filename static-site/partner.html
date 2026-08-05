@@ -62,7 +62,7 @@
 <link rel="stylesheet" href="assets/css/fluid-layout.css">
 </head>
 <body>
-<script>(function(){var id='p-partner';if(!location.hash){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
+<script>(function(){var id='p-partner';var h=location.hash||'';if(!h){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
 
 <div class="site-progress" aria-hidden="true"><span></span></div>
 <!-- Hausform des Vereinsnamens: im gesamten Prototyp einheitlich "Eurasien Gesellschaft e. V." (ohne Bindestrich; siehe Logo, Impressum, Footer). Domain/E-Mail nutzen die Bindestrich-Form "eurasien-gesellschaft". Finale Hausschreibweise vor Veroeffentlichung bestaetigen. // House spelling: consistently "Eurasien Gesellschaft e. V." (no hyphen) per logo, imprint, footer; domain/email use the hyphenated form. Confirm before publication. -->
@@ -141,9 +141,8 @@
       <div class="nav-item">
         <a class="nav-link" href="mediathek.html"><span class="de">Mediathek</span><span class="en" hidden>Media Library</span></a>
         <div class="mega">
-          <a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
+          <a href="mediathek.html#mediathek-videoarchiv" data-scrollto="mediathek-videoarchiv"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
           <a href="aufzeichnungen.html"><span class="de">Aufzeichnungen</span><span class="en" hidden>Recordings</span></a>
-          <a href="mediathek.html"><span class="de">Presse</span><span class="en" hidden>Press</span></a>
         </div>
       </div>
       <div class="nav-item">
@@ -178,7 +177,7 @@
       </div>
       <h2 class="partner-events__heading"><span class="de">Organisationen und dokumentierte Veranstaltungen</span><span class="en" hidden>Organisations and documented events</span></h2>
       <div class="partner-accordions">
-  <details class="partner-accordion">
+  <details class="partner-accordion" id="partner-welttrends" data-partner-key="welttrends">
     <summary class="partner-accordion__summary">
       <h3 class="partner-accordion__name">WeltTrends</h3>
       <span class="partner-accordion__meta">
@@ -206,7 +205,7 @@
     </div>
   </details>
 
-  <details class="partner-accordion">
+  <details class="partner-accordion" id="partner-deutsch-russisches-forum" data-partner-key="deutsch-russisches-forum">
     <summary class="partner-accordion__summary">
       <h3 class="partner-accordion__name">Deutsch-Russisches Forum e. V.</h3>
       <span class="partner-accordion__meta">
@@ -233,7 +232,7 @@
     </div>
   </details>
 
-  <details class="partner-accordion">
+  <details class="partner-accordion" id="partner-deutscher-friedensrat" data-partner-key="deutscher-friedensrat">
     <summary class="partner-accordion__summary">
       <h3 class="partner-accordion__name">Deutscher Friedensrat e. V.</h3>
       <span class="partner-accordion__meta">
@@ -260,7 +259,7 @@
     </div>
   </details>
 
-  <details class="partner-accordion">
+  <details class="partner-accordion" id="partner-berlin-im-dialog" data-partner-key="berlin-im-dialog">
     <summary class="partner-accordion__summary">
       <h3 class="partner-accordion__name">Berlin im Dialog e. V.</h3>
       <span class="partner-accordion__meta">
@@ -284,7 +283,7 @@
     </div>
   </details>
 
-  <details class="partner-accordion">
+  <details class="partner-accordion" id="partner-wcr" data-partner-key="wcr">
     <summary class="partner-accordion__summary">
       <h3 class="partner-accordion__name">WCR e. V.</h3>
       <span class="partner-accordion__meta">
@@ -437,5 +436,6 @@
 <script src="assets/js/site-08.js"></script>
 <script src="assets/js/site-09.js"></script>
 <script src="assets/js/site-10.js"></script>
+<script src="assets/js/multipage-deeplink.js"></script>
 </body>
 </html>

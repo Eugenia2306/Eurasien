@@ -62,7 +62,7 @@
 <link rel="stylesheet" href="assets/css/fluid-layout.css">
 </head>
 <body>
-<script>(function(){var id='p-home';if(!location.hash){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
+<script>(function(){var id='p-home';var h=location.hash||'';if(!h){try{history.replaceState(null,"","#"+id);}catch(e){try{location.hash=id;}catch(e2){}}}})();</script>
 
 <div class="site-progress" aria-hidden="true"><span></span></div>
 <!-- Hausform des Vereinsnamens: im gesamten Prototyp einheitlich "Eurasien Gesellschaft e. V." (ohne Bindestrich; siehe Logo, Impressum, Footer). Domain/E-Mail nutzen die Bindestrich-Form "eurasien-gesellschaft". Finale Hausschreibweise vor Veroeffentlichung bestaetigen. // House spelling: consistently "Eurasien Gesellschaft e. V." (no hyphen) per logo, imprint, footer; domain/email use the hyphenated form. Confirm before publication. -->
@@ -141,9 +141,8 @@
       <div class="nav-item">
         <a class="nav-link" href="mediathek.html"><span class="de">Mediathek</span><span class="en" hidden>Media Library</span></a>
         <div class="mega">
-          <a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
+          <a href="mediathek.html#mediathek-videoarchiv" data-scrollto="mediathek-videoarchiv"><span class="de">YouTube-Kanal</span><span class="en" hidden>YouTube Channel</span></a>
           <a href="aufzeichnungen.html"><span class="de">Aufzeichnungen</span><span class="en" hidden>Recordings</span></a>
-          <a href="mediathek.html"><span class="de">Presse</span><span class="en" hidden>Press</span></a>
         </div>
       </div>
       <div class="nav-item">
@@ -393,11 +392,11 @@
     <div class="wrap">
       <div class="shead"><h2 style="font-size:1.4rem"><span class="de">Veranstaltungsbezogene Zusammenarbeit</span><span class="en" hidden>Event-related cooperation</span></h2><a class="link-more" href="partner.html"><span class="de">Alle Veranstaltungskooperationen ansehen</span><span class="en" hidden>View all event-related cooperation</span></a></div>
       <ul class="eg-coopteaser">
-        <li><span class="eg-orgname">WCR e. V.</span><span class="eg-count"><span class="de">3 dokumentierte Veranstaltungen</span><span class="en" hidden>3 documented events</span></span></li>
-        <li><span class="eg-orgname">Deutsch-Russisches Forum e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></li>
-        <li><span class="eg-orgname">WeltTrends</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></li>
-        <li><span class="eg-orgname">Deutscher Friedensrat e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></li>
-        <li><span class="eg-orgname">Berlin im Dialog e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></li>
+        <li><a class="eg-coopteaser__link" href="partner.html#partner-wcr" data-partner-target="wcr"><span class="eg-orgname">WCR e. V.</span><span class="eg-count"><span class="de">3 dokumentierte Veranstaltungen</span><span class="en" hidden>3 documented events</span></span></a></li>
+        <li><a class="eg-coopteaser__link" href="partner.html#partner-deutsch-russisches-forum" data-partner-target="deutsch-russisches-forum"><span class="eg-orgname">Deutsch-Russisches Forum e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></a></li>
+        <li><a class="eg-coopteaser__link" href="partner.html#partner-welttrends" data-partner-target="welttrends"><span class="eg-orgname">WeltTrends</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></a></li>
+        <li><a class="eg-coopteaser__link" href="partner.html#partner-deutscher-friedensrat" data-partner-target="deutscher-friedensrat"><span class="eg-orgname">Deutscher Friedensrat e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></a></li>
+        <li><a class="eg-coopteaser__link" href="partner.html#partner-berlin-im-dialog" data-partner-target="berlin-im-dialog"><span class="eg-orgname">Berlin im Dialog e. V.</span><span class="eg-count"><span class="de">1 dokumentierte Veranstaltung</span><span class="en" hidden>1 documented event</span></span></a></li>
       </ul>
       <p class="small muted" style="margin-top:12px"><span class="de">Auswahl dokumentierter Kooperationen im Rahmen einzelner Veranstaltungen. Die Nennung beschreibt keine dauerhafte institutionelle Partnerschaft.</span><span class="en" hidden>A selection of documented cooperation connected with individual events. Inclusion does not indicate an ongoing institutional partnership.</span></p>
     </div>
@@ -510,5 +509,6 @@
 <script src="assets/js/site-08.js"></script>
 <script src="assets/js/site-09.js"></script>
 <script src="assets/js/site-10.js"></script>
+<script src="assets/js/multipage-deeplink.js"></script>
 </body>
 </html>

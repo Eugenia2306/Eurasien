@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-SRC = Path(r"c:\Users\HP\Downloads\eurasien_gesellschaft_53.html")
+SRC = Path(r"c:\Users\HP\Documents\Eurasian\Eurasien\eurasien_gesellschaft_54.html")
 OUT = Path(r"c:\Users\HP\Documents\Eurasian\Eurasien\static-site")
 SLUGS = {
     "p-home": "index.html",
