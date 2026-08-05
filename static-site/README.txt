@@ -8,4 +8,4 @@ This folder is a faithful split of that single file:
 - CSS/JS are the source assets (plus additive fluid-layout.css for large screens)
 - Interactive behaviour (language switch, Regionen map, forms, search) is preserved
 
-Upload the contents of this folder to your web host document root.
+
