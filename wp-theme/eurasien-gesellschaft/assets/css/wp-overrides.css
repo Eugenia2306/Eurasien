@@ -28,6 +28,17 @@
   :root { --wrap: min(1840px, 86vw); }
 }
 
+@media (min-width: 2560px) {
+  :root {
+    --wrap: min(2000px, 82vw);
+    --wrap-narrow: min(960px, calc(100vw - 120px));
+  }
+}
+
+@media (min-width: 3200px) {
+  :root { --wrap: min(2200px, 78vw); }
+}
+
 .wrap,
 .ubar__in,
 .hd__in,
@@ -41,6 +52,22 @@
   max-width: var(--wrap-narrow) !important;
   padding-left: var(--page-gutter) !important;
   padding-right: var(--page-gutter) !important;
+}
+
+/* Image sharpness: fluid shells must not soften bitmaps */
+img,
+picture img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  image-rendering: auto;
+  transform: none;
+  filter: none;
+}
+svg {
+  max-width: 100%;
+  height: auto;
+  shape-rendering: geometricPrecision;
 }
 
 /* Hero map presentation */

@@ -1,0 +1,13 @@
+# Build / unpack duplicates
+dist/
+Eurasien-Gesellschaft-theme/
+
+# Regenerable zip packages (source folders are committed instead)
+Eurasien-Gesellschaft-theme.zip
+Eurasien-Gesellschaft-theme-flat.zip
+Eurasien-static-site.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

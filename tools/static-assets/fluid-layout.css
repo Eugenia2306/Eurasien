@@ -1,0 +1,160 @@
+/* Fluid layout: scales from phones to large / ultra-wide desktops (15"+ and above).
+   Keep content readable; stop hard-capping at a laptop-sized --wrap.
+   Image sharpness must not be degraded by layout scaling. */
+
+:root {
+  --wrap: min(1216px, calc(100vw - 48px));
+  --wrap-narrow: min(840px, calc(100vw - 48px));
+  --page-gutter: clamp(16px, 2.2vw, 48px);
+  --section-y: clamp(48px, 6vw, 96px);
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --wrap: min(1360px, calc(100vw - 64px));
+  }
+  .hero__in {
+    gap: 64px;
+    padding-top: 72px;
+    padding-bottom: 68px;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 2.6vw, 3.5rem);
+  }
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --wrap: min(1520px, calc(100vw - 80px));
+  }
+  .hero__in {
+    gap: 72px;
+    padding-top: 80px;
+    padding-bottom: 76px;
+  }
+  .sec {
+    padding-top: var(--section-y);
+    padding-bottom: var(--section-y);
+  }
+}
+
+/* ~15"–27" Full HD / QHD and up */
+@media (min-width: 1920px) {
+  :root {
+    --wrap: min(1680px, calc(100vw - 96px));
+  }
+  .hero__in {
+    max-width: var(--wrap);
+  }
+}
+
+@media (min-width: 2200px) {
+  :root {
+    --wrap: min(1840px, 86vw);
+  }
+}
+
+/* Ultra-wide / 4K desktop */
+@media (min-width: 2560px) {
+  :root {
+    --wrap: min(2000px, 82vw);
+    --wrap-narrow: min(960px, calc(100vw - 120px));
+  }
+}
+
+@media (min-width: 3200px) {
+  :root {
+    --wrap: min(2200px, 78vw);
+  }
+}
+
+.wrap,
+.ubar__in,
+.hd__in,
+.hero__in {
+  max-width: var(--wrap) !important;
+  padding-left: var(--page-gutter) !important;
+  padding-right: var(--page-gutter) !important;
+  box-sizing: border-box;
+}
+
+.wrap-narrow {
+  max-width: var(--wrap-narrow) !important;
+  padding-left: var(--page-gutter) !important;
+  padding-right: var(--page-gutter) !important;
+  box-sizing: border-box;
+}
+
+/* ----- Image sharpness (fluid layout must not soften assets) -----
+   - Allow downscaling to fit; do not force every image to width:100%.
+   - Prefer intrinsic size; avoid CSS transforms/filters on photos.
+   - Vectors (SVG) stay sharp at any size. */
+img,
+picture img {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+  /* Avoid compositor blur from casual transforms on images */
+  transform: none;
+  filter: none;
+}
+
+svg {
+  max-width: 100%;
+  height: auto;
+  /* SVG stays crisp when scaled */
+  shape-rendering: geometricPrecision;
+}
+
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Full-bleed / intentional fill slots only (explicit classes) */
+img.fluid-cover,
+.fluid-cover > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  image-rendering: auto;
+}
+
+img.fluid-contain,
+.fluid-contain > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Grids: allow columns to breathe on wide viewports */
+@media (min-width: 1680px) {
+  .grid-3 {
+    gap: clamp(22px, 2vw, 36px);
+  }
+  .grid-4,
+  .topics,
+  .people,
+  .pillars {
+    gap: clamp(20px, 1.8vw, 32px);
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-gutter: 16px;
+  }
+}
