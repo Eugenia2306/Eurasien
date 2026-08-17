@@ -83,12 +83,19 @@
     return false;
   }
 
+  /* Browser Back must restore scroll, not jump to the page top. */
+  try{ if(history.scrollRestoration) history.scrollRestoration = 'auto'; }catch(eSR){}
+  var egUserNav = false;
+  window.addEventListener('popstate', function(){ egUserNav = false; });
+
   /* ---------- Route change: close menu, run pending actions, scroll ---------- */
   function afterNav(){
     d.body.classList.remove('nav-open');
     d.documentElement.classList.remove('nav-open');
     var b = d.querySelector('.burger'); if(b) b.setAttribute('aria-expanded','false');
-    if(!runPending()) window.scrollTo(0,0);
+    if(runPending()) return;
+    /* Only jump to top on a real in-page click, never on Back/Forward. */
+    if(egUserNav) window.scrollTo(0,0);
   }
   window.addEventListener('hashchange', afterNav);
 
@@ -106,6 +113,7 @@
       partner: a.getAttribute('data-partner-target'),
       scrollTo: a.getAttribute('data-scrollto')
     };
+    egUserNav = true;
     if(location.hash === '#' + page){
       setTimeout(function(){
         d.body.classList.remove('nav-open');
@@ -116,16 +124,53 @@
     }
   });
 
-  /* ---------- Language switch (DE default; EN spans hidden -> works without JS) ---------- */
+  /* ---------- Language switch (persists across pages via localStorage) ---------- */
+  var LANG_KEY = 'eg-lang';
   var langBtns = d.querySelectorAll('.lang button[data-lang]');
-  function setLang(l){
+  function setLang(l, opts){
+    if(l !== 'en' && l !== 'de') l = 'de';
     var en = (l === 'en');
-    d.querySelectorAll('.en').forEach(function(el){ el.hidden = !en; });
-    d.querySelectorAll('.de').forEach(function(el){ el.hidden = en; });
+    var persist = !(opts && opts.persist === false);
+    d.querySelectorAll('.en').forEach(function(el){
+      if(en){ el.removeAttribute('hidden'); el.setAttribute('aria-hidden','false'); }
+      else { el.setAttribute('hidden',''); el.setAttribute('aria-hidden','true'); }
+    });
+    d.querySelectorAll('.de').forEach(function(el){
+      if(en){ el.setAttribute('hidden',''); el.setAttribute('aria-hidden','true'); }
+      else { el.removeAttribute('hidden'); el.setAttribute('aria-hidden','false'); }
+    });
     root.setAttribute('lang', l);
-    langBtns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === l)); });
+    root.setAttribute('data-eg-lang', l);
+    root.classList.toggle('eg-lang-en', en);
+    langBtns.forEach(function(b){
+      var code = b.getAttribute('data-lang');
+      /* Always keep visible labels DE / EN (fixes corrupted OF/IN from page translators). */
+      if(code === 'en') b.textContent = 'EN';
+      else if(code === 'de') b.textContent = 'DE';
+      b.setAttribute('translate', 'no');
+      b.setAttribute('aria-pressed', String(code === l));
+    });
+    d.querySelectorAll('.lang').forEach(function(g){ g.setAttribute('translate', 'no'); });
+    if(persist){
+      try{ localStorage.setItem(LANG_KEY, l); }catch(e){}
+      try{ d.cookie = 'eg_lang=' + l + '; path=/; max-age=31536000; SameSite=Lax'; }catch(e2){}
+    }
+    try{ d.dispatchEvent(new CustomEvent('eg:lang', { detail: { lang: l } })); }catch(e3){}
+  }
+  function readStoredLang(){
+    try{
+      var l = localStorage.getItem(LANG_KEY);
+      if(l === 'en' || l === 'de') return l;
+    }catch(e){}
+    try{
+      var m = d.cookie.match(/(?:^|;\s*)eg_lang=(en|de)(?:;|$)/);
+      if(m) return m[1];
+    }catch(e2){}
+    return root.getAttribute('data-eg-lang') || 'de';
   }
   langBtns.forEach(function(b){ b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); }); });
+  setLang(readStoredLang(), { persist: true });
+  window.EGLang = { set: setLang, get: readStoredLang };
 
   /* ---------- Mobile menu ---------- */
   var burger = d.querySelector('.burger');
@@ -148,17 +193,26 @@
 
   /* Events filter (grouped by year), shared by chips and nav links */
   var evFilterEl = d.getElementById('ev-filter');
-  var evItems = [].slice.call(d.querySelectorAll('#p-veranstaltungen .ev'));
-  var evGroups = [].slice.call(d.querySelectorAll('#p-veranstaltungen .ev-group'));
   var evEmpty = d.getElementById('ev-empty');
+  var evFilterState = 'all';
+  function refreshEvFilterCache(){ /* items re-queried on each apply */ }
   function applyEvFilter(f){
+    if(f) evFilterState = f;
+    f = evFilterState || 'all';
     var shown = 0;
+    var evItems = [].slice.call(d.querySelectorAll('#p-veranstaltungen .ev'));
+    var evGroups = [].slice.call(d.querySelectorAll('#p-veranstaltungen .ev-group'));
     if(evFilterEl){ evFilterEl.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed', String(c.getAttribute('data-f') === f)); }); }
     evItems.forEach(function(it){ var ok = matchItem(it, f); it.hidden = !ok; if(ok) shown++; });
     evGroups.forEach(function(g){ g.hidden = !g.querySelector('.ev:not([hidden])'); });
-    if(evEmpty) evEmpty.hidden = (shown > 0);
+    if(evEmpty){
+      if(!evItems.length){ /* feed still loading or empty catalog: leave as-is */ }
+      else { evEmpty.hidden = shown > 0; }
+    }
     trackEvent('event_filter', f);
   }
+  window.EG_EVENTS_UI = window.EG_EVENTS_UI || {};
+  window.EG_EVENTS_UI.refresh = function(){ applyEvFilter(evFilterState || 'all'); };
   if(evFilterEl){
     evFilterEl.addEventListener('click', function(e){
       var btn = e.target.closest('.chip'); if(!btn) return;
@@ -369,6 +423,119 @@
   function filterCountry(region, country){ if(region !== stateRegion) stateRegion = region; stateCountry = country || 'all'; renderRegions(); }
   function resetCountryFilter(region){ if(region && region !== stateRegion) stateRegion = region; stateCountry = 'all'; renderRegions(); }
   function setRegTab(tb){ stateTab = tb; renderRegions(); }
+  function isPageRootHash(h, el){
+    if(!h) return false;
+    if(/^(p-topic-|p-person-|p-members-)/.test(h)) return true;
+    if(/^(p-themen|p-kultur|p-laender|p-regionen|p-analysen|p-veranstaltungen|p-mediathek|p-mitgliedschaft|p-mitgliedschaft-vorteile|p-mission|p-vorstand|p-partner|p-home|p-news|p-login)$/.test(h)) return true;
+    if(el && el.classList && el.classList.contains('page')) return true;
+    return false;
+  }
+  var focusTimer = null;
+  function stickyOffset(){
+    var hd = d.querySelector('.hd');
+    var h = 96;
+    if(hd){
+      var r = hd.getBoundingClientRect();
+      h = Math.max(r.height || 0, 64);
+    }
+    var css = 0;
+    try{
+      css = parseInt(getComputedStyle(d.documentElement).getPropertyValue('--eg-chrome-h'), 10) || 0;
+    }catch(eC){}
+    return Math.max(h, css, 88) + 18;
+  }
+  function scrollToEl(el, opts){
+    if(!el) return;
+    var instant = opts && opts.instant;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var y = el.getBoundingClientRect().top + (window.pageYOffset || d.documentElement.scrollTop || 0) - stickyOffset();
+    y = Math.max(0, Math.round(y));
+    try{
+      window.scrollTo({ top: y, behavior: (instant || reduce) ? 'auto' : 'smooth' });
+    }catch(e){
+      try{ window.scrollTo(0, y); }catch(e2){}
+    }
+  }
+  function focusElementById(id, opts){
+    opts = opts || {};
+    if(id === 'ev-list-root'){
+      var root = d.getElementById('ev-list-root');
+      if(!root || !root.querySelector('.ev')) return false;
+      if(typeof applyEvFilter === 'function') applyEvFilter('all');
+      var listTarget = root.querySelector('.ev-group') || root.querySelector('.ev') || root;
+      scrollToEl(listTarget, { instant: !!opts.instant });
+      return true;
+    }
+    var t = d.getElementById(id);
+    if(!t) return false;
+    /* Whole-page anchors: stay at the hero on click, but never wipe Back scroll. */
+    if(isPageRootHash(id, t)){
+      if(egUserNav){ try{ window.scrollTo(0, 0); }catch(e){} }
+      return true;
+    }
+    if(t.classList.contains('ev') && t.hidden && typeof applyEvFilter === 'function'){
+      applyEvFilter('all');
+    }
+    var prev = d.querySelectorAll('.is-focused'); for(var q=0;q<prev.length;q++){ prev[q].classList.remove('is-focused'); }
+    t.classList.add('is-focused');
+    if(t.getAttribute('tabindex') === null){ t.setAttribute('tabindex','-1'); }
+    try{ t.focus({preventScroll:true}); }catch(e){}
+    scrollToEl(t, { instant: !!opts.instant });
+    if(focusTimer) clearTimeout(focusTimer);
+    focusTimer = setTimeout(function(){ t.classList.remove('is-focused'); }, 6000);
+    return true;
+  }
+  function applyLocationHash(){
+    var h = (location.hash || '').replace(/^#/, '');
+    if(!h) return false;
+    /* Event archive hashes: wait until the WP feed has painted the cards. */
+    if(h === 'ev-list-root' || h.indexOf('ev-') === 0){
+      if(!d.getElementById(h) || (h === 'ev-list-root' && !d.querySelector('#ev-list-root .ev'))){
+        return false;
+      }
+      return focusElementById(h, { instant: true });
+    }
+    /* Page-root hashes: do not force top on load/Back (browser restores scroll). */
+    if(isPageRootHash(h, d.getElementById(h))){
+      if(egUserNav){ try{ window.scrollTo(0, 0); }catch(e){} }
+      return true;
+    }
+    var regions = {europa:1,kaukasus:1,naherosten:1,ostasien:1,osteuropa:1,suedasien:1,zentralasien:1};
+    if(regions[h] && regRoot){
+      selectRegion(h);
+      var bar = regRoot.querySelector('.reg-list') || regRoot.querySelector('.reg-btn[data-region="'+h+'"]') || regRoot;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      setTimeout(function(){
+        try{ bar.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'}); }catch(e){}
+      }, 60);
+      return true;
+    }
+    if(h.indexOf('an-fmt-') === 0){
+      var filterKey = h.replace(/^an-fmt-/, '');
+      if(filterKey === 'stellungnahmen' && typeof applyAnFilter === 'function'){
+        applyAnFilter('stellungnahmen');
+      }
+      return focusElementById(h);
+    }
+    if(h.indexOf('filter-') === 0 && typeof applyAnFilter === 'function'){
+      applyAnFilter(h.slice(7));
+      var list = d.getElementById('an-filter') || d.getElementById('an-list');
+      if(list){
+        var reduce2 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        try{ list.scrollIntoView({behavior: reduce2 ? 'auto' : 'smooth', block:'start'}); }catch(e){}
+      }
+      return true;
+    }
+    return focusElementById(h);
+  }
+  window.EGNav = {
+    selectRegion: selectRegion,
+    applyAnFilter: applyAnFilter,
+    applyEvFilter: applyEvFilter,
+    focusElementById: focusElementById,
+    applyLocationHash: applyLocationHash,
+    scrollToEl: scrollToEl
+  };
   if(regRoot){
     var _initB = regRoot.querySelector('.reg-btn[aria-pressed="true"]');
     stateRegion = _initB ? _initB.getAttribute('data-region') : 'europa';
@@ -396,6 +563,73 @@
     regRoot.querySelectorAll('.reg-apanel').forEach(function(ap){ applyRegMore(ap); });
     renderRegions();
   }
+
+  /* Persist event archive targets in the URL hash (cross-page Back + deep-link). */
+  function isEventsHref(href){
+    return /veranstaltungen\.html(?:$|[?#])/i.test(href || '') ||
+      /(^|\/)veranstaltungen(?:\.html)?(?:$|[?#])/i.test(href || '');
+  }
+  function rewriteEventArchiveHrefs(){
+    d.querySelectorAll('a[href]').forEach(function(a){
+      var href = a.getAttribute('href') || '';
+      if(!isEventsHref(href) || href.indexOf('#') !== -1) return;
+      var focus = a.getAttribute('data-focus');
+      if(focus){
+        a.setAttribute('href', href + '#' + focus);
+        return;
+      }
+      if(a.classList.contains('rel-ev-all') || a.getAttribute('data-evfilter') === 'all'){
+        a.setAttribute('href', href + '#ev-list-root');
+      }
+    });
+  }
+  rewriteEventArchiveHrefs();
+
+  /* Deep-links from multipage nav (regionen.html#ostasien, analysen.html#an-fmt-...) */
+  setTimeout(applyLocationHash, 80);
+  window.addEventListener('hashchange', function(){ applyLocationHash(); });
+
+  /* Same-page mega-menu: regionen.html / analysen.html with data-* still used as fallback */
+  d.addEventListener('click', function(e){
+    var a = e.target.closest('a[href]');
+    if(!a) return;
+    var href = a.getAttribute('href') || '';
+    var region = a.getAttribute('data-region');
+    var focus = a.getAttribute('data-focus');
+    var an = a.getAttribute('data-anfilter');
+    if(!region && !focus && !an) return;
+    var path = href.split('#')[0].split('?')[0];
+    var file = path.split('/').pop() || '';
+    var here = (location.pathname.split('/').pop() || 'index.html');
+    if(here === '') here = 'index.html';
+    var same =
+      (file === '' && (region || focus || an)) ||
+      file === here ||
+      (file === 'regionen.html' && here === 'regionen.html') ||
+      (file === 'analysen.html' && here === 'analysen.html');
+    if(!same) return;
+    if(region && regRoot){
+      e.preventDefault();
+      selectRegion(region);
+      try{ history.replaceState(null, '', '#' + region); }catch(err){}
+      var bar = regRoot.querySelector('.reg-list') || regRoot;
+      try{ bar.scrollIntoView({behavior:'smooth', block:'start'}); }catch(err2){}
+      return;
+    }
+    if(an){
+      e.preventDefault();
+      applyAnFilter(an);
+      try{ history.replaceState(null, '', '#an-fmt-' + an); }catch(err){}
+      focusElementById('an-fmt-' + an);
+      return;
+    }
+    if(focus){
+      e.preventDefault();
+      try{ history.replaceState(null, '', '#' + focus); }catch(err){}
+      if(focus.indexOf('an-fmt-stellungnahmen') === 0) applyAnFilter('stellungnahmen');
+      focusElementById(focus);
+    }
+  });
 
 
   /* ---------- Membership application (prototype: confirmation only) ---------- */

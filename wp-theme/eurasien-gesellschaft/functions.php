@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'EG_THEME_VERSION', '1.1.4' );
+define( 'EG_THEME_VERSION', '1.1.8' );
 define( 'EG_THEME_DIR', get_template_directory() );
 define( 'EG_THEME_URI', get_template_directory_uri() );
 

@@ -27,6 +27,8 @@ h3{font-size:1.2rem}
 p{margin:0 0 1em}
 strong{font-weight:700}
 .en[hidden],.de[hidden]{display:none}
+/* Hide EN by default even if the hidden attribute was stripped (WP/Elementor). */
+html:not(.eg-lang-en) .en{display:none!important}
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 30px}
 .wrap-narrow{max-width:840px;margin:0 auto;padding:0 30px}
 .eyebrow{font-family:var(--sans);font-weight:700;font-size:.73rem;letter-spacing:.17em;text-transform:uppercase;color:var(--oxblood);margin:0 0 .85em}
@@ -60,6 +62,42 @@ strong{font-weight:700}
 .lang{display:inline-flex;border:1px solid #38506e;border-radius:2px;overflow:hidden}
 .lang button{background:transparent;border:0;color:#a7b6c9;font:inherit;font-size:.78rem;font-weight:700;padding:2px 9px;cursor:pointer}
 .lang button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+/* Language visibility: never use display:revert on [hidden] (resolves to none). */
+html.eg-lang-en .de{display:none!important}
+html.eg-lang-en .en{display:inline!important}
+html.eg-lang-en div.en,
+html.eg-lang-en p.en,
+html.eg-lang-en h1.en,
+html.eg-lang-en h2.en,
+html.eg-lang-en h3.en,
+html.eg-lang-en h4.en,
+html.eg-lang-en li.en,
+html.eg-lang-en section.en,
+html.eg-lang-en article.en,
+html.eg-lang-en ul.en,
+html.eg-lang-en ol.en,
+html.eg-lang-en blockquote.en,
+html.eg-lang-en figcaption.en,
+html.eg-lang-en td.en,
+html.eg-lang-en th.en{display:block!important}
+html.eg-lang-en .en[hidden]{display:inline!important}
+html.eg-lang-en div.en[hidden],
+html.eg-lang-en p.en[hidden],
+html.eg-lang-en h1.en[hidden],
+html.eg-lang-en h2.en[hidden],
+html.eg-lang-en h3.en[hidden],
+html.eg-lang-en h4.en[hidden],
+html.eg-lang-en li.en[hidden],
+html.eg-lang-en section.en[hidden],
+html.eg-lang-en article.en[hidden],
+html.eg-lang-en ul.en[hidden],
+html.eg-lang-en ol.en[hidden],
+html.eg-lang-en blockquote.en[hidden]{display:block!important}
+/* Force switcher labels DE / EN (avoids corrupted OF/IN glyph text). */
+.lang button[data-lang="de"]{font-size:0!important}
+.lang button[data-lang="de"]::after{content:"DE";font-size:.78rem;font-weight:700}
+.lang button[data-lang="en"]{font-size:0!important}
+.lang button[data-lang="en"]::after{content:"EN";font-size:.78rem;font-weight:700}
 
 /* ---- Header / masthead ---- */
 .hd{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line)}
@@ -642,9 +680,16 @@ html,body{max-width:100%;overflow-x:hidden}
 .rel-ev-all{display:inline-block;margin:11px 2px 2px;color:var(--oxblood);font:600 12px/1 var(--sans);text-decoration:none;border-bottom:1px solid transparent}
 .rel-ev-all:hover{color:var(--navy);border-bottom-color:var(--oxblood)}
 .rel-ev-all:focus-visible{outline:2px solid var(--oxblood);outline-offset:2px}
-/* focused event target (jumped to from a region) */
-.ev{scroll-margin-top:88px}
-.ev.is-focused{outline:2px solid rgba(122,43,48,.30);outline-offset:4px;background:#fbf8f2;border-radius:4px}
+/* focused event target (jumped to from a region): clear of sticky header, accent color */
+.ev,.ev-group,#ev-list-root{scroll-margin-top:calc(var(--eg-chrome-h, 96px) + 20px)}
+#ev-list-root{padding-bottom:min(48vh, 420px)}
+.ev.is-focused{
+  outline:2px solid var(--oxblood);
+  outline-offset:3px;
+  background:#f7ebe8;
+  box-shadow:inset 5px 0 0 var(--oxblood);
+  border-radius:4px;
+}
 /* reliable hide for the show-more button (btn class sets display) */
 .reg-more[hidden]{display:none!important}
 /* hero map as link */
@@ -2197,4 +2242,43 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media (max-width:520px){
   #p-recordings-archive .ra-actions{gap:10px}
   #p-recordings-archive .ra-actions .btn{width:100%}
+}
+
+/* ===== Phase 2: Vorstand cards, equal Themen blocks, news CTA ===== */
+#p-vorstand .people{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:28px 32px;
+  max-width:920px;
+}
+#p-vorstand .person__b{padding:28px 32px 32px}
+@media(max-width:720px){
+  #p-vorstand .people{grid-template-columns:1fr}
+}
+
+.page .grid.grid-3{
+  align-items:stretch;
+}
+.page .grid.grid-3>.card{
+  height:100%;
+}
+.page .grid.grid-3>.card>p:not(.card__meta){
+  flex:1 1 auto;
+}
+
+.kx-grid,.cx-grid,.sx-grid{align-items:stretch}
+.kx-grid>.kx-card,.cx-grid>.cx-card,.sx-grid>.sx-card{height:100%}
+.kx-grid:has(>:nth-child(2):last-child),
+.cx-grid:has(>:nth-child(2):last-child),
+.sx-grid:has(>:nth-child(2):last-child){
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.news-aktuelles-cta{margin-top:8px;max-width:46rem}
+.news-aktuelles-cta .btn{
+  display:inline-flex;
+  white-space:normal;
+  text-align:left;
+  line-height:1.45;
+  padding:16px 22px;
+  max-width:100%;
 }

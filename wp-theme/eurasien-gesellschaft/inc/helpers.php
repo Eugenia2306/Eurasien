@@ -57,20 +57,55 @@ function eg_route( string $prototype_id ): string {
 	$id = ltrim( $prototype_id, '#' );
 	$map = eg_prototype_slugs();
 
+	/* Login must hit PMPro /login/, never the old /anmelden/ brochure stub. */
+	if ( 'p-login' === $id ) {
+		if ( function_exists( 'eg_member_login_url' ) ) {
+			return eg_member_login_url( home_url( '/membership-account/' ) );
+		}
+		return add_query_arg(
+			'redirect_to',
+			home_url( '/membership-account/' ),
+			home_url( '/login/' )
+		);
+	}
+
 	if ( ! isset( $map[ $id ] ) ) {
 		return home_url( '/' );
 	}
 
 	$slug = $map[ $id ];
 	if ( '' === $slug ) {
+		if ( function_exists( 'eg_brochure_public_url' ) ) {
+			return eg_brochure_public_url( '' );
+		}
 		return home_url( '/' );
 	}
 
-	// CPT archives.
+	/* Public brochure pages live on the static site, not under /app/. */
+	if ( function_exists( 'eg_brochure_page_paths' ) && function_exists( 'eg_brochure_public_url' ) ) {
+		$brochure_pages = eg_brochure_page_paths();
+		if ( isset( $brochure_pages[ $slug ] ) ) {
+			return eg_brochure_public_url( $brochure_pages[ $slug ] );
+		}
+	}
+	if ( function_exists( 'eg_brochure_person_paths' ) && function_exists( 'eg_brochure_public_url' ) ) {
+		$brochure_people = eg_brochure_person_paths();
+		if ( isset( $brochure_people[ $slug ] ) ) {
+			return eg_brochure_public_url( $brochure_people[ $slug ] );
+		}
+	}
+
+	// CPT archives (events / media stay in WP when present).
 	if ( 'analysen' === $slug ) {
+		if ( function_exists( 'eg_brochure_public_url' ) ) {
+			return eg_brochure_public_url( 'analysen.html' );
+		}
 		return get_post_type_archive_link( 'eg_analyse' ) ?: home_url( '/analysen/' );
 	}
 	if ( 'veranstaltungen' === $slug ) {
+		if ( function_exists( 'eg_brochure_public_url' ) ) {
+			return eg_brochure_public_url( 'veranstaltungen.html' );
+		}
 		return get_post_type_archive_link( 'eg_event' ) ?: home_url( '/veranstaltungen/' );
 	}
 	if ( 'mediathek' === $slug ) {

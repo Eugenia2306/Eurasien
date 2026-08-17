@@ -271,7 +271,7 @@ get_header();
 					); ?></p>
 				</div>
 				<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;align-items:center">
-					<a class="btn btn--accent" href="<?php echo esc_url( eg_route( 'p-mitgliedschaft-vorteile' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
+					<a class="btn btn--accent" href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url() : eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
 					<a class="btn btn--onnavy" href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Partner werden', 'Become a partner' ); ?></a>
 				</div>
 			</div>

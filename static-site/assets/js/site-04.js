@@ -129,6 +129,13 @@
       if(langBtns[i].getAttribute('aria-pressed')==='true'){ cur = langBtns[i].getAttribute('data-lang'); }
       (function(bb){ bb.addEventListener('click', function(){ setPh(bb.getAttribute('data-lang')); }); })(langBtns[i]);
     }
+    document.addEventListener('eg:lang', function(ev){
+      if(ev && ev.detail && ev.detail.lang) setPh(ev.detail.lang);
+    });
+    try{
+      var stored = localStorage.getItem('eg-lang');
+      if(stored === 'en' || stored === 'de') cur = stored;
+    }catch(e){}
     setPh(cur);
   } else { setPh('de'); }
 })();

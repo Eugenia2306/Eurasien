@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Member content is served from WordPress under /app/ after Phase 2
+Disallow: /app/wp-admin/
+Disallow: /app/wp-login.php
+
+Sitemap: /sitemap.xml

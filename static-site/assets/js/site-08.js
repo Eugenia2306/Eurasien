@@ -135,11 +135,16 @@
     function setTitle(en){ var t = ROUTE_TITLES[location.hash]; d.title = t ? (en ? t.en : t.de) : ORIG_TITLE; }
     window.addEventListener('hashchange', function(){ setTitle(enOn()); });
     var langBtns = d.querySelectorAll('.lang button[data-lang]');
+    function syncLangUi(){
+      var en = enOn() || (root.getAttribute('data-eg-lang') === 'en');
+      relabel(en);
+      setTitle(en);
+    }
     [].slice.call(langBtns).forEach(function(b){
-      b.addEventListener('click', function(){ var en=b.getAttribute('data-lang')==='en'; relabel(en); setTitle(en); });
+      b.addEventListener('click', function(){ setTimeout(syncLangUi, 0); });
     });
-    relabel(enOn());
-    setTitle(enOn());
+    d.addEventListener('eg:lang', syncLangUi);
+    syncLangUi();
     apply();
   }
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', initCx); } else { initCx(); }

@@ -7,19 +7,28 @@
   var ME=['January','February','March','April','May','June','July','August','September','October','November','December'];
   var WD=['Mo','Di','Mi','Do','Fr','Sa','So'], WE=['Mo','Tu','We','Th','Fr','Sa','Su'];
   var evs={};
-  Array.prototype.forEach.call(document.querySelectorAll('#p-veranstaltungen .ev[data-date]'), function(ev){
-    var dt=ev.getAttribute('data-date'); if(!dt) return;
-    var t=ev.querySelector('.ev__t'); var de='', en='';
-    if(t){ var sd=t.querySelector('.de'), se=t.querySelector('.en');
-      de=sd?sd.textContent.trim():t.textContent.trim(); en=se?se.textContent.trim():de; }
-    (evs[dt]=evs[dt]||[]).push({de:de,en:en});
-  });
+  function rebuildIndex(){
+    evs={};
+    Array.prototype.forEach.call(document.querySelectorAll('#p-veranstaltungen .ev[data-date]'), function(ev){
+      var dt=ev.getAttribute('data-date'); if(!dt) return;
+      var t=ev.querySelector('.ev__t'); var de='', en='';
+      if(t){ var sd=t.querySelector('.de'), se=t.querySelector('.en');
+        de=sd?sd.textContent.trim():t.textContent.trim(); en=se?se.textContent.trim():de; }
+      (evs[dt]=evs[dt]||[]).push({de:de,en:en});
+    });
+  }
+  rebuildIndex();
   function enOn(){ var p=document.querySelector('.reg-btn .de'); return p?p.hidden:false; }
   function applyLang(el){ var en=enOn();
     Array.prototype.forEach.call(el.querySelectorAll('.de'),function(x){x.hidden=en;});
     Array.prototype.forEach.call(el.querySelectorAll('.en'),function(x){x.hidden=!en;}); }
   function pad(n){ return (n<10?'0':'')+n; }
   var cur=new Date(2026,6,1); var TODAY='2026-07-10';
+  try{
+    var now=new Date();
+    TODAY=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+    cur=new Date(now.getFullYear(), now.getMonth(), 1);
+  }catch(e){}
   function render(){
     var y=cur.getFullYear(), m=cur.getMonth();
     moEl.innerHTML='<span class="de">'+MD[m]+'</span><span class="en" hidden>'+ME[m]+'</span>';
@@ -46,5 +55,8 @@
   document.getElementById('cal-next').addEventListener('click',function(){ cur.setMonth(cur.getMonth()+1); render(); });
   grid.addEventListener('click',function(e){ var c=e.target.closest('[data-day]'); if(c) show(c.getAttribute('data-day')); });
   grid.addEventListener('keydown',function(e){ var c=e.target.closest('[data-day]'); if(c&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); show(c.getAttribute('data-day')); } });
+  window.EG_EVENT_CAL = {
+    refresh: function(){ rebuildIndex(); render(); }
+  };
   render();
 })();

@@ -1,0 +1,40 @@
+Eurasien Gesellschaft /app – install notes
+==========================================
+
+Events (Veranstaltungen) – for colleagues
+-----------------------------------------
+Public page: https://…/veranstaltungen.html (loads events from WordPress).
+
+1. Log in to WordPress: /app/wp-admin/
+2. Go to Veranstaltungen → Add New
+   Use the classic screen (not Gutenberg). You should see
+   “Event details (date, price, tickets)” directly under the title.
+   Direct link: /app/wp-admin/post-new.php?post_type=eg_event
+3. Title = German title (required)
+4. In Event details:
+   - Date, start/end time, location
+   - Type (Vortrag / Panel / Fachgespräch / Konferenz / Kultur)
+   - Badge labels (optional)
+   - Price (EUR) and check Bookable for Stripe registration
+   - Optional English title / location / description
+5. Put the German description in the main editor below the details panel
+6. Publish
+
+The event appears on the brochure page within about a minute (JSON cache max 60s).
+Bookable + future date → “Register for this event” → Stripe.
+
+First-time import of the old static list
+----------------------------------------
+WP admin: Veranstaltungen → Import brochure → Import / refresh brochure events
+
+Or one-shot URL (then delete the file if you want):
+  /app/eg-event-seed.php?k=eg-setup-2026
+
+Public feed
+-----------
+  /app/eg-events.json.php
+
+Membership / Stripe
+-------------------
+See mu-plugins eg-member-handoff.php and eg-event-handoff.php.
+Ensure PMPro or WooCommerce Stripe secret keys are configured.

@@ -82,8 +82,8 @@ add_action(
 		echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
 		echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
 		// Prevent FOUC: hide .en before CSS/JS if German is default.
-		echo '<style id="eg-lang-boot">html:not([data-eg-lang="en"]) .en{display:none!important}</style>' . "\n";
-		echo '<script>try{var L=localStorage.getItem("eg-lang");if(L==="en"){document.documentElement.setAttribute("data-eg-lang","en");document.documentElement.setAttribute("lang","en");}}catch(e){}</script>' . "\n";
+		echo '<style id="eg-lang-boot">html:not([data-eg-lang="en"]) .en{display:none!important}html[data-eg-lang="en"] .de{display:none!important}html[data-eg-lang="en"] .en{display:inline!important}html[data-eg-lang="en"] div.en,html[data-eg-lang="en"] p.en,html[data-eg-lang="en"] h1.en,html[data-eg-lang="en"] h2.en,html[data-eg-lang="en"] h3.en,html[data-eg-lang="en"] section.en,html[data-eg-lang="en"] article.en{display:block!important}</style>' . "\n";
+		echo '<script>try{var L=localStorage.getItem("eg-lang");if(L==="en"){document.documentElement.setAttribute("data-eg-lang","en");document.documentElement.setAttribute("lang","en");document.documentElement.classList.add("eg-lang-en");}}catch(e){}</script>' . "\n";
 	},
 	1
 );

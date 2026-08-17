@@ -76,8 +76,8 @@
 				<?php else : ?>
 					<a href="<?php echo esc_url( eg_route( 'p-veranstaltungen' ) ); ?>"><?php eg_bi_e( 'Veranstaltungen', 'Events' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-mediathek' ) ); ?>"><?php eg_bi_e( 'Mediathek', 'Media Library' ); ?></a>
-					<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft-vorteile' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft', 'Membership' ); ?></a>
-					<a href="<?php echo esc_url( eg_route( 'p-login' ) ); ?>"><?php eg_bi_e( 'Anmelden', 'Login' ); ?></a>
+					<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft' ) ); ?>#membership-registration" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
+					<a href="<?php echo esc_url( function_exists( 'eg_member_login_url' ) ? eg_member_login_url() : eg_route( 'p-login' ) ); ?>" data-analytics="login_click"><?php eg_bi_e( 'Anmelden', 'Login' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-impressum' ) ); ?>">Impressum</a>
 				<?php endif; ?>
 			</div>

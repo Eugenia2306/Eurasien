@@ -14,7 +14,7 @@ while ( have_posts() ) :
 		'template-parts/page-header',
 		null,
 		array(
-			'title' => get_the_title(),
+			'title' => eg_bi( 'Anmelden', 'Log In' ),
 		)
 	);
 	?>
