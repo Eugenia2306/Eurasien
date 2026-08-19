@@ -7,6 +7,13 @@ Eurasien-Gesellschaft-theme.zip
 Eurasien-Gesellschaft-theme-flat.zip
 Eurasien-static-site.zip
 
+# Plugin zips and extracted plugin files (large binary/vendor content)
+tools/plugin-zips/
+tools/_git_commit_push.py
+
+# Temporary scratch scripts
+_tmp_*.py
+
 # OS / editor
 .DS_Store
 Thumbs.db
