@@ -517,6 +517,20 @@
       }
       return focusElementById(h);
     }
+    if(h.indexOf('ev-region-') === 0){
+      /* Region-filtered events: handled by events-feed.js after cards render */
+      return false;
+    }
+    if((h === 'ev-filter-upcoming' || h === 'ev-filter-past') && typeof applyEvFilter === 'function'){
+      var evF = h === 'ev-filter-upcoming' ? 'upcoming' : 'past';
+      applyEvFilter(evF);
+      var evChips = d.getElementById('ev-filter') || d.getElementById('ev-list-root');
+      if(evChips){
+        var reduce3 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        try{ evChips.scrollIntoView({behavior: reduce3 ? 'auto' : 'smooth', block:'start'}); }catch(e){}
+      }
+      return true;
+    }
     if(h.indexOf('filter-') === 0 && typeof applyAnFilter === 'function'){
       applyAnFilter(h.slice(7));
       var list = d.getElementById('an-filter') || d.getElementById('an-list');
@@ -578,7 +592,19 @@
         a.setAttribute('href', href + '#' + focus);
         return;
       }
-      if(a.classList.contains('rel-ev-all') || a.getAttribute('data-evfilter') === 'all'){
+      if(a.classList.contains('rel-ev-all')){
+        /* Find the parent reg-events container to get the region slug */
+        var regPanel = a.closest('.reg-events');
+        var regionSlug = regPanel && regPanel.getAttribute('data-region');
+        if(regionSlug){
+          a.setAttribute('href', href + '#ev-region-' + regionSlug);
+          a.setAttribute('data-evregion', regionSlug);
+        } else {
+          a.setAttribute('href', href + '#ev-list-root');
+        }
+        return;
+      }
+      if(a.getAttribute('data-evfilter') === 'all'){
         a.setAttribute('href', href + '#ev-list-root');
       }
     });
@@ -631,6 +657,34 @@
     }
   });
 
+
+  /* ---------- Newsletter subscribe (prototype: confirmation feedback only) ---------- */
+  d.querySelectorAll('.news-form').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var input = form.querySelector('input[type="email"]');
+      var btn = form.querySelector('button');
+      if(!input || !input.value.trim() || !/\S+@\S+\.\S+/.test(input.value)){
+        input && input.focus();
+        return;
+      }
+      if(btn){ btn.disabled = true; btn.innerHTML = '<span class="de">✓ Eingetragen</span><span class="en" hidden>✓ Subscribed</span>'; }
+      var note = form.closest('div') && form.closest('div').querySelector('.news-confirm');
+      if(!note){
+        note = d.createElement('p');
+        note.className = 'news-confirm small';
+        note.style.color = '#6bd68e';
+        note.style.margin = '8px 0 0';
+        note.innerHTML = '<span class="de">Danke! Wir haben Ihre E-Mail-Adresse notiert.</span><span class="en" hidden>Thank you! We\'ve noted your e-mail address.</span>';
+        form.parentNode.insertBefore(note, form.nextSibling);
+      }
+      note.hidden = false;
+      var curLang = (d.documentElement.getAttribute('data-eg-lang') === 'en') ? 'en' : 'de';
+      note.querySelectorAll('.de').forEach(function(el){ el.hidden = (curLang === 'en'); });
+      note.querySelectorAll('.en').forEach(function(el){ el.hidden = (curLang === 'de'); });
+      trackEvent('newsletter_subscribe', input.value.replace(/@.*/, '@…'));
+    });
+  });
 
   /* ---------- Membership application (prototype: confirmation only) ---------- */
   var mSubmit = d.getElementById('m-submit');

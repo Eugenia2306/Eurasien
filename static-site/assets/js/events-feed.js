@@ -195,6 +195,49 @@
     return window.location.origin + u;
   }
 
+  /* Region → event-ID mapping (mirrors regionen.html reg-events panels) */
+  var EV_REGION_MAP = {
+    europa:      ['ev-krieg-oder-frieden-2026','ev-sieben-gruende-warum-kein-2025','ev-vom-niedergang-des-westens-2024','ev-je-taime-moi-non-2024','ev-erbe-vermaechtnis-bewahren-wofuer-2025','ev-endspiel-europa-2022','ev-tanz-dem-vulkan-2023','ev-choices-ukraine-russia-eu-2022','ev-search-peaceful-coexistence-eurasia-2023'],
+    osteuropa:   ['ev-ruestungskontrolle-vizeaussenminister-ryabkov-2026','ev-passiven-aktiven-abschreckung-russlands-2025','ev-chancen-frieden-ukraine-trump-2025','ev-friedensplaene-ukraine-2024','ev-wladimir-putin-politische-biographie-2022'],
+    zentralasien:['ev-deutsche-aussenpolitik-eurasien-2025','ev-european-silk-road-summit-2024','ev-globale-bedeutung-cica-konferenz-2022','ev-eurasische-handels-transportkorridore-2024'],
+    kaukasus:    ['ev-selbsternannten-republiken-postsowjetischen-raum-2023','ev-european-silk-road-summit-2024'],
+    ostasien:    ['ev-10th-china-global-think-2025','ev-veraenderungen-internationalen-ordnung-2026','ev-china-logistik-eurasiens-2023','ev-teilnahme-verona-eurasian-economic-2024'],
+    suedasien:   ['ev-zeitenwende-eurasien-interessen-deutschlands-2024'],
+    naherosten:  ['ev-teilnahme-petersburger-dialog-2026','ev-fachgespraech-amerikanischen-experten-2025','ev-gespraech-prof-theodore-postol-2025']
+  };
+
+  function applyEvRegionFilter(region) {
+    var ids = EV_REGION_MAP[region];
+    if (!ids) return false;
+    var idSet = {};
+    for (var i = 0; i < ids.length; i++) idSet[ids[i]] = true;
+    var shown = 0;
+    var evItems = [].slice.call(d.querySelectorAll('#ev-list-root .ev'));
+    var evGroups = [].slice.call(d.querySelectorAll('#ev-list-root .ev-group'));
+    evItems.forEach(function(el) {
+      var ok = !!idSet[el.id];
+      el.hidden = !ok;
+      if (ok) shown++;
+    });
+    evGroups.forEach(function(g) { g.hidden = !g.querySelector('.ev:not([hidden])'); });
+    var evEmpty = d.getElementById('ev-empty');
+    if (evEmpty) evEmpty.hidden = shown > 0;
+    /* Mark all-filter chip as unselected, no chip "selected" for region filter */
+    var filterEl = d.getElementById('ev-filter');
+    if (filterEl) filterEl.querySelectorAll('.chip').forEach(function(c) { c.setAttribute('aria-pressed','false'); });
+    /* Scroll to list */
+    var listTop = d.getElementById('ev-list-root') || d.getElementById('ev-filter');
+    if (listTop) {
+      try {
+        var hd = d.querySelector('.hd');
+        var off = (hd ? hd.getBoundingClientRect().height : 96) + 18;
+        var y = listTop.getBoundingClientRect().top + (window.pageYOffset || 0) - off;
+        window.scrollTo(0, Math.max(0, Math.round(y)));
+      } catch(e) { try { listTop.scrollIntoView(true); } catch(e2) {} }
+    }
+    return true;
+  }
+
   function afterRender() {
     if (window.EGLang && typeof window.EGLang.set === "function" && typeof window.EGLang.get === "function") {
       try {
@@ -218,6 +261,17 @@
   function applyEventHash() {
     var h = (location.hash || "").replace(/^#/, "");
     if (!h) return;
+    if (h === "ev-filter-upcoming" || h === "ev-filter-past") {
+      if (window.EGNav && typeof window.EGNav.applyLocationHash === "function") {
+        window.EGNav.applyLocationHash();
+      }
+      return;
+    }
+    if (h.indexOf("ev-region-") === 0) {
+      var region = h.slice("ev-region-".length);
+      applyEvRegionFilter(region);
+      return;
+    }
     if (h !== "ev-list-root" && h.indexOf("ev-") !== 0) return;
     if (window.EGNav && typeof window.EGNav.focusElementById === "function") {
       window.EGNav.focusElementById(h, { instant: true });
