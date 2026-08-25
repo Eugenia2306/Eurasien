@@ -1,275 +1,350 @@
 /**
  * /app/ utility pages: login, account, checkout, gated libraries.
- * Matches brochure brand tokens; quieter chrome than public pageheads.
+ * Flatten PMPro card nesting; keep one quiet surface.
  */
 
 /* ---- Atmosphere ---- */
 body.eg-app-runtime.eg-app-utility {
   background:
-    radial-gradient(1200px 480px at 12% -10%, rgba(0, 50, 160, 0.09), transparent 60%),
-    radial-gradient(900px 420px at 100% 0%, rgba(225, 167, 52, 0.08), transparent 55%),
-    linear-gradient(180deg, #f4f7fb 0%, #eef2f7 48%, #f7f8fa 100%);
+    radial-gradient(1100px 420px at 8% -8%, rgba(0, 50, 160, 0.07), transparent 58%),
+    linear-gradient(180deg, #f5f7fa 0%, #eef1f5 100%);
 }
 
 body.eg-app-runtime.eg-app-utility #main {
   min-height: calc(100vh - 160px);
 }
 
-/* ---- Compact page head (replaces tall brochure phead) ---- */
+/* ---- Compact page head ---- */
 .phead--compact {
   min-height: 0 !important;
-  padding: 28px 0 26px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
-  background:
-    linear-gradient(135deg, #002a88 0%, var(--brand-blue, #0032A0) 52%, #0a3eb8 100%) !important;
+  padding: 26px 0 24px !important;
+  border-bottom: 0 !important;
+  background: var(--brand-blue, #0032A0) !important;
 }
 
 .phead--compact::before,
 .phead--compact::after {
-  opacity: 0.35;
-  width: 180px !important;
-  height: 180px !important;
+  display: none !important;
 }
 
 .phead--compact .eyebrow {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.12em;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  color: rgba(255, 215, 127, 0.95);
 }
 
 .phead--compact h1 {
-  font-size: clamp(1.65rem, 2.6vw, 2.15rem) !important;
+  font-size: clamp(1.55rem, 2.4vw, 2rem) !important;
   max-width: 34ch;
-  margin-bottom: 0.2em !important;
+  margin: 0 0 0.25em !important;
   line-height: 1.2;
 }
 
 .phead--compact p:last-child {
-  font-size: 0.95rem !important;
-  max-width: 42ch !important;
-  color: rgba(255, 255, 255, 0.82) !important;
+  font-size: 0.92rem !important;
+  max-width: 40ch !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   margin: 0;
+  line-height: 1.45;
 }
 
-/* ---- Auth section layout ---- */
+/* ---- Auth section ---- */
 .sec--app-auth {
-  padding: 40px 0 64px !important;
-}
-
-.sec--app {
   padding: 36px 0 56px !important;
 }
 
+.sec--app {
+  padding: 32px 0 52px !important;
+}
+
 .wrap--auth {
-  max-width: 440px !important;
+  max-width: 420px !important;
   margin-left: auto;
   margin-right: auto;
   padding-left: var(--page-gutter, 20px) !important;
   padding-right: var(--page-gutter, 20px) !important;
 }
 
-/* ---- PMPro / login form shell ---- */
-.wrap--auth .pmpro_login_wrap,
+/*
+ * ONE surface only.
+ * PMPro nests: .pmpro > .pmpro_section > .pmpro_card > .pmpro_card_content
+ * Do not paint borders on outer wrappers.
+ */
+.sec--app-auth .pmpro,
+.sec--app-auth .pmpro_section,
+.sec--app-auth .pmpro_card_content,
 .wrap--auth .pmpro,
 .wrap--auth .pmpro_section,
-.wrap--auth form.pmpro_form,
-.sec--app-auth .entry-content > .pmpro_login_wrap,
-.sec--app-auth .entry-content > #pmpro_login,
-.sec--app-auth .entry-content > .pmpro {
-  background: #fff;
-  border: 1px solid rgba(0, 50, 160, 0.12);
-  border-radius: 4px;
-  box-shadow: 0 18px 40px -28px rgba(0, 42, 120, 0.35);
-  padding: 28px 28px 8px;
-  margin: 0 auto;
+.wrap--auth .pmpro_card_content {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
 }
 
-.sec--app-auth .entry-content > *:first-child {
-  margin-top: 0;
+.sec--app-auth .pmpro_card.pmpro_login_wrap,
+.wrap--auth .pmpro_card.pmpro_login_wrap {
+  background: #fff !important;
+  border: 1px solid rgba(0, 50, 160, 0.14) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 12px 32px -20px rgba(11, 35, 56, 0.28) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden;
 }
 
-/* Hide duplicate page titles inside PMPro content if present */
+.sec--app-auth .pmpro_card_content,
+.wrap--auth .pmpro_card_content {
+  padding: 28px 28px 8px !important;
+}
+
 .sec--app-auth .entry-content > h1,
-.sec--app-auth .entry-content > .pmpro_login_wrap > h1,
-.sec--app-auth .pmpro_login_wrap .pmpro_login_title {
+.sec--app-auth .pmpro_login_title {
   display: none;
 }
 
-.wrap--auth label,
-.sec--app-auth label,
-.pmpro_login_wrap label,
-#loginform label {
-  display: block;
-  font-size: 0.84rem;
-  font-weight: 600;
-  color: var(--brand-blue, #0032A0);
-  margin: 0 0 6px;
+/* Form field blocks */
+.sec--app-auth #loginform,
+.wrap--auth #loginform {
+  margin: 0;
+  padding: 0;
 }
 
-.wrap--auth input[type="text"],
-.wrap--auth input[type="email"],
-.wrap--auth input[type="password"],
-.wrap--auth input[type="search"],
-.wrap--auth input[type="tel"],
-.wrap--auth input[type="url"],
-.wrap--auth input[type="number"],
-.wrap--auth select,
-.wrap--auth textarea,
-.sec--app-auth input[type="text"],
-.sec--app-auth input[type="email"],
-.sec--app-auth input[type="password"],
-.sec--app-auth select,
-.sec--app-auth textarea,
-.pmpro_login_wrap input[type="text"],
-.pmpro_login_wrap input[type="email"],
-.pmpro_login_wrap input[type="password"],
-#loginform input[type="text"],
-#loginform input[type="password"],
-.pmpro_form input[type="text"],
-.pmpro_form input[type="email"],
-.pmpro_form input[type="password"],
-.pmpro_form select,
-.pmpro_form textarea {
-  width: 100%;
-  max-width: 100%;
+.sec--app-auth #loginform > p,
+.wrap--auth #loginform > p {
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.sec--app-auth #loginform > p:last-of-type,
+.wrap--auth #loginform > p.login-submit {
+  margin-bottom: 12px;
+}
+
+/* Labels */
+.sec--app-auth #loginform label,
+.wrap--auth #loginform label,
+.sec--app-auth .pmpro_login_wrap label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--brand-blue, #0032A0);
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+/* Password row: label left, toggle right; input full width below */
+.sec--app-auth #loginform .login-password,
+.wrap--auth #loginform .login-password {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label toggle"
+    "input input";
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 8px;
+}
+
+.sec--app-auth #loginform .login-password > label,
+.wrap--auth #loginform .login-password > label {
+  grid-area: label;
+  margin: 0;
+}
+
+.sec--app-auth #loginform .login-password > input,
+.wrap--auth #loginform .login-password > input {
+  grid-area: input;
+  margin: 0 !important;
+}
+
+.sec--app-auth #loginform .login-password .pmpro_form_field-password-toggle,
+.wrap--auth #loginform .login-password .pmpro_form_field-password-toggle {
+  grid-area: toggle;
+  margin: 0 !important;
+  float: none !important;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sec--app-auth .pmpro_form_field-password-toggle button,
+.wrap--auth .pmpro_form_field-password-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: var(--brand-blue, #0032A0) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.sec--app-auth .pmpro_form_field-password-toggle button:hover {
+  color: var(--brand-red, #da291c) !important;
+}
+
+.sec--app-auth .pmpro_form_field-password-toggle .pmpro_icon,
+.sec--app-auth .pmpro_form_field-password-toggle svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Inputs — kill PMPro light-blue fills */
+.sec--app-auth input.input,
+.sec--app-auth #loginform input[type="text"],
+.sec--app-auth #loginform input[type="password"],
+.sec--app-auth #loginform input[type="email"],
+.wrap--auth input.input,
+.wrap--auth #loginform input[type="text"],
+.wrap--auth #loginform input[type="password"] {
+  width: 100% !important;
+  max-width: 100% !important;
   box-sizing: border-box;
+  display: block;
   font: inherit;
   font-size: 0.95rem;
   color: var(--ink, #12233b);
   background: #fff !important;
   border: 1px solid rgba(0, 50, 160, 0.22) !important;
-  border-radius: 3px !important;
+  border-radius: 4px !important;
   padding: 12px 14px !important;
-  margin: 0 0 16px;
+  margin: 0 !important;
   box-shadow: none !important;
+  min-height: 46px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.wrap--auth input:focus,
-.sec--app-auth input:focus,
-.pmpro_login_wrap input:focus,
-#loginform input:focus,
-.pmpro_form input:focus,
-.pmpro_form select:focus,
-.pmpro_form textarea:focus {
+.sec--app-auth #loginform input:focus,
+.wrap--auth #loginform input:focus {
   outline: none;
   border-color: var(--brand-blue, #0032A0) !important;
-  box-shadow: 0 0 0 3px rgba(0, 50, 160, 0.14) !important;
+  box-shadow: 0 0 0 3px rgba(0, 50, 160, 0.12) !important;
 }
 
-/* Remember + show password row */
-.wrap--auth .login-remember,
-.wrap--auth .pmpro_login_wrap .login-remember,
-.pmpro_login_wrap .pmpro_form_field-checkbox,
-#loginform .login-remember,
-.pmpro_login_wrap .pmpro_btn-plain,
-.pmpro_login_wrap .pmpro_form_field-password-toggle {
+/* Remember me */
+.sec--app-auth #loginform .login-remember,
+.wrap--auth #loginform .login-remember {
+  margin: 4px 0 16px !important;
+}
+
+.sec--app-auth #loginform .login-remember label,
+.wrap--auth #loginform .login-remember label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.86rem;
-  color: var(--muted, #5c6778);
-  margin: 0 0 14px;
-}
-
-.pmpro_login_wrap .pmpro_form_field-password-toggle {
-  float: none !important;
-  display: flex;
-  justify-content: flex-end;
-  margin: -8px 0 10px;
-}
-
-.pmpro_login_wrap .pmpro_form_field-password-toggle button,
-.pmpro_login_wrap a.pmpro_btn-plain {
-  background: none !important;
-  border: 0 !important;
-  color: var(--brand-blue, #0032A0) !important;
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
+  font-weight: 500;
+  color: var(--ink, #12233b);
+  margin: 0;
   cursor: pointer;
-  text-decoration: none;
 }
 
-.pmpro_login_wrap .pmpro_form_field-password-toggle button:hover,
-.pmpro_login_wrap a.pmpro_btn-plain:hover {
-  color: var(--brand-red, #da291c) !important;
+.sec--app-auth #loginform .login-remember input[type="checkbox"] {
+  width: auto !important;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  accent-color: var(--brand-blue, #0032A0);
 }
 
-/* Primary submit */
-.wrap--auth input[type="submit"],
-.wrap--auth button[type="submit"],
-.sec--app-auth input[type="submit"],
-.sec--app-auth button[type="submit"],
-.pmpro_login_wrap input[type="submit"],
-.pmpro_login_wrap .pmpro_btn-submit,
-.pmpro_form .pmpro_btn-submit,
-.pmpro_form input[type="submit"],
-#loginform input[type="submit"] {
+/* Submit */
+.sec--app-auth #loginform .login-submit,
+.wrap--auth #loginform .login-submit {
+  margin: 4px 0 8px !important;
+}
+
+.sec--app-auth #loginform input[type="submit"],
+.sec--app-auth #wp-submit,
+.wrap--auth #loginform input[type="submit"] {
   display: block;
-  width: 100%;
-  margin: 8px 0 18px !important;
-  padding: 13px 18px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 13px 16px !important;
+  min-height: 48px;
   font: inherit;
   font-size: 0.95rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.02em;
   color: #fff !important;
   background: var(--brand-blue, #0032A0) !important;
   border: 0 !important;
-  border-radius: 3px !important;
+  border-radius: 4px !important;
   box-shadow: none !important;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease;
 }
 
-.wrap--auth input[type="submit"]:hover,
-.sec--app-auth input[type="submit"]:hover,
-.pmpro_login_wrap input[type="submit"]:hover,
-.pmpro_form .pmpro_btn-submit:hover,
-#loginform input[type="submit"]:hover {
+.sec--app-auth #loginform input[type="submit"]:hover,
+.wrap--auth #loginform input[type="submit"]:hover {
   background: #002678 !important;
-  transform: translateY(-1px);
 }
 
-/* Lost password bar */
-.pmpro_login_wrap .pmpro_actions_nav,
-.pmpro_login_wrap .pmpro_card_actions,
-.pmpro_login_wrap .pmpro_form_actions,
-.pmpro_actions_nav,
-.login-links {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin: 4px -28px 0 !important;
-  padding: 14px 28px !important;
+/* Lost password — single footer strip inside the same card */
+.sec--app-auth .pmpro_card_actions,
+.wrap--auth .pmpro_card_actions {
   background: rgba(0, 50, 160, 0.04) !important;
+  border: 0 !important;
   border-top: 1px solid rgba(0, 50, 160, 0.1) !important;
-  border-radius: 0 0 4px 4px;
-  font-size: 0.86rem;
+  padding: 14px 28px !important;
+  margin: 0 !important;
 }
 
-.pmpro_login_wrap .pmpro_actions_nav a,
-.pmpro_actions_nav a,
-.login-links a {
+.sec--app-auth .pmpro_actions_nav,
+.wrap--auth .pmpro_actions_nav {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  display: block;
+}
+
+.sec--app-auth .pmpro_actions_nav a,
+.wrap--auth .pmpro_actions_nav a {
   color: var(--brand-blue, #0032A0);
+  font-size: 0.86rem;
   font-weight: 600;
   text-decoration: none;
 }
 
-.pmpro_login_wrap .pmpro_actions_nav a:hover,
-.pmpro_actions_nav a:hover,
-.login-links a:hover {
+.sec--app-auth .pmpro_actions_nav a:hover {
+  color: var(--brand-red, #da291c);
+  text-decoration: underline;
+}
+
+/* Signup aside outside the card */
+.sec--app-auth .eg-auth-aside,
+.wrap--auth .eg-auth-aside {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted, #5c6778);
+}
+
+.wrap--auth .eg-auth-aside a {
+  color: var(--brand-blue, #0032A0);
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.wrap--auth .eg-auth-aside a:hover {
   color: var(--brand-red, #da291c);
   text-decoration: underline;
 }
 
 /* Messages */
-.pmpro_message,
-.pmpro_error,
-.pmpro_success,
-.pmpro_alert,
-.login .message {
-  border-radius: 3px;
+.sec--app-auth .pmpro_message,
+.sec--app-auth .pmpro_error,
+.sec--app-auth .login .message {
+  border-radius: 4px;
   border: 1px solid rgba(0, 50, 160, 0.16);
   background: rgba(0, 50, 160, 0.06);
   color: var(--ink, #12233b);
@@ -278,23 +353,29 @@ body.eg-app-runtime.eg-app-utility #main {
   font-size: 0.9rem;
 }
 
-.pmpro_error,
-.login #login_error {
+.sec--app-auth .pmpro_error {
   border-color: rgba(218, 41, 28, 0.35);
   background: rgba(218, 41, 28, 0.07);
 }
 
-/* Account / gated content panels */
+/* Account / gated panels — single surface */
+.sec--app .pmpro,
+.sec--app .pmpro_section {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 .sec--app .pmpro_account,
-.sec--app .pmpro_section,
 .sec--app .pmpro_card,
 .sec--app #pmpro_account {
   background: #fff;
   border: 1px solid rgba(0, 50, 160, 0.12);
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 22px 24px;
   margin: 0 0 18px;
-  box-shadow: 0 14px 36px -28px rgba(0, 42, 120, 0.3);
+  box-shadow: 0 12px 32px -22px rgba(11, 35, 56, 0.28);
 }
 
 .sec--app .pmpro_account h2,
@@ -323,7 +404,7 @@ body.eg-app-runtime.eg-app-utility #main {
   background: var(--brand-blue, #0032A0);
   color: #fff !important;
   border: 0;
-  border-radius: 3px;
+  border-radius: 4px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -331,26 +412,6 @@ body.eg-app-runtime.eg-app-utility #main {
 .sec--app .pmpro_btn:hover,
 .sec--app .button:hover {
   background: #002678;
-}
-
-/* Membership signup CTA under login */
-.sec--app-auth .eg-auth-aside,
-.wrap--auth .eg-auth-aside {
-  margin-top: 22px;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--muted, #5c6778);
-}
-
-.wrap--auth .eg-auth-aside a {
-  color: var(--brand-blue, #0032A0);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.wrap--auth .eg-auth-aside a:hover {
-  color: var(--brand-red, #da291c);
-  text-decoration: underline;
 }
 
 /* Slim app footer */
@@ -400,22 +461,17 @@ body.eg-app-runtime.eg-app-utility #main {
 }
 
 @media (max-width: 560px) {
-  .wrap--auth .pmpro_login_wrap,
-  .sec--app-auth .entry-content > .pmpro_login_wrap,
-  .sec--app-auth .entry-content > #pmpro_login,
-  .sec--app-auth .entry-content > .pmpro {
-    padding: 22px 18px 6px;
+  .sec--app-auth .pmpro_card_content,
+  .wrap--auth .pmpro_card_content {
+    padding: 22px 18px 6px !important;
   }
 
-  .pmpro_login_wrap .pmpro_actions_nav,
-  .pmpro_actions_nav {
-    margin-left: -18px !important;
-    margin-right: -18px !important;
-    padding-left: 18px !important;
-    padding-right: 18px !important;
+  .sec--app-auth .pmpro_card_actions,
+  .wrap--auth .pmpro_card_actions {
+    padding: 12px 18px !important;
   }
 
   .phead--compact {
-    padding: 22px 0 20px !important;
+    padding: 20px 0 18px !important;
   }
 }
