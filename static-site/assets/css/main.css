@@ -395,8 +395,11 @@ a.ev{color:inherit;text-decoration:none}
 @media(max-width:640px){
   .grid-4,.grid-3,.grid-2,.topics,.people,.pillars,.media,.subcats,.news-cta,.ft__grid,.form-2{grid-template-columns:1fr}
   .card--feat{grid-column:auto}
-  .ev{grid-template-columns:64px 1fr;gap:14px}
-  .ev__side{grid-column:2;flex-direction:row;align-items:center}
+  .ev{grid-template-columns:64px minmax(0,1fr);gap:14px}
+  .ev > *{min-width:0}
+  .ev__side{grid-column:2;flex-direction:column;align-items:stretch;width:100%;gap:8px}
+  .ev__reg{width:100%;max-width:100%;white-space:normal;justify-content:center;border-radius:6px;box-sizing:border-box}
+  .ev__fee,.ev__done{align-self:flex-start}
   .srcrow{grid-template-columns:1fr}
   .srcrow__r{text-align:left}
   .sec{padding:50px 0}
@@ -1471,8 +1474,10 @@ border:0;isolation:isolate;overflow:hidden}
   .card--feat{padding:28px 23px}
   .topics{gap:12px}
   .topic{padding:22px;border-radius:16px}
-  .ev{grid-template-columns:62px 1fr;padding:14px;gap:13px}
-  .ev__side{grid-column:2;align-items:flex-start}
+  .ev{grid-template-columns:62px minmax(0,1fr);padding:14px;gap:13px}
+  .ev > *{min-width:0}
+  .ev__side{grid-column:2;flex-direction:column;align-items:stretch;width:100%;gap:8px}
+  .ev__reg{width:100%;max-width:100%;white-space:normal;justify-content:center;border-radius:6px;box-sizing:border-box}
   .regions-explorer{padding:22px 16px;border-radius:18px}
   .regions-explorer::before{margin:-22px -16px 20px;border-radius:18px 18px 0 0}
   .plans{grid-template-columns:1fr}
@@ -2455,3 +2460,56 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   padding:16px 22px;
   max-width:100%;
 }
+
+/* ===== Event cards: mobile CTA must never overflow the viewport =====
+   Long DE label "Für diese Veranstaltung anmelden" + fee sat in a row
+   inside a 2-col grid and spilled past the right edge on phones. */
+@media (max-width: 900px) {
+  .ev {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+  }
+  .ev > * {
+    min-width: 0;
+  }
+  .ev__side {
+    grid-column: 2 !important;
+    grid-row: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+  }
+  .ev__reg {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+    border-radius: 6px !important;
+    padding: 10px 12px;
+  }
+  .ev__fee,
+  .ev__done {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+  .ev__t {
+    overflow-wrap: anywhere;
+  }
+  .ev__meta {
+    gap: 6px 10px;
+  }
+}
+@media (max-width: 420px) {
+  .ev {
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+

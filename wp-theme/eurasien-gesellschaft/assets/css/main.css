@@ -1,3 +1,4 @@
+
 /* =========================================================
    Eurasien Gesellschaft e. V.: self-contained prototype v2
    Palette: deep navy / cool off-white / stone / charcoal + oxblood
@@ -62,7 +63,8 @@ html:not(.eg-lang-en) .en{display:none!important}
 .lang{display:inline-flex;border:1px solid #38506e;border-radius:2px;overflow:hidden}
 .lang button{background:transparent;border:0;color:#a7b6c9;font:inherit;font-size:.78rem;font-weight:700;padding:2px 9px;cursor:pointer}
 .lang button[aria-pressed="true"]{background:#fff;color:var(--navy)}
-/* Language visibility: never use display:revert on [hidden] (resolves to none). */
+/* Persist EN across pages: early class from lang-boot.js before site-02 runs.
+   Never use display:revert on [hidden]: it resolves back to display:none. */
 html.eg-lang-en .de{display:none!important}
 html.eg-lang-en .en{display:inline!important}
 html.eg-lang-en div.en,
@@ -93,14 +95,14 @@ html.eg-lang-en article.en[hidden],
 html.eg-lang-en ul.en[hidden],
 html.eg-lang-en ol.en[hidden],
 html.eg-lang-en blockquote.en[hidden]{display:block!important}
-/* Force switcher labels DE / EN (avoids corrupted OF/IN glyph text). */
+/* Language control labels must stay DE / EN (never translate or swap). */
 .lang button[data-lang="de"]{font-size:0!important}
 .lang button[data-lang="de"]::after{content:"DE";font-size:.78rem;font-weight:700}
 .lang button[data-lang="en"]{font-size:0!important}
 .lang button[data-lang="en"]::after{content:"EN";font-size:.78rem;font-weight:700}
 
 /* ---- Header / masthead ---- */
-.hd{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line)}
+.hd{position:sticky;top:0;z-index:180;background:var(--surface);border-bottom:1px solid var(--line)}
 .hd__in{max-width:var(--wrap);margin:0 auto;padding:0 30px;display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:78px}
 .brand{display:flex;align-items:center;gap:14px;text-decoration:none;flex-shrink:0}
 .brand__mark{width:44px;height:44px;flex-shrink:0}
@@ -127,8 +129,11 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
 .burger{display:none;flex-direction:column;gap:4px;background:transparent;border:0;cursor:pointer;padding:8px}
 .burger span{width:24px;height:2px;background:var(--navy);display:block}
 
-/* ---- Page routing (disabled in WP; pages are separate) ---- */
-.page{display:block}
+/* ---- Page routing ---- */
+.page{display:none}
+.page--home{display:block}
+.page:target{display:block}
+body:has(.page:target:not(.page--home)) .page--home{display:none}
 
 /* ---- Sections ---- */
 .sec{padding:74px 0}
@@ -206,6 +211,7 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
 .ev-group{margin-bottom:8px}
 .ev-group__y{font-family:var(--serif);font-size:1.35rem;color:var(--navy);border-bottom:1px solid var(--line);padding-bottom:8px;margin:22px 0 6px}
 .ev{display:grid;grid-template-columns:88px 1fr auto;gap:20px;align-items:start;padding:16px 4px;border-bottom:1px solid var(--line2)}
+a.ev{color:inherit;text-decoration:none}
 .ev__date{text-align:center;border:1px solid var(--line);border-radius:3px;padding:8px 4px;background:var(--stone2)}
 .ev__d{font-family:var(--serif);font-size:1.5rem;color:var(--navy);font-weight:600;line-height:1}
 .ev__m{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:3px}
@@ -289,6 +295,11 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
 .form{border:1px solid var(--line);border-radius:3px;background:var(--surface);padding:26px}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:.82rem;font-weight:600;color:var(--ink);margin-bottom:5px}
+.field:has([required]) > label::after,
+.fset .field:has([required]) > label::after,
+.joincard .field:has([required]) > label::after,
+.formcard .field:has([required]) > label::after{content:" *";color:#c62828;font-weight:700}
+.consent:has(input[required]) > span::after{content:" *";color:#c62828;font-weight:700}
 .field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:2px;font:inherit;font-size:.92rem;background:#fff;color:var(--ink)}
 .field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--navy2);outline-offset:1px;border-color:var(--navy2)}
 .form-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -368,7 +379,7 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
   .burger{display:flex}
   .search{display:none}
   .nav{position:fixed;inset:116px 0 0 0;flex-direction:column;gap:0;background:var(--navy);overflow:auto;display:none;padding:8px 0 40px}
-  body.nav-open{overflow:hidden}
+  html.nav-open{overflow:hidden}
   body.nav-open .nav{display:flex}
   .nav-item{flex-direction:column}
   .nav-link{height:auto;padding:15px 28px;color:#fff;border-bottom:1px solid #2a3e56;font-size:.98rem}
@@ -384,8 +395,11 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
 @media(max-width:640px){
   .grid-4,.grid-3,.grid-2,.topics,.people,.pillars,.media,.subcats,.news-cta,.ft__grid,.form-2{grid-template-columns:1fr}
   .card--feat{grid-column:auto}
-  .ev{grid-template-columns:64px 1fr;gap:14px}
-  .ev__side{grid-column:2;flex-direction:row;align-items:center}
+  .ev{grid-template-columns:64px minmax(0,1fr);gap:14px}
+  .ev > *{min-width:0}
+  .ev__side{grid-column:2;flex-direction:column;align-items:stretch;width:100%;gap:8px}
+  .ev__reg{width:100%;max-width:100%;white-space:normal;justify-content:center;border-radius:6px;box-sizing:border-box}
+  .ev__fee,.ev__done{align-self:flex-start}
   .srcrow{grid-template-columns:1fr}
   .srcrow__r{text-align:left}
   .sec{padding:50px 0}
@@ -446,7 +460,7 @@ html.eg-lang-en blockquote.en[hidden]{display:block!important}
 .ntopic input{width:15px;height:15px;flex:0 0 auto}
 
 /* ===================== MOBILE-FIRST / USABILITY ===================== */
-html,body{max-width:100%;overflow-x:hidden}
+html,body{max-width:100%;overflow-x:clip}
 *{-webkit-tap-highlight-color:rgba(18,35,59,.12)}
 
 @media(max-width:1040px){
@@ -532,6 +546,7 @@ html,body{max-width:100%;overflow-x:hidden}
 .mfees p{margin:6px 0;font-size:.92rem;color:var(--ink)}
 
 .srcrow.is-focused{outline:2px solid rgba(122,43,48,.28);outline-offset:4px;background:#fbf8f2;scroll-margin-top:20px}
+.card.is-focused,.reg-btn.is-focused{outline:2px solid rgba(122,43,48,.30);outline-offset:4px;scroll-margin-top:96px}
 .reg-to-analysis::after{content:" \2192";font-weight:400}
 
 /* ===== Regionen: redaktioneller Explorer (v4: drei Zonen) ===== */
@@ -751,19 +766,30 @@ html,body{max-width:100%;overflow-x:hidden}
 .regmodal__ev-title{font-weight:600;color:var(--navy)}
 .regmodal__fee{font-size:.92rem;color:var(--ink);margin:0 0 6px}
 .regmodal__fee strong{color:var(--oxblood)}
+.regmodal__total{font-size:1rem;color:var(--ink);margin:0 0 14px;font-weight:600}
+.regmodal__total strong{color:var(--oxblood);font-size:1.1rem}
+.ev-loading,.ev-feed-error,.ev-empty{margin:18px 0;color:var(--muted);font-size:.95rem}
+.ev-feed-error{color:var(--oxblood)}
+.er-qty-field{margin:0 0 10px}
+.er-qty{display:inline-flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+.er-qty__btn{width:40px;height:40px;border:0;background:var(--stone2,#f3f5f8);color:var(--navy);font-size:1.2rem;line-height:1;cursor:pointer}
+.er-qty__btn:hover{background:var(--line)}
+.er-qty input{width:56px;height:40px;border:0;border-left:1px solid var(--line);border-right:1px solid var(--line);text-align:center;font:inherit;font-weight:600;color:var(--navy);-moz-appearance:textfield}
+.er-qty input::-webkit-outer-spin-button,.er-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 /* ===== build32: membership tabs + two-step payment ===== */
 .mtabwrap{max-width:880px}
 .mtabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 14px}
-.mtab{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--surface);border:1px solid var(--line);border-top:2px solid transparent;border-radius:4px;padding:14px 16px;min-height:62px;cursor:pointer;transition:border-color .15s,background .15s}
+.mtab{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--surface);border:1px solid var(--line);border-top:2px solid transparent;border-radius:4px;padding:14px 16px;min-height:62px;cursor:pointer;transition:border-color .15s,background .15s;appearance:none;-webkit-appearance:none;font:inherit;width:100%}
 .mtab:hover{border-color:var(--navy2)}
 .mtab__name{font-family:var(--serif);font-size:1.06rem;line-height:1.2;color:var(--navy);font-weight:600}
 .mtab__price{font-size:.82rem;color:var(--muted)}
-.mtab[aria-selected="true"]{border-top-color:var(--oxblood);background:var(--paper)}
-.mtab[aria-selected="true"] .mtab__price{color:var(--oxblood)}
+.mtab[aria-selected="true"],.mtab.is-active{border-top-color:var(--oxblood);background:var(--paper)}
+.mtab[aria-selected="true"] .mtab__price,.mtab.is-active .mtab__price{color:var(--oxblood)}
 .mtab:focus-visible{outline:2px solid var(--oxblood);outline-offset:2px}
 .mnote{display:flex;align-items:flex-start;gap:9px;margin:0 0 24px;padding:10px 14px;background:var(--stone2);border:1px solid var(--line);border-radius:3px;font-size:.84rem;color:var(--ink);line-height:1.45}
 .mnote__i{flex:0 0 auto;width:18px;height:18px;color:var(--oxblood);margin-top:1px}
-.mpanel[hidden]{display:none}
+.mpanel[hidden],.mpanel[aria-hidden="true"]{display:none!important}
+.mpanel.is-active:not([hidden]){display:block!important}
 .mgrid{display:grid;grid-template-columns:.82fr 1fr;gap:30px;align-items:start}
 .mgrid__info{align-self:start}
 .mplan__price{font-family:var(--serif);color:var(--navy);margin:0 0 12px;line-height:1}
@@ -963,7 +989,8 @@ body.modal-open{overflow:hidden}
 .cx-select{width:100%;max-width:420px;font-family:var(--sans);font-size:.9rem;padding:10px 13px;border:1px solid var(--line);border-radius:2px;background:var(--surface);color:var(--ink);min-height:44px;box-sizing:border-box;cursor:pointer}
 .cx-select:focus{outline:2px solid var(--oxblood);outline-offset:1px;border-color:var(--navy)}
 
-/* ---- next layer ---- */
+
+
 
 /* ================================================================
    Eurasien Gesellschaft — Signature redesign v48
@@ -1447,8 +1474,10 @@ border:0;isolation:isolate;overflow:hidden}
   .card--feat{padding:28px 23px}
   .topics{gap:12px}
   .topic{padding:22px;border-radius:16px}
-  .ev{grid-template-columns:62px 1fr;padding:14px;gap:13px}
-  .ev__side{grid-column:2;align-items:flex-start}
+  .ev{grid-template-columns:62px minmax(0,1fr);padding:14px;gap:13px}
+  .ev > *{min-width:0}
+  .ev__side{grid-column:2;flex-direction:column;align-items:stretch;width:100%;gap:8px}
+  .ev__reg{width:100%;max-width:100%;white-space:normal;justify-content:center;border-radius:6px;box-sizing:border-box}
   .regions-explorer{padding:22px 16px;border-radius:18px}
   .regions-explorer::before{margin:-22px -16px 20px;border-radius:18px 18px 0 0}
   .plans{grid-template-columns:1fr}
@@ -1475,7 +1504,7 @@ border:0;isolation:isolate;overflow:hidden}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.v48-js .reveal-ready{opacity:1;transform:none}.hero__map-link:hover,.card--link:hover,.topic:hover,.person:hover,.mcard:hover,.plan:hover{transform:none}}
 
-/* ---- next layer ---- */
+
 
 /* Requested refinements: preserve the complete v49 design and update only
    the YouTube-card icon treatment across the homepage and full media library. */
@@ -1506,7 +1535,7 @@ border:0;isolation:isolate;overflow:hidden}
   display:none!important;
 }
 
-/* ---- next layer ---- */
+
 
 /* ==================================================================
    Eurasien Gesellschaft — Vierfarben-System V2
@@ -1950,11 +1979,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   .card,.topic,.person,.mcard,.form,.plan,.subcat,.pillar{border-radius:9px}
 }
 
-/* ---- next layer ---- */
 
 .fset{border:0;margin:0 0 22px;padding:0;min-width:0}.fset__lg{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--navy);padding:0 0 9px;margin:0 0 14px;border-bottom:1px solid var(--line);width:100%}.fset__hint{font-size:.82rem;color:var(--muted);margin:-6px 0 12px}.fset__hint a{color:var(--navy);text-decoration:underline}.vm-method-h{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--navy);margin:0 0 12px}.vm-principles{display:grid;gap:10px}.vm-principles .consent{margin-bottom:0}.vm-recnote{font-size:.82rem;color:var(--muted);margin:2px 0 4px}.vm-recwarn{display:none;font-size:.82rem;color:var(--brand-red);margin:6px 0 2px;font-weight:600}.vm-recwarn.on{display:block}.vm-process{background:rgba(0,50,160,.045);border:1px solid var(--line);border-radius:10px;padding:15px 18px;margin:0 0 22px}.vm-process p{margin:0 0 10px;font-size:.88rem;line-height:1.5;color:var(--ink)}.vm-process ol{margin:0;padding-left:1.2em;font-size:.86rem;color:var(--ink);display:grid;gap:5px}.vm-pdf{margin-top:20px;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}.vm-pdf p{font-size:.86rem;line-height:1.5;color:var(--muted);margin:0 0 12px}@media(min-width:641px){.joincard .form-2 .field>label{min-height:2.6em;line-height:1.3}}.brand__logo{display:block;height:44px;width:auto;max-width:100%}.ft__logo{display:inline-block;background:#fff;border-radius:10px;padding:9px 12px;line-height:0}.ft__logo img{display:block;height:34px;width:auto}@media(max-width:1024px){.brand__logo{height:40px}}@media(max-width:640px){.brand__logo{height:34px}}@media(max-width:360px){.brand__logo{height:29px}}
 
-/* ---- next layer ---- */
 
 /* =========================================================================
    RESPONSIVE STABILITY FIX  (single controlled correction area)
@@ -1982,7 +2009,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   /* burger belongs to phones only */
   .burger{display:none !important}
   /* never lock the page in this range */
-  body.nav-open{overflow:auto !important}
+  html.nav-open{overflow:auto !important}
 
   .nav-item{flex-direction:row; position:relative; display:flex}
   .nav-link{
@@ -2063,7 +2090,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .grid > *{min-width:0}
 .srcrow > div{min-width:0}
 
-/* ---- next layer ---- */
+
 
 /* ===== Regionen: vertical rhythm corrections (scoped) ===== */
 #p-regionen .reg-tabs{margin-top:26px}
@@ -2088,7 +2115,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #p-regionen .reg-related__y{flex:0 0 auto;font:400 12px/1.5 var(--sans);color:var(--muted);white-space:nowrap}
 @media(max-width:520px){#p-regionen .reg-related__item{flex-wrap:wrap;gap:4px 10px}#p-regionen .reg-related__y{flex-basis:100%}}
 
-/* ---- next layer ---- */
+
 
 /* ============================================================================
    regions-profile-editorial-refinement
@@ -2189,7 +2216,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   #p-regionen .reg-tabs .reg-tab{flex:0 0 auto;white-space:nowrap;}
 }
 
-/* ---- next layer ---- */
+
 
 /* ============================================================================
    nostradamus-event-details
@@ -2235,7 +2262,116 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   #p-veranstaltungen .ev-more__note{font-size:.95rem;}
 }
 
-/* ---- next layer ---- */
+
+
+/* Scoped styles for the event-cooperation accordion (#p-partner) and the homepage teaser. */
+#p-partner .partner-events__heading{font-size:1.24rem;line-height:1.25;color:var(--brand-blue);margin:0 0 16px;font-weight:750;letter-spacing:.01em}
+
+/* Accordion container: single full-width column, uniform rows. */
+#p-partner .partner-accordions{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+#p-partner .partner-accordion{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 4px 14px rgba(0,50,160,.04)}
+#p-partner .partner-accordion[open]{border-color:rgba(0,50,160,.32);box-shadow:inset 3px 0 0 var(--brand-red),0 6px 18px rgba(0,50,160,.06)}
+
+/* Summary (closed row) — identical structure and height for all five organisations. */
+#p-partner .partner-accordion__summary{list-style:none;display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;min-height:80px;padding:16px 22px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#p-partner .partner-accordion__summary::-webkit-details-marker{display:none}
+#p-partner .partner-accordion__summary:focus-visible{outline:2px solid var(--brand-blue);outline-offset:-3px}
+#p-partner .partner-accordion__name{flex:1 1 auto;min-width:0;margin:0;font-size:1.16rem;line-height:1.25;font-weight:750;color:var(--brand-blue)}
+#p-partner .partner-accordion__meta{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin-left:auto}
+#p-partner .partner-accordion__count{display:inline-block;font-size:.76rem;font-weight:650;color:var(--brand-blue);background:rgba(225,167,52,.16);border:1px solid rgba(225,167,52,.4);border-radius:999px;padding:3px 11px;white-space:nowrap}
+#p-partner .partner-accordion__toggle{font-size:.82rem;font-weight:650;color:var(--brand-red);white-space:nowrap}
+#p-partner .partner-accordion__toggle-close{display:none}
+#p-partner .partner-accordion[open] .partner-accordion__toggle-open{display:none}
+#p-partner .partner-accordion[open] .partner-accordion__toggle-close{display:inline}
+#p-partner .partner-accordion__chevron{flex:0 0 auto;color:var(--brand-red);transition:transform .2s ease}
+#p-partner .partner-accordion[open] .partner-accordion__chevron{transform:rotate(180deg)}
+
+/* Expanded panel — one continuous component with the summary. */
+#p-partner .partner-accordion__panel{border-top:1px solid var(--line);background:rgba(0,50,160,.025);padding:2px 22px 16px}
+#p-partner .partner-accordion__subtitle{margin:14px 0 0;font-size:.9rem;font-weight:500;color:var(--muted)}
+#p-partner .partner-accordion__events{list-style:none;margin:0;padding:0}
+#p-partner .partner-accordion__footer{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:2px}
+#p-partner .partner-accordion__domain{font-size:.74rem;color:var(--muted)}
+
+/* Event rows inside an open panel (compact editorial rows; unchanged from prior build). */
+#p-partner .partner-event{display:flex;gap:16px;align-items:flex-start;padding:14px 0}
+#p-partner .partner-event + .partner-event{border-top:1px solid var(--line)}
+#p-partner .partner-event__date{flex:0 0 auto;min-width:64px;display:flex;flex-direction:column;padding-left:12px;border-left:3px solid var(--brand-gold)}
+#p-partner .partner-event__d{font-size:1.5rem;font-weight:800;line-height:1;color:var(--brand-blue)}
+#p-partner .partner-event__my{font-size:.72rem;color:var(--muted);margin-top:3px}
+#p-partner .partner-event__body{min-width:0;flex:1 1 auto}
+#p-partner .partner-event__title{margin:0 0 7px;font-size:1rem;line-height:1.32;font-weight:700;color:var(--ink)}
+#p-partner .partner-event__meta{margin:0 0 9px;display:flex;flex-wrap:wrap;gap:7px 10px;align-items:center;font-size:.83rem}
+#p-partner .partner-event__type{display:inline-block;font-weight:600;color:var(--brand-blue);border:1px solid rgba(0,50,160,.28);border-radius:5px;padding:2px 9px;line-height:1.35}
+#p-partner .partner-event__where{color:var(--muted)}
+#p-partner .partner-event__note{color:var(--muted);font-style:italic}
+#p-partner .partner-event__link{font-size:.85rem}
+
+/* Homepage teaser: compact five-organisation overview (unchanged). */
+.eg-coopteaser{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.eg-coopteaser li{display:flex;min-width:0}
+.eg-coopteaser .eg-orgname{font-weight:650;color:var(--brand-blue);font-size:.92rem;min-width:0}
+.eg-coopteaser .eg-count{flex:0 0 auto;font-size:.76rem;font-weight:650;color:var(--brand-blue);background:rgba(225,167,52,.16);border:1px solid rgba(225,167,52,.4);border-radius:999px;padding:3px 10px;white-space:nowrap}
+
+@media(max-width:900px){
+  #p-partner .partner-accordion__summary{min-height:74px}
+}
+@media(max-width:620px){
+  #p-partner .partner-accordion__summary{min-height:64px;align-items:flex-start;padding:14px 16px}
+  #p-partner .partner-accordion__name{flex:1 1 100%}
+  #p-partner .partner-accordion__meta{margin-left:0;width:100%}
+  #p-partner .partner-accordion__panel{padding-left:16px;padding-right:16px}
+  #p-partner .partner-event__link{display:inline-flex;align-items:center;min-height:44px}
+  #p-partner .partner-accordion__website{display:inline-flex;align-items:center;min-height:44px}
+  .eg-coopteaser{grid-template-columns:1fr}
+}
+
+
+
+/* Single consolidated correction block for the v54 changes:
+   nav YouTube -> internal Videoarchiv deep-link, retirement of the obsolete
+   info card, Mediathek info-card layout, clickable homepage cooperation teaser,
+   partner-accordion deep-link clearance. Approved four-colour palette
+   only (white / --brand-blue / --brand-red / --brand-gold); no new visual style. */
+
+/* Grid children can always shrink -> no overflow at any width (mirrors .grid>*) */
+.media>*{min-width:0}
+
+/* Videoarchiv deep-link target: keep the heading clear of the sticky header */
+#p-mediathek #mediathek-videoarchiv{scroll-margin-top:100px}
+
+/* Mediathek info cards (Podcast etc.): stable layout after the obsolete info
+   card was retired. Cards keep normal proportions; a lone card never spans a
+   full-width banner, and multiple cards align at equal height. */
+#p-mediathek .media-info{display:flex;flex-wrap:wrap;gap:22px;margin-top:26px;align-items:stretch}
+#p-mediathek .media-info>.card{flex:1 1 300px;min-width:0;max-width:380px}
+
+/* Homepage cooperation teaser: the whole card is one accessible link */
+.eg-coopteaser__link{flex:1 1 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;min-width:0;min-height:44px;padding:11px 15px;border:1px solid var(--line);border-radius:9px;background:var(--surface);box-shadow:0 5px 14px rgba(0,50,160,.05);text-decoration:none;color:inherit;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.eg-coopteaser__link:hover{border-color:var(--brand-blue);box-shadow:0 10px 24px rgba(0,50,160,.12);transform:translateY(-2px)}
+.eg-coopteaser__link:focus-visible{outline:2px solid var(--brand-blue);outline-offset:2px}
+
+/* Partner accordions: the opened summary stays clear of the sticky header
+   across desktop, tablet (two-row header) and phone (burger) modes. */
+#p-partner .partner-accordion{scroll-margin-top:100px}
+
+@media(max-width:1260px){
+  #p-partner .partner-accordion{scroll-margin-top:120px}
+  #p-mediathek #mediathek-videoarchiv{scroll-margin-top:120px}
+}
+@media(max-width:767px){
+  #p-partner .partner-accordion{scroll-margin-top:150px}
+  #p-mediathek #mediathek-videoarchiv{scroll-margin-top:150px}
+}
+@media(max-width:640px){
+  #p-mediathek .media-info>.card{max-width:none;flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .eg-coopteaser__link{transition:none}
+  .eg-coopteaser__link:hover{transform:none}
+}
+
+
 
 #p-recordings-archive .ra-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
 #p-recordings-archive .ra-actions .btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
@@ -2243,6 +2379,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   #p-recordings-archive .ra-actions{gap:10px}
   #p-recordings-archive .ra-actions .btn{width:100%}
 }
+
+
+
+/* ===== Membership benefits overview: scoped refinements (#p-mitgliedschaft-vorteile) ===== */
+#p-mitgliedschaft-vorteile .plan__name{font-family:var(--serif);font-size:1.28rem;line-height:1.2;color:var(--navy);font-weight:600;margin:0 0 6px}
+#p-mitgliedschaft-vorteile .plan--expert{background:var(--surface)}
+#p-mitgliedschaft-vorteile .plan__inc{font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--ink);margin:2px 0 10px}
+#p-mitgliedschaft-vorteile .plan__note{margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:.82rem;line-height:1.5;color:var(--muted)}
+/* Benefits CTA slot spacing (reuses existing .plan__cta{margin-top:auto} to bottom-align in both cards) */
+#p-mitgliedschaft-vorteile .plan__cta{padding-top:22px}
+
+
+/* ===== Static multipage: show the only page on each HTML file ===== */
+.page{display:block !important}
+.page--home{display:block !important}
 
 /* ===== Phase 2: Vorstand cards, equal Themen blocks, news CTA ===== */
 #p-vorstand .people{
@@ -2309,3 +2460,56 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   padding:16px 22px;
   max-width:100%;
 }
+
+/* ===== Event cards: mobile CTA must never overflow the viewport =====
+   Long DE label "Für diese Veranstaltung anmelden" + fee sat in a row
+   inside a 2-col grid and spilled past the right edge on phones. */
+@media (max-width: 900px) {
+  .ev {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+  }
+  .ev > * {
+    min-width: 0;
+  }
+  .ev__side {
+    grid-column: 2 !important;
+    grid-row: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+    gap: 8px;
+  }
+  .ev__reg {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.25;
+    border-radius: 6px !important;
+    padding: 10px 12px;
+  }
+  .ev__fee,
+  .ev__done {
+    align-self: flex-start;
+    max-width: 100%;
+  }
+  .ev__t {
+    overflow-wrap: anywhere;
+  }
+  .ev__meta {
+    gap: 6px 10px;
+  }
+}
+@media (max-width: 420px) {
+  .ev {
+    grid-template-columns: 56px minmax(0, 1fr) !important;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+

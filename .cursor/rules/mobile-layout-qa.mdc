@@ -1,0 +1,17 @@
+---
+description: After CSS/layout/event changes, run mobile page QA (overflow, event cards, all key pages).
+globs:
+  - static-site/**/*.{css,html,js}
+  - wp-theme/eurasien-gesellschaft/assets/css/**
+  - tools/audit_mobile_pages.py
+alwaysApply: false
+---
+
+# Mobile layout QA gate
+
+When editing layout CSS, event cards, headers, or forms:
+
+1. Read and follow `.cursor/skills/mobile-page-qa/SKILL.md`.
+2. Run `python tools/audit_mobile_pages.py` before considering the task done.
+3. Prefer Playwright (`--playwright`) when the user reported a live mobile bug.
+4. Keep brochure and `/app/` chrome consistent (same ubar / masthead / footer pattern).
