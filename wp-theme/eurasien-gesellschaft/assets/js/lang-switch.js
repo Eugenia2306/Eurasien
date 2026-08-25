@@ -1,8 +1,15 @@
 /**
  * Standalone language switcher (must not depend on theme.js succeeding).
+ * Source of truth: html[data-eg-lang] + body.lang-en — never WordPress html[lang=en-US].
  */
 (function () {
   "use strict";
+
+  function syncLoginSubmit(lang) {
+    var btn = document.getElementById("wp-submit");
+    if (!btn) return;
+    btn.value = lang === "en" ? "Log In" : "Anmelden";
+  }
 
   function applyLang(lang) {
     if (lang !== "en" && lang !== "de") lang = "de";
@@ -11,8 +18,8 @@
     var body = document.body;
     if (!body) return;
 
-    root.setAttribute("lang", lang);
     root.setAttribute("data-eg-lang", lang);
+    root.setAttribute("lang", lang);
     root.classList.toggle("eg-lang-en", en);
     body.classList.toggle("lang-en", en);
     body.classList.toggle("lang-de", !en);
@@ -38,8 +45,6 @@
 
     document.querySelectorAll(".lang button[data-lang]").forEach(function (btn) {
       var code = btn.getAttribute("data-lang");
-      if (code === "en") btn.textContent = "EN";
-      else if (code === "de") btn.textContent = "DE";
       btn.setAttribute("translate", "no");
       btn.setAttribute("aria-pressed", String(code === lang));
     });
@@ -47,10 +52,13 @@
       g.setAttribute("translate", "no");
     });
 
+    syncLoginSubmit(lang);
+
     try {
       localStorage.setItem("eg-lang", lang);
     } catch (e) {}
     try {
+      /* path=/ so brochure + /app/ share the same preference */
       document.cookie = "eg_lang=" + lang + "; path=/; max-age=31536000; SameSite=Lax";
     } catch (e2) {}
     try {
@@ -58,13 +66,20 @@
     } catch (e3) {}
   }
 
-  function init() {
-    document.querySelectorAll(".lang button[data-lang]").forEach(function (btn) {
+  function bindButtons(root) {
+    (root || document).querySelectorAll(".lang button[data-lang]").forEach(function (btn) {
+      if (btn.getAttribute("data-eg-lang-bound") === "1") return;
+      btn.setAttribute("data-eg-lang-bound", "1");
       btn.addEventListener("click", function (e) {
         e.preventDefault();
+        e.stopPropagation();
         applyLang(btn.getAttribute("data-lang") || "de");
       });
     });
+  }
+
+  function init() {
+    bindButtons(document);
 
     var saved = null;
     try {
@@ -87,7 +102,7 @@
 
   window.egSetLang = applyLang;
   window.EGLang = {
-    set: function (l, opts) {
+    set: function (l) {
       applyLang(l);
     },
     get: function () {

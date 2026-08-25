@@ -98,3 +98,24 @@ add_filter(
 	10,
 	2
 );
+
+/**
+ * Front-end html lang follows eg_lang cookie (brochure + /app/), not WP install locale.
+ *
+ * @param string $output language_attributes() output.
+ */
+add_filter(
+	'language_attributes',
+	static function ( string $output ): string {
+		if ( is_admin() ) {
+			return $output;
+		}
+		$lang = 'de';
+		if ( isset( $_COOKIE['eg_lang'] ) && $_COOKIE['eg_lang'] === 'en' ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$lang = 'en';
+		}
+		$output = preg_replace( '/\slang=(["\'])[^"\']*\1/', '', $output );
+		return trim( $output . ' lang="' . esc_attr( $lang ) . '" data-eg-lang="' . esc_attr( $lang ) . '"' );
+	},
+	20
+);

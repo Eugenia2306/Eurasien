@@ -89,21 +89,30 @@ body.admin-bar .hd { top: 32px; }
   body.admin-bar .hd { top: 46px; }
 }
 
-/* ---- Bilingual (body class is source of truth; html[lang|=] as fallback) ---- */
-body:not(.lang-en) .en,
-html:not([lang|="en"]):not(.lang-en) .en {
+/* ---- Bilingual: ONLY data-eg-lang / body.lang-en / html.eg-lang-en
+   Never key off html[lang|=en] — WordPress outputs lang="en-US" and fights DE. ---- */
+html:not([data-eg-lang="en"]):not(.eg-lang-en) .en,
+body:not(.lang-en) .en {
   display: none !important;
 }
-body.lang-en .de,
-html[lang|="en"] .de {
+html[data-eg-lang="en"] .de,
+html.eg-lang-en .de,
+body.lang-en .de {
   display: none !important;
 }
 
-body.lang-en .en,
-html[lang|="en"] .en {
-  /* reset hidden attribute visually */
-}
-
+html[data-eg-lang="en"] span.en,
+html[data-eg-lang="en"] a.en,
+html[data-eg-lang="en"] small.en,
+html[data-eg-lang="en"] strong.en,
+html[data-eg-lang="en"] em.en,
+html[data-eg-lang="en"] b.en,
+html[data-eg-lang="en"] button.en,
+html[data-eg-lang="en"] label .en,
+html.eg-lang-en span.en,
+html.eg-lang-en a.en,
+html.eg-lang-en small.en,
+html.eg-lang-en label .en,
 body.lang-en span.en,
 body.lang-en a.en,
 body.lang-en small.en,
@@ -111,13 +120,21 @@ body.lang-en strong.en,
 body.lang-en em.en,
 body.lang-en b.en,
 body.lang-en button.en,
-html[lang|="en"] span.en,
-html[lang|="en"] a.en,
-html[lang|="en"] small.en,
-html[lang|="en"] b.en {
+body.lang-en label .en {
   display: inline !important;
 }
 
+html[data-eg-lang="en"] p.en,
+html[data-eg-lang="en"] div.en,
+html[data-eg-lang="en"] li.en,
+html[data-eg-lang="en"] ul.en,
+html[data-eg-lang="en"] ol.en,
+html[data-eg-lang="en"] h1.en,
+html[data-eg-lang="en"] h2.en,
+html[data-eg-lang="en"] h3.en,
+html[data-eg-lang="en"] h4.en,
+html.eg-lang-en p.en,
+html.eg-lang-en div.en,
 body.lang-en p.en,
 body.lang-en div.en,
 body.lang-en li.en,
@@ -126,21 +143,39 @@ body.lang-en ol.en,
 body.lang-en h1.en,
 body.lang-en h2.en,
 body.lang-en h3.en,
-body.lang-en h4.en,
-html[lang|="en"] p.en,
-html[lang|="en"] div.en,
-html[lang|="en"] li.en,
-html[lang|="en"] ul.en {
+body.lang-en h4.en {
   display: block !important;
 }
 
 /* Language toggle affordance */
+.lang {
+  position: relative;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 50, 160, 0.18);
+  border-radius: 999px;
+  padding: 2px;
+}
+.hd--app .lang {
+  background: rgba(0, 50, 160, 0.06);
+  border-color: rgba(0, 50, 160, 0.16);
+}
 .lang button {
   min-width: 36px;
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 999px;
+  color: var(--brand-blue, #0032A0);
+  pointer-events: auto;
 }
 .lang button[aria-pressed="true"] {
-  background: #fff !important;
-  color: var(--navy, #12233b) !important;
+  background: var(--brand-blue, #0032A0) !important;
+  color: #fff !important;
 }
 
 .search-form.search {
