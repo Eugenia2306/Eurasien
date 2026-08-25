@@ -1,0 +1,19 @@
+{
+  "name": "Eurasien Gesellschaft e. V.",
+  "short_name": "Eurasien",
+  "description": "Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum: Kultur, Wissenschaft, Wirtschaft und Geopolitik.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0032A0",
+  "theme_color": "#0032A0",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/assets/images/embed-62c28610d17731c2.png",
+      "sizes": "303x78",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -2246,13 +2246,40 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* ===== Phase 2: Vorstand cards, equal Themen blocks, news CTA ===== */
 #p-vorstand .people{
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:28px 32px;
-  max-width:920px;
 }
 #p-vorstand .person__b{padding:28px 32px 32px}
+@media(max-width:1040px){
+  #p-vorstand .people{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media(max-width:720px){
   #p-vorstand .people{grid-template-columns:1fr}
+}
+
+/* Page intros: full content width, flush with blocks below (site-wide) */
+.page .sec > .wrap > .wrap-narrow{
+  max-width:none !important;
+  width:100%;
+  margin-left:0 !important;
+  margin-right:0 !important;
+  padding-left:0 !important;
+  padding-right:0 !important;
+}
+.page .sec > .wrap-narrow{
+  max-width:var(--wrap, 1216px) !important;
+  margin-left:auto;
+  margin-right:auto;
+}
+.page .sec .lead,
+.page .sec .kx-attrib,
+.page .sec .kx-explorer__intro,
+.page .sec .sx-explorer__intro,
+.page .sec .cx-explorer__intro,
+.page .sec .prose p,
+.page .sec > .wrap > p.small.muted,
+.page .sec > .wrap > p.kx-attrib{
+  max-width:none !important;
 }
 
 .page .grid.grid-3{

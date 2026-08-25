@@ -391,49 +391,7 @@ function eg_auth_status_response()
 }
 
 /**
- * Visible chrome on /app/ pages: account / login / logout strip.
- */
-add_action('wp_body_open', function () {
-    if (is_admin()) {
-        return;
-    }
-
-    $bi = static function ($de, $en) {
-        if (function_exists('eg_bi')) {
-            return eg_bi($de, $en);
-        }
-        return '<span class="de">' . esc_html($de) . '</span><span class="en" hidden>' . esc_html($en) . '</span>';
-    };
-
-    $account = esc_url(home_url('/membership-account/'));
-    $signup = esc_url(eg_membership_signup_url());
-    $login = esc_url(wp_login_url(home_url('/membership-account/')));
-    $logout = esc_url(eg_member_logout_url('/'));
-    echo '<div class="eg-app-bar" style="background:#0b1f33;color:#fff;padding:10px 16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;font:600 14px/1.3 system-ui,sans-serif">';
-    echo '<a href="/" style="color:#fff;text-decoration:none">' . $bi('Eurasien Gesellschaft · Mitglieder', 'Eurasien Gesellschaft · Members') . '</a>';
-    echo '<nav style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">';
-    if (is_user_logged_in()) {
-        $user = wp_get_current_user();
-        $has_membership = function_exists('pmpro_hasMembershipLevel') && pmpro_hasMembershipLevel();
-        echo '<span style="opacity:.85">' . esc_html($user->display_name ? $user->display_name : $user->user_email) . '</span>';
-        echo '<a href="' . $account . '" style="color:#ffd77f;text-decoration:none">' . $bi('Mein Konto', 'My Account') . '</a>';
-        if ($has_membership) {
-            echo '<a href="' . esc_url(home_url('/mitglieder/positionen/')) . '" style="color:#fff;text-decoration:none">' . $bi('Mitgliederbereich', "Members' Area") . '</a>';
-            echo '<a href="' . esc_url($account . '#eg-plan-change') . '" style="color:#fff;text-decoration:none">' . $bi('Plan ändern', 'Change plan') . '</a>';
-        } else {
-            echo '<a href="' . $signup . '" style="color:#fff;text-decoration:none">' . $bi('Mitglied werden', 'Become a member') . '</a>';
-        }
-        echo '<a href="' . $logout . '" style="color:#fff;text-decoration:none">' . $bi('Abmelden', 'Logout') . '</a>';
-    } else {
-        echo '<a href="' . $login . '" style="color:#ffd77f;text-decoration:none">' . $bi('Anmelden', 'Log In') . '</a>';
-        echo '<a href="' . $signup . '" style="color:#fff;text-decoration:none">' . $bi('Mitglied werden', 'Become a member') . '</a>';
-    }
-    echo '<a href="/" style="color:#b7c6d6;text-decoration:none">' . $bi('Zur Website', 'To the website') . '</a>';
-    echo '</nav></div>';
-}, 5);
-
-/**
- * Ensure restricted pages use default template content visibility.
+ * Mark front-end /app/ pages for unified members header styling.
  */
 add_filter('body_class', function ($classes) {
     $classes[] = 'eg-app-runtime';

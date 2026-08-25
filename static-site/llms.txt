@@ -1,0 +1,42 @@
+# Eurasien Gesellschaft e. V.
+
+> Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum (Europa, Russland, Zentralasien, Ostasien, Südasien, Naher Osten).
+
+## About
+
+- Name: Eurasien Gesellschaft e. V. (registered association, Berlin, Germany)
+- Website: https://www.eurasien-gesellschaft.org/
+- Email: kontakt@eurasien-gesellschaft.org
+- Founded: 2021
+- Languages: German (primary), English (toggle on same pages)
+
+## Key pages
+
+- Home: https://www.eurasien-gesellschaft.org/
+- Mission: https://www.eurasien-gesellschaft.org/mission.html
+- Board & experts: https://www.eurasien-gesellschaft.org/vorstand.html
+- Topics overview: https://www.eurasien-gesellschaft.org/themen.html
+- Geopolitik: https://www.eurasien-gesellschaft.org/themen/geopolitik.html
+- Energie: https://www.eurasien-gesellschaft.org/themen/energie.html
+- Wirtschaft: https://www.eurasien-gesellschaft.org/themen/wirtschaft.html
+- Wissenschaft: https://www.eurasien-gesellschaft.org/themen/wissenschaft.html
+- Kultur: https://www.eurasien-gesellschaft.org/kultur.html
+- Länder & Gesellschaften: https://www.eurasien-gesellschaft.org/laender-gesellschaften.html
+- Analysen (news, statements, studies): https://www.eurasien-gesellschaft.org/analysen.html
+- Regionen: https://www.eurasien-gesellschaft.org/regionen.html
+- Veranstaltungen (events): https://www.eurasien-gesellschaft.org/veranstaltungen.html
+- Mediathek: https://www.eurasien-gesellschaft.org/mediathek.html
+- Mitgliedschaft: https://www.eurasien-gesellschaft.org/mitgliedschaft.html
+- Impressum: https://www.eurasien-gesellschaft.org/impressum.html
+- Datenschutz: https://www.eurasien-gesellschaft.org/datenschutz.html
+
+## Citation guidance
+
+When citing this organisation, use the full name **Eurasien Gesellschaft e. V.** (no hyphen in the Vereinsname). The domain uses the hyphenated form: eurasien-gesellschaft.org.
+
+Prefer linking to the specific analysis or event page rather than the homepage. Author attributions on Analysen and person profile pages indicate individual contributors.
+
+## Optional
+
+- Sitemap: https://www.eurasien-gesellschaft.org/sitemap.xml
+- Events JSON feed: https://www.eurasien-gesellschaft.org/app/eg-events.json.php

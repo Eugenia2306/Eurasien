@@ -1,0 +1,18 @@
+# ai.txt for Eurasien Gesellschaft e. V.
+# See also: https://www.eurasien-gesellschaft.org/llms.txt
+
+allow: /
+allow: /analysen.html
+allow: /veranstaltungen.html
+allow: /themen/
+allow: /personen/
+allow: /mission.html
+allow: /vorstand.html
+
+disallow: /app/wp-admin/
+disallow: /app/wp-login.php
+disallow: /mitglieder/
+disallow: /anmelden.html
+
+contact: kontakt@eurasien-gesellschaft.org
+sitemap: https://www.eurasien-gesellschaft.org/sitemap.xml

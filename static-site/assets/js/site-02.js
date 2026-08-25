@@ -488,6 +488,19 @@
   function applyLocationHash(){
     var h = (location.hash || '').replace(/^#/, '');
     if(!h) return false;
+    /* Event status-filter hashes (must come before the generic ev- check below) */
+    if((h === 'ev-filter-upcoming' || h === 'ev-filter-past') && typeof applyEvFilter === 'function'){
+      var evF = h === 'ev-filter-upcoming' ? 'upcoming' : 'past';
+      applyEvFilter(evF);
+      var evChips = d.getElementById('ev-filter') || d.getElementById('ev-list-root');
+      if(evChips){
+        var reduce3 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        try{ evChips.scrollIntoView({behavior: reduce3 ? 'auto' : 'smooth', block:'start'}); }catch(e){}
+      }
+      return true;
+    }
+    /* Region-filtered events: handled by events-feed.js after cards render */
+    if(h.indexOf('ev-region-') === 0) return false;
     /* Event archive hashes: wait until the WP feed has painted the cards. */
     if(h === 'ev-list-root' || h.indexOf('ev-') === 0){
       if(!d.getElementById(h) || (h === 'ev-list-root' && !d.querySelector('#ev-list-root .ev'))){
@@ -516,20 +529,6 @@
         applyAnFilter('stellungnahmen');
       }
       return focusElementById(h);
-    }
-    if(h.indexOf('ev-region-') === 0){
-      /* Region-filtered events: handled by events-feed.js after cards render */
-      return false;
-    }
-    if((h === 'ev-filter-upcoming' || h === 'ev-filter-past') && typeof applyEvFilter === 'function'){
-      var evF = h === 'ev-filter-upcoming' ? 'upcoming' : 'past';
-      applyEvFilter(evF);
-      var evChips = d.getElementById('ev-filter') || d.getElementById('ev-list-root');
-      if(evChips){
-        var reduce3 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        try{ evChips.scrollIntoView({behavior: reduce3 ? 'auto' : 'smooth', block:'start'}); }catch(e){}
-      }
-      return true;
     }
     if(h.indexOf('filter-') === 0 && typeof applyAnFilter === 'function'){
       applyAnFilter(h.slice(7));
@@ -586,22 +585,24 @@
   function rewriteEventArchiveHrefs(){
     d.querySelectorAll('a[href]').forEach(function(a){
       var href = a.getAttribute('href') || '';
-      if(!isEventsHref(href) || href.indexOf('#') !== -1) return;
+      if(!isEventsHref(href)) return;
+      /* rel-ev-all: always rewrite to region-specific hash, even if href already has a hash */
+      if(a.classList.contains('rel-ev-all')){
+        var regPanel = a.closest('.reg-events');
+        var regionSlug = regPanel && regPanel.getAttribute('data-region');
+        var base = href.split('#')[0];
+        if(regionSlug){
+          a.setAttribute('href', base + '#ev-region-' + regionSlug);
+          a.setAttribute('data-evregion', regionSlug);
+        } else {
+          a.setAttribute('href', base + '#ev-list-root');
+        }
+        return;
+      }
+      if(href.indexOf('#') !== -1) return;
       var focus = a.getAttribute('data-focus');
       if(focus){
         a.setAttribute('href', href + '#' + focus);
-        return;
-      }
-      if(a.classList.contains('rel-ev-all')){
-        /* Find the parent reg-events container to get the region slug */
-        var regPanel = a.closest('.reg-events');
-        var regionSlug = regPanel && regPanel.getAttribute('data-region');
-        if(regionSlug){
-          a.setAttribute('href', href + '#ev-region-' + regionSlug);
-          a.setAttribute('data-evregion', regionSlug);
-        } else {
-          a.setAttribute('href', href + '#ev-list-root');
-        }
         return;
       }
       if(a.getAttribute('data-evfilter') === 'all'){

@@ -289,3 +289,211 @@ body.eg-elementor-page .wrap-narrow.entry-content {
   max-width: none;
   width: 100%;
 }
+
+/* ---- Unified /app/ members header (replaces eg-app-bar + ubar + brochure nav) ---- */
+.hd--app {
+  position: sticky;
+  top: 0;
+  z-index: 180;
+}
+
+.hd--app .hd__in {
+  min-height: 72px;
+  gap: clamp(10px, 2vw, 20px);
+}
+
+.hd__brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.hd__badge {
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--brand-blue, #0032A0);
+  background: rgba(0, 50, 160, .07);
+  border: 1px solid rgba(0, 50, 160, .16);
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.hd--app .app-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  margin: 0 auto 0 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hd--app .app-nav__link {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 72px;
+  font-weight: 600;
+  font-size: .88rem;
+  color: var(--ink, #12233b);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.hd--app .app-nav__link:hover,
+.hd--app .app-nav__link.is-current {
+  color: var(--oxblood, #7a1f2b);
+  border-bottom-color: var(--oxblood, #7a1f2b);
+}
+
+.hd--app .actions--app {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.4vw, 14px);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.hd--app .app-user {
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--muted, #5c6778);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hd--app .app-link {
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--ink, #12233b);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hd--app .app-link:hover {
+  color: var(--brand-blue, #0032A0);
+}
+
+.hd--app .app-link--primary {
+  color: var(--brand-blue, #0032A0);
+}
+
+.hd--app .app-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--muted, #5c6778);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 6px 0;
+}
+
+.hd--app .app-back:hover {
+  color: var(--brand-blue, #0032A0);
+}
+
+.hd--app .actions--app .burger {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .hd--app .app-user,
+  .hd--app .app-link--optional {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hd__badge {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hd--app .hd__in {
+    flex-wrap: wrap;
+    min-height: 64px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .hd--app .actions--app .burger {
+    display: flex;
+  }
+
+  .hd--app .app-nav {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: var(--eg-app-nav-top, 64px);
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 8px 0 40px;
+    background: var(--navy, #12233b);
+    overflow: auto;
+    z-index: 170;
+  }
+
+  body.eg-app-runtime.nav-open .hd--app .app-nav {
+    display: flex;
+  }
+
+  body.eg-app-runtime.nav-open {
+    overflow: hidden;
+  }
+
+  .hd--app .app-nav__link {
+    height: auto;
+    padding: 15px 28px;
+    color: #fff;
+    border-bottom: 1px solid #2a3e56;
+    font-size: .98rem;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .hd--app .app-nav__link:hover,
+  .hd--app .app-nav__link.is-current {
+    background: #1c3350;
+    color: #fff;
+    border-bottom-color: #2a3e56;
+  }
+
+  .hd--app .app-back span[aria-hidden="true"] {
+    display: none;
+  }
+
+  .hd--app .actions--app .btn--accent {
+    padding: 8px 14px;
+    font-size: .82rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .hd--app .app-link--primary {
+    display: none;
+  }
+
+  .hd--app .app-link--logout {
+    font-size: .78rem;
+  }
+
+  .hd--app .brand__logo {
+    height: 44px;
+  }
+}

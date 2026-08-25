@@ -1,8 +1,36 @@
 User-agent: *
 Allow: /
 
-# Member content is served from WordPress under /app/ after Phase 2
+# WordPress admin (under /app/)
 Disallow: /app/wp-admin/
 Disallow: /app/wp-login.php
+Disallow: /app/wp-includes/
+Disallow: /app/membership-account/
+Disallow: /app/my-account/
 
-Sitemap: /sitemap.xml
+# Gated member brochure stubs (redirect to /app/)
+Disallow: /mitglieder/
+
+# Login stub
+Disallow: /anmelden.html
+
+# AI / LLM crawlers — same public content as search engines
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://www.eurasien-gesellschaft.org/sitemap.xml

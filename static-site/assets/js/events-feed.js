@@ -195,6 +195,31 @@
     return window.location.origin + u;
   }
 
+  function fallbackFeedUrl() {
+    var scripts = d.querySelectorAll("script[src]");
+    for (var i = 0; i < scripts.length; i++) {
+      var src = scripts[i].getAttribute("src") || "";
+      var m = src.match(/^(.*\/assets\/)/);
+      if (m) return m[1] + "data/events-feed.json";
+    }
+    return "assets/data/events-feed.json";
+  }
+
+  function loadFeed() {
+    return fetch(feedUrl(), { credentials: "same-origin", headers: { Accept: "application/json" } })
+      .then(function (r) {
+        if (!r.ok) throw new Error("feed-" + r.status);
+        return r.json();
+      })
+      .catch(function () {
+        return fetch(fallbackFeedUrl(), { credentials: "same-origin", headers: { Accept: "application/json" } })
+          .then(function (r) {
+            if (!r.ok) throw new Error("fallback-" + r.status);
+            return r.json();
+          });
+      });
+  }
+
   /* Region → event-ID mapping (mirrors regionen.html reg-events panels) */
   var EV_REGION_MAP = {
     europa:      ['ev-krieg-oder-frieden-2026','ev-sieben-gruende-warum-kein-2025','ev-vom-niedergang-des-westens-2024','ev-je-taime-moi-non-2024','ev-erbe-vermaechtnis-bewahren-wofuer-2025','ev-endspiel-europa-2022','ev-tanz-dem-vulkan-2023','ev-choices-ukraine-russia-eu-2022','ev-search-peaceful-coexistence-eurasia-2023'],
@@ -348,43 +373,58 @@
   }
 
   function render(events) {
-    renderHome(events);
-    if (!root) {
+    try {
+      renderHome(events);
+      if (!root) {
+        afterRender();
+        return;
+      }
+      if (!events || !events.length) {
+        root.innerHTML = "";
+        var empty = d.getElementById("ev-empty");
+        if (empty) empty.hidden = false;
+        afterRender();
+        return;
+      }
+      var groups = groupByYear(events);
+      var html = groups
+        .map(function (g) {
+          return (
+            '<div class="ev-group"><h2 class="ev-group__y">' +
+            esc(g.year) +
+            "</h2>" +
+            g.events.map(renderCard).join("") +
+            "</div>"
+          );
+        })
+        .join("");
+      root.innerHTML = html;
+      var emptyEl = d.getElementById("ev-empty");
+      if (emptyEl) emptyEl.hidden = true;
       afterRender();
-      return;
+    } catch (err) {
+      showError();
     }
-    if (!events || !events.length) {
-      root.innerHTML = "";
-      var empty = d.getElementById("ev-empty");
-      if (empty) empty.hidden = false;
-      afterRender();
-      return;
+  }
+
+  function startFeed() {
+    if (root) {
+      root.innerHTML =
+        '<p class="ev-loading"><span class="de">Veranstaltungen werden geladen…</span>' +
+        '<span class="en" hidden>Loading events…</span></p>';
     }
-    var groups = groupByYear(events);
-    var html = groups
-      .map(function (g) {
-        return (
-          '<div class="ev-group"><h2 class="ev-group__y">' +
-          esc(g.year) +
-          "</h2>" +
-          g.events.map(renderCard).join("") +
-          "</div>"
-        );
+    loadFeed()
+      .then(function (data) {
+        render((data && data.events) || []);
       })
-      .join("");
-    root.innerHTML = html;
-    var emptyEl = d.getElementById("ev-empty");
-    if (emptyEl) emptyEl.hidden = true;
-    afterRender();
+      .catch(function () {
+        showError();
+      });
   }
 
   window.EG_EVENTS_FEED = {
     reload: function () {
-      return fetch(feedUrl(), { credentials: "same-origin" })
-        .then(function (r) {
-          if (!r.ok) throw new Error("feed");
-          return r.json();
-        })
+      return loadFeed()
         .then(function (data) {
           render((data && data.events) || []);
         })
@@ -394,10 +434,9 @@
     }
   };
 
-  if (root) {
-    root.innerHTML =
-      '<p class="ev-loading"><span class="de">Veranstaltungen werden geladen…</span>' +
-      '<span class="en" hidden>Loading events…</span></p>';
+  if (d.readyState === "loading") {
+    d.addEventListener("DOMContentLoaded", startFeed);
+  } else {
+    startFeed();
   }
-  window.EG_EVENTS_FEED.reload();
 })();
