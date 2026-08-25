@@ -71,7 +71,7 @@ declare(strict_types=1);
 		<div class="mega">
 			<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft-vorteile' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Vorteile', 'Benefits' ); ?></a>
 			<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Antrag', 'Application' ); ?></a>
-			<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliederbereich', 'Members’ Area' ); ?></a>
+			<a href="<?php echo esc_url( home_url( '/mitglieder/positionen/' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliederbereich', 'Members’ Area' ); ?></a>
 		</div>
 	</div>
 </nav>

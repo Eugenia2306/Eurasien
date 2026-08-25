@@ -1,6 +1,6 @@
 <?php
 /**
- * Default page template.
+ * Default page template — same page-head pattern as the brochure.
  *
  * @package Eurasien_Gesellschaft
  */
@@ -27,19 +27,16 @@ while ( have_posts() ) :
 		'title' => get_the_title(),
 	);
 
-	if ( $is_auth ) {
-		$header_args['variant'] = 'compact';
+	/* Slight context only — same phead pattern as static brochure pages. */
+	if ( $is_app ) {
 		$header_args['eyebrow'] = eg_bi( 'Mitgliederbereich', "Members' area" );
-		if ( in_array( $slug, array( 'login', 'log-in' ), true ) ) {
-			$header_args['title'] = eg_bi( 'Anmelden', 'Log In' );
-			$header_args['lead']  = eg_bi(
-				'Melden Sie sich an, um Ihr Konto und den Mitgliederbereich zu öffnen.',
-				'Sign in to open your account and the members’ area.'
-			);
-		}
-	} elseif ( $is_app ) {
-		$header_args['variant'] = 'compact';
-		$header_args['eyebrow'] = eg_bi( 'Mitgliederbereich', "Members' area" );
+	}
+	if ( $is_auth && in_array( $slug, array( 'login', 'log-in' ), true ) ) {
+		$header_args['title'] = eg_bi( 'Anmelden', 'Log In' );
+		$header_args['lead']  = eg_bi(
+			'Melden Sie sich an, um Ihr Konto und den Mitgliederbereich zu öffnen.',
+			'Sign in to open your account and the members’ area.'
+		);
 	}
 
 	get_template_part( 'template-parts/page-header', null, $header_args );

@@ -147,35 +147,14 @@ body.lang-en h4.en {
   display: block !important;
 }
 
-/* Language toggle affordance */
+/* Language toggle — keep brochure ubar styling; only ensure clickability */
 .lang {
   position: relative;
   z-index: 5;
-  display: inline-flex;
-  align-items: center;
-  gap: 0;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(0, 50, 160, 0.18);
-  border-radius: 999px;
-  padding: 2px;
-}
-.hd--app .lang {
-  background: rgba(0, 50, 160, 0.06);
-  border-color: rgba(0, 50, 160, 0.16);
 }
 .lang button {
-  min-width: 36px;
-  min-height: 32px;
-  border: 0;
-  background: transparent;
   cursor: pointer;
-  border-radius: 999px;
-  color: var(--brand-blue, #0032A0);
   pointer-events: auto;
-}
-.lang button[aria-pressed="true"] {
-  background: var(--brand-blue, #0032A0) !important;
-  color: #fff !important;
 }
 
 .search-form.search {
