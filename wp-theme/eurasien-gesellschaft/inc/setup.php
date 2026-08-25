@@ -52,6 +52,12 @@ add_filter(
 	'body_class',
 	static function ( array $classes ): array {
 		$classes[] = 'eg-theme';
+		if ( function_exists( 'eg_is_app_utility_page' ) && eg_is_app_utility_page() ) {
+			$classes[] = 'eg-app-utility';
+		}
+		if ( function_exists( 'eg_is_app_auth_page' ) && eg_is_app_auth_page() ) {
+			$classes[] = 'eg-app-auth';
+		}
 		return $classes;
 	}
 );

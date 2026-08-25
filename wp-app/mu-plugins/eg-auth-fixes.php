@@ -395,5 +395,11 @@ function eg_auth_status_response()
  */
 add_filter('body_class', function ($classes) {
     $classes[] = 'eg-app-runtime';
+    if (function_exists('eg_is_app_utility_page') && eg_is_app_utility_page()) {
+        $classes[] = 'eg-app-utility';
+    }
+    if (function_exists('eg_is_app_auth_page') && eg_is_app_auth_page()) {
+        $classes[] = 'eg-app-auth';
+    }
     return $classes;
 });

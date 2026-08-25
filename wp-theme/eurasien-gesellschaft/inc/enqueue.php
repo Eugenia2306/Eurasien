@@ -35,6 +35,13 @@ add_action(
 			EG_THEME_VERSION
 		);
 
+		wp_enqueue_style(
+			'eg-app-pages',
+			EG_THEME_URI . '/assets/css/app-pages.css',
+			array( 'eg-wp' ),
+			EG_THEME_VERSION
+		);
+
 		// Language switcher: small, isolated, always loads.
 		wp_enqueue_script(
 			'eg-lang',

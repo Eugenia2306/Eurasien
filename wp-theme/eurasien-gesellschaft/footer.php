@@ -1,5 +1,29 @@
 </main>
 
+<?php
+$eg_slim_ft = function_exists( 'eg_is_app_utility_page' ) && eg_is_app_utility_page();
+$brochure   = function_exists( 'eg_brochure_public_url' ) ? eg_brochure_public_url() : home_url( '/' );
+$impressum  = function_exists( 'eg_route' ) ? eg_route( 'p-impressum' ) : $brochure . 'impressum.html';
+$datenschutz = function_exists( 'eg_brochure_public_url' )
+	? eg_brochure_public_url( 'datenschutz.html' )
+	: $brochure . 'datenschutz.html';
+?>
+
+<?php if ( $eg_slim_ft ) : ?>
+<footer class="ft ft--app">
+	<div class="wrap ft--app__in">
+		<p class="ft--app__brand"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></p>
+		<p class="ft--app__links">
+			<a href="<?php echo esc_url( $brochure ); ?>"><?php eg_bi_e( 'Zur Website', 'To the website' ); ?></a>
+			<span aria-hidden="true">·</span>
+			<a href="<?php echo esc_url( $impressum ); ?>">Impressum</a>
+			<span aria-hidden="true">·</span>
+			<a href="<?php echo esc_url( $datenschutz ); ?>"><?php eg_bi_e( 'Datenschutz', 'Privacy' ); ?></a>
+		</p>
+		<p class="ft--app__copy">&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Eurasien Gesellschaft e. V. · Berlin</p>
+	</div>
+</footer>
+<?php else : ?>
 <footer class="ft">
 	<div class="wrap">
 		<div class="ft__grid">
@@ -86,11 +110,12 @@
 			<span>&copy; <?php echo esc_html( gmdate( 'Y' ) ); ?> Eurasien Gesellschaft e. V. · Berlin</span>
 			<span>
 				<a href="<?php echo esc_url( eg_route( 'p-impressum' ) ); ?>">Impressum</a> ·
-				<a href="<?php echo esc_url( eg_route( 'p-impressum' ) ); ?>"><?php eg_bi_e( 'Datenschutz', 'Privacy' ); ?></a>
+				<a href="<?php echo esc_url( $datenschutz ); ?>"><?php eg_bi_e( 'Datenschutz', 'Privacy' ); ?></a>
 			</span>
 		</div>
 	</div>
 </footer>
+<?php endif; ?>
 
 <?php wp_footer(); ?>
 </body>

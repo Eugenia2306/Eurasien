@@ -1,0 +1,421 @@
+/**
+ * /app/ utility pages: login, account, checkout, gated libraries.
+ * Matches brochure brand tokens; quieter chrome than public pageheads.
+ */
+
+/* ---- Atmosphere ---- */
+body.eg-app-runtime.eg-app-utility {
+  background:
+    radial-gradient(1200px 480px at 12% -10%, rgba(0, 50, 160, 0.09), transparent 60%),
+    radial-gradient(900px 420px at 100% 0%, rgba(225, 167, 52, 0.08), transparent 55%),
+    linear-gradient(180deg, #f4f7fb 0%, #eef2f7 48%, #f7f8fa 100%);
+}
+
+body.eg-app-runtime.eg-app-utility #main {
+  min-height: calc(100vh - 160px);
+}
+
+/* ---- Compact page head (replaces tall brochure phead) ---- */
+.phead--compact {
+  min-height: 0 !important;
+  padding: 28px 0 26px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background:
+    linear-gradient(135deg, #002a88 0%, var(--brand-blue, #0032A0) 52%, #0a3eb8 100%) !important;
+}
+
+.phead--compact::before,
+.phead--compact::after {
+  opacity: 0.35;
+  width: 180px !important;
+  height: 180px !important;
+}
+
+.phead--compact .eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+}
+
+.phead--compact h1 {
+  font-size: clamp(1.65rem, 2.6vw, 2.15rem) !important;
+  max-width: 34ch;
+  margin-bottom: 0.2em !important;
+  line-height: 1.2;
+}
+
+.phead--compact p:last-child {
+  font-size: 0.95rem !important;
+  max-width: 42ch !important;
+  color: rgba(255, 255, 255, 0.82) !important;
+  margin: 0;
+}
+
+/* ---- Auth section layout ---- */
+.sec--app-auth {
+  padding: 40px 0 64px !important;
+}
+
+.sec--app {
+  padding: 36px 0 56px !important;
+}
+
+.wrap--auth {
+  max-width: 440px !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--page-gutter, 20px) !important;
+  padding-right: var(--page-gutter, 20px) !important;
+}
+
+/* ---- PMPro / login form shell ---- */
+.wrap--auth .pmpro_login_wrap,
+.wrap--auth .pmpro,
+.wrap--auth .pmpro_section,
+.wrap--auth form.pmpro_form,
+.sec--app-auth .entry-content > .pmpro_login_wrap,
+.sec--app-auth .entry-content > #pmpro_login,
+.sec--app-auth .entry-content > .pmpro {
+  background: #fff;
+  border: 1px solid rgba(0, 50, 160, 0.12);
+  border-radius: 4px;
+  box-shadow: 0 18px 40px -28px rgba(0, 42, 120, 0.35);
+  padding: 28px 28px 8px;
+  margin: 0 auto;
+}
+
+.sec--app-auth .entry-content > *:first-child {
+  margin-top: 0;
+}
+
+/* Hide duplicate page titles inside PMPro content if present */
+.sec--app-auth .entry-content > h1,
+.sec--app-auth .entry-content > .pmpro_login_wrap > h1,
+.sec--app-auth .pmpro_login_wrap .pmpro_login_title {
+  display: none;
+}
+
+.wrap--auth label,
+.sec--app-auth label,
+.pmpro_login_wrap label,
+#loginform label {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--brand-blue, #0032A0);
+  margin: 0 0 6px;
+}
+
+.wrap--auth input[type="text"],
+.wrap--auth input[type="email"],
+.wrap--auth input[type="password"],
+.wrap--auth input[type="search"],
+.wrap--auth input[type="tel"],
+.wrap--auth input[type="url"],
+.wrap--auth input[type="number"],
+.wrap--auth select,
+.wrap--auth textarea,
+.sec--app-auth input[type="text"],
+.sec--app-auth input[type="email"],
+.sec--app-auth input[type="password"],
+.sec--app-auth select,
+.sec--app-auth textarea,
+.pmpro_login_wrap input[type="text"],
+.pmpro_login_wrap input[type="email"],
+.pmpro_login_wrap input[type="password"],
+#loginform input[type="text"],
+#loginform input[type="password"],
+.pmpro_form input[type="text"],
+.pmpro_form input[type="email"],
+.pmpro_form input[type="password"],
+.pmpro_form select,
+.pmpro_form textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink, #12233b);
+  background: #fff !important;
+  border: 1px solid rgba(0, 50, 160, 0.22) !important;
+  border-radius: 3px !important;
+  padding: 12px 14px !important;
+  margin: 0 0 16px;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wrap--auth input:focus,
+.sec--app-auth input:focus,
+.pmpro_login_wrap input:focus,
+#loginform input:focus,
+.pmpro_form input:focus,
+.pmpro_form select:focus,
+.pmpro_form textarea:focus {
+  outline: none;
+  border-color: var(--brand-blue, #0032A0) !important;
+  box-shadow: 0 0 0 3px rgba(0, 50, 160, 0.14) !important;
+}
+
+/* Remember + show password row */
+.wrap--auth .login-remember,
+.wrap--auth .pmpro_login_wrap .login-remember,
+.pmpro_login_wrap .pmpro_form_field-checkbox,
+#loginform .login-remember,
+.pmpro_login_wrap .pmpro_btn-plain,
+.pmpro_login_wrap .pmpro_form_field-password-toggle {
+  font-size: 0.86rem;
+  color: var(--muted, #5c6778);
+  margin: 0 0 14px;
+}
+
+.pmpro_login_wrap .pmpro_form_field-password-toggle {
+  float: none !important;
+  display: flex;
+  justify-content: flex-end;
+  margin: -8px 0 10px;
+}
+
+.pmpro_login_wrap .pmpro_form_field-password-toggle button,
+.pmpro_login_wrap a.pmpro_btn-plain {
+  background: none !important;
+  border: 0 !important;
+  color: var(--brand-blue, #0032A0) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.pmpro_login_wrap .pmpro_form_field-password-toggle button:hover,
+.pmpro_login_wrap a.pmpro_btn-plain:hover {
+  color: var(--brand-red, #da291c) !important;
+}
+
+/* Primary submit */
+.wrap--auth input[type="submit"],
+.wrap--auth button[type="submit"],
+.sec--app-auth input[type="submit"],
+.sec--app-auth button[type="submit"],
+.pmpro_login_wrap input[type="submit"],
+.pmpro_login_wrap .pmpro_btn-submit,
+.pmpro_form .pmpro_btn-submit,
+.pmpro_form input[type="submit"],
+#loginform input[type="submit"] {
+  display: block;
+  width: 100%;
+  margin: 8px 0 18px !important;
+  padding: 13px 18px !important;
+  font: inherit;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  color: #fff !important;
+  background: var(--brand-blue, #0032A0) !important;
+  border: 0 !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.wrap--auth input[type="submit"]:hover,
+.sec--app-auth input[type="submit"]:hover,
+.pmpro_login_wrap input[type="submit"]:hover,
+.pmpro_form .pmpro_btn-submit:hover,
+#loginform input[type="submit"]:hover {
+  background: #002678 !important;
+  transform: translateY(-1px);
+}
+
+/* Lost password bar */
+.pmpro_login_wrap .pmpro_actions_nav,
+.pmpro_login_wrap .pmpro_card_actions,
+.pmpro_login_wrap .pmpro_form_actions,
+.pmpro_actions_nav,
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 4px -28px 0 !important;
+  padding: 14px 28px !important;
+  background: rgba(0, 50, 160, 0.04) !important;
+  border-top: 1px solid rgba(0, 50, 160, 0.1) !important;
+  border-radius: 0 0 4px 4px;
+  font-size: 0.86rem;
+}
+
+.pmpro_login_wrap .pmpro_actions_nav a,
+.pmpro_actions_nav a,
+.login-links a {
+  color: var(--brand-blue, #0032A0);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pmpro_login_wrap .pmpro_actions_nav a:hover,
+.pmpro_actions_nav a:hover,
+.login-links a:hover {
+  color: var(--brand-red, #da291c);
+  text-decoration: underline;
+}
+
+/* Messages */
+.pmpro_message,
+.pmpro_error,
+.pmpro_success,
+.pmpro_alert,
+.login .message {
+  border-radius: 3px;
+  border: 1px solid rgba(0, 50, 160, 0.16);
+  background: rgba(0, 50, 160, 0.06);
+  color: var(--ink, #12233b);
+  padding: 12px 14px;
+  margin: 0 0 18px;
+  font-size: 0.9rem;
+}
+
+.pmpro_error,
+.login #login_error {
+  border-color: rgba(218, 41, 28, 0.35);
+  background: rgba(218, 41, 28, 0.07);
+}
+
+/* Account / gated content panels */
+.sec--app .pmpro_account,
+.sec--app .pmpro_section,
+.sec--app .pmpro_card,
+.sec--app #pmpro_account {
+  background: #fff;
+  border: 1px solid rgba(0, 50, 160, 0.12);
+  border-radius: 4px;
+  padding: 22px 24px;
+  margin: 0 0 18px;
+  box-shadow: 0 14px 36px -28px rgba(0, 42, 120, 0.3);
+}
+
+.sec--app .pmpro_account h2,
+.sec--app .pmpro_account h3,
+.sec--app .pmpro_section h2,
+.sec--app .pmpro_section h3 {
+  font-family: var(--serif, "Source Serif 4", Georgia, serif);
+  color: var(--brand-blue, #0032A0);
+  font-size: 1.25rem;
+  margin: 0 0 12px;
+}
+
+.sec--app .pmpro_account a,
+.sec--app .pmpro_section a {
+  color: var(--brand-blue, #0032A0);
+  font-weight: 600;
+}
+
+.sec--app .pmpro_btn,
+.sec--app .button,
+.sec--app .woocommerce a.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: var(--brand-blue, #0032A0);
+  color: #fff !important;
+  border: 0;
+  border-radius: 3px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sec--app .pmpro_btn:hover,
+.sec--app .button:hover {
+  background: #002678;
+}
+
+/* Membership signup CTA under login */
+.sec--app-auth .eg-auth-aside,
+.wrap--auth .eg-auth-aside {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted, #5c6778);
+}
+
+.wrap--auth .eg-auth-aside a {
+  color: var(--brand-blue, #0032A0);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wrap--auth .eg-auth-aside a:hover {
+  color: var(--brand-red, #da291c);
+  text-decoration: underline;
+}
+
+/* Slim app footer */
+.ft--app {
+  background: #0b1f3a;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 28px 0 32px;
+  margin-top: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ft--app__in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.ft--app__brand {
+  margin: 0;
+  font-family: var(--serif, "Source Serif 4", Georgia, serif);
+  font-size: 1.05rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.ft--app__links {
+  margin: 0;
+  font-size: 0.86rem;
+}
+
+.ft--app__links a {
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ft--app__links a:hover {
+  color: #ffd77f;
+}
+
+.ft--app__copy {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 560px) {
+  .wrap--auth .pmpro_login_wrap,
+  .sec--app-auth .entry-content > .pmpro_login_wrap,
+  .sec--app-auth .entry-content > #pmpro_login,
+  .sec--app-auth .entry-content > .pmpro {
+    padding: 22px 18px 6px;
+  }
+
+  .pmpro_login_wrap .pmpro_actions_nav,
+  .pmpro_actions_nav {
+    margin-left: -18px !important;
+    margin-right: -18px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .phead--compact {
+    padding: 22px 0 20px !important;
+  }
+}

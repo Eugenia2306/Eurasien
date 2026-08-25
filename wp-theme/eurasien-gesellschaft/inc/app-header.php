@@ -12,6 +12,72 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Whether the current front-end view is an /app/ auth or membership utility page.
+ */
+function eg_is_app_utility_page(): bool {
+	if ( is_admin() || ! did_action( 'wp' ) ) {
+		return false;
+	}
+	$slugs = array(
+		'login',
+		'log-in',
+		'membership-account',
+		'membership-levels',
+		'membership-checkout',
+		'membership-confirmation',
+		'membership-billing',
+		'membership-cancel',
+		'membership-orders',
+		'your-profile',
+		'my-account',
+		'cart',
+		'checkout',
+		'shop',
+		'mitglieder',
+		'positionen',
+		'dossiers',
+		'studien',
+	);
+	if ( is_singular() ) {
+		$slug = (string) get_post_field( 'post_name', get_queried_object_id() );
+		if ( in_array( $slug, $slugs, true ) ) {
+			return true;
+		}
+		$parent = (int) wp_get_post_parent_id( get_queried_object_id() );
+		if ( $parent > 0 ) {
+			$parent_slug = (string) get_post_field( 'post_name', $parent );
+			if ( 'mitglieder' === $parent_slug ) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * Auth-focused pages (login / reset / checkout) get a quieter chrome than libraries.
+ */
+function eg_is_app_auth_page(): bool {
+	if ( ! eg_is_app_utility_page() ) {
+		return false;
+	}
+	$slug = is_singular() ? (string) get_post_field( 'post_name', get_queried_object_id() ) : '';
+	$auth = array(
+		'login',
+		'log-in',
+		'membership-checkout',
+		'membership-confirmation',
+		'membership-billing',
+		'membership-cancel',
+		'membership-levels',
+		'cart',
+		'checkout',
+		'my-account',
+	);
+	return in_array( $slug, $auth, true );
+}
+
+/**
  * Context for template-parts/header-app.php.
  *
  * @return array<string, mixed>
