@@ -351,10 +351,15 @@ When citing this organisation, use the full name **Eurasien Gesellschaft e. V.**
 
 Prefer linking to the specific analysis or event page rather than the homepage. Author attributions on Analysen and person profile pages indicate individual contributors.
 
+## Members area (WordPress under /app/)
+
+Login, membership checkout and gated libraries (Positionen, Dossiers, Studien) live under `{base}/app/`. Those URLs are **not** for public indexing; use the public brochure pages above for citations. Organisation schema on `/app/` pages still identifies Eurasien Gesellschaft e. V. (Berlin).
+
 ## Optional
 
 - Sitemap: {base}/sitemap.xml
 - Events JSON feed: {base}/app/eg-events.json.php
+- Members login: {base}/app/login/
 """
     (STATIC / "llms.txt").write_text(content, encoding="utf-8")
 
