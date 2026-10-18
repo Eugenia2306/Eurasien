@@ -85,7 +85,8 @@ function eg_interest_handle()
         }
     }
 
-    if ($first === '' || $last === '' || !is_email($email) || !$consent) {
+    /* Phone is required (client, change list p2): at least 6 digits. */
+    if ($first === '' || $last === '' || !is_email($email) || strlen(preg_replace('/\D/', '', $phone)) < 6 || !$consent) {
         $back('error');
     }
 
