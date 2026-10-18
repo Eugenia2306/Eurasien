@@ -11,6 +11,14 @@ if (!defined('ABSPATH')) {
 
 const EG_PENDING_DOWNGRADE_META = 'eg_pending_downgrade';
 
+/** Interest form for the association membership (no online sign-up, client 16 Oct 2026). */
+function eg_membership_change_interest_url()
+{
+    $home = untrailingslashit(home_url());
+    $base = (substr($home, -4) === '/app') ? substr($home, 0, -4) : $home;
+    return $base . '/mitgliedschaft.html?plan=expert#membership-registration';
+}
+
 /** @return int[] */
 function eg_membership_change_allowed_levels()
 {
@@ -570,6 +578,12 @@ function eg_membership_change_handle_post()
     $direction = eg_membership_change_direction($current, $target);
     $pending = eg_membership_change_get_pending($user_id);
 
+    /* Association membership cannot be bought online: send to the interest form. */
+    if ($target === 2 && $current !== 2) {
+        wp_safe_redirect(eg_membership_change_interest_url());
+        exit;
+    }
+
     /* Paying for Leserzugang after scheduled Verein end. */
     if ($target === 1 && $pending && $pending['status'] === 'awaiting_payment') {
         eg_membership_change_redirect_to_stripe($user_id, 1);
@@ -721,6 +735,9 @@ function eg_membership_change_render_panel()
     if ($confirm && $confirm === $current && !($pending && $pending['status'] === 'awaiting_payment')) {
         $confirm = 0;
     }
+    if ($confirm === 2 && $current !== 2) {
+        $confirm = 0;
+    }
 
     $current_row = ($current && isset($catalog[$current])) ? $catalog[$current] : null;
 
@@ -755,8 +772,8 @@ function eg_membership_change_render_panel()
     }
 
     echo '<p style="margin:18px 0 0;font-size:13px;opacity:.8">';
-    echo '<span class="de">Upgrade (Leser → Verein): sofortige Freischaltung nach Zahlung von 120 €. Downgrade (Verein → Leser): Sie behalten Verein bis Periodenende; die 5 €/Monat-Zahlung startet erst danach.</span>';
-    echo '<span class="en" hidden>Upgrade (reader → association): instant access after paying €120. Downgrade (association → reader): keep association until period end; the €5/month payment starts only then.</span>';
+    echo '<span class="de">Vereinsmitgliedschaft: kein Online-Abschluss. Teilen Sie uns Ihr Interesse über das Formular mit; wir melden uns persönlich, über die Aufnahme entscheidet der Vorstand. Wechsel vom Verein zum Leserzugang: Sie behalten die Vereinsmitgliedschaft bis zum Periodenende; die 5 €/Monat-Zahlung startet erst danach.</span>';
+    echo '<span class="en" hidden>Association membership: no online sign-up. Tell us about your interest through the form; we will get in touch personally, and the board decides on admission. Switching from association to reader access: you keep association membership until the period ends; the €5/month payment starts only then.</span>';
     echo '</p>';
     echo '</section>';
 }
@@ -851,6 +868,10 @@ function eg_membership_change_render_choices($current, $catalog, $pending)
 
         if ($is_current) {
             echo '<span style="font-weight:700;color:#0b1f33"><span class="de">Aktuell</span><span class="en" hidden>Current</span></span>';
+        } elseif ((int) $id === 2) {
+            echo '<a class="pmpro_btn" href="' . esc_url(eg_membership_change_interest_url()) . '" style="display:inline-block;text-decoration:none;background:#0b1f33;color:#fff;padding:10px 14px;font-weight:600">';
+            echo '<span class="de">Interesse mitteilen</span><span class="en" hidden>Express interest</span>';
+            echo '</a>';
         } elseif ($downgrade_locked) {
             echo '<span style="opacity:.75"><span class="de">Bereits geplant</span><span class="en" hidden>Already scheduled</span></span>';
         } else {

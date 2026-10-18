@@ -136,6 +136,10 @@ function eg_member_handoff_start_stripe_checkout($user_id, $level_id, $args = ar
     if ($user_id <= 0 || $level_id <= 0) {
         return '';
     }
+    /* Association membership: no online payment (client, 16 Oct 2026). */
+    if ($level_id === 2) {
+        return eg_member_handoff_brochure_url('expert', array());
+    }
     if (!class_exists('MemberOrder') || !function_exists('pmpro_getLevel')) {
         return eg_member_handoff_checkout_url($level_id, $user_id);
     }
@@ -319,6 +323,18 @@ function eg_member_handoff_handle()
     $level = isset($data['level']) ? (int) $data['level'] : eg_member_handoff_level_id($plan);
     if ($level !== 2) {
         $level = eg_member_handoff_level_id($plan);
+    }
+
+    /* No online sign-up or payment for the association membership (client, 16 Oct 2026). */
+    if ($level === 2) {
+        if ($wants_redirect) {
+            eg_member_handoff_redirect(eg_member_handoff_brochure_url('expert', array()));
+        }
+        eg_member_handoff_respond(false, array(
+            'ok'      => false,
+            'error'   => 'closed',
+            'message' => 'Association membership cannot be applied for online. Please use the interest form.',
+        ), 403);
     }
 
     $password = isset($data['password']) ? (string) $data['password'] : '';
@@ -608,6 +624,27 @@ add_action('template_redirect', function () {
     $clean = add_query_arg(array('level' => $level), home_url('/membership-checkout/'));
     eg_member_handoff_redirect($clean);
 }, 2);
+
+/**
+ * Association membership: no online checkout, also for logged-in users (client, 16 Oct 2026).
+ */
+add_action('template_redirect', function () {
+    if (is_admin()) {
+        return;
+    }
+    $level = isset($_REQUEST['level']) ? (int) $_REQUEST['level'] : (isset($_REQUEST['pmpro_level']) ? (int) $_REQUEST['pmpro_level'] : 0);
+    if ($level !== 2) {
+        return;
+    }
+    $is_checkout = function_exists('pmpro_is_checkout') && pmpro_is_checkout();
+    if (!$is_checkout) {
+        global $post;
+        $is_checkout = $post && !empty($post->post_name) && $post->post_name === 'membership-checkout';
+    }
+    if ($is_checkout) {
+        eg_member_handoff_redirect(eg_member_handoff_brochure_url('expert', array()));
+    }
+}, 3);
 
 /**
  * Guests who hit /membership-checkout/ without a handoff session go back to the brochure form.
