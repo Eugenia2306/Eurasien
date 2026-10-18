@@ -15,8 +15,8 @@ get_header();
 				<p class="eyebrow"><?php eg_bi_e( 'Think Tank und Plattform für Dialog · Berlin', 'Think Tank and Dialogue Platform · Berlin' ); ?></p>
 				<h1><?php eg_bi_e( 'Europa und Asien verstehen.', 'Understanding Europe and Asia.' ); ?></h1>
 				<p class="lead"><?php eg_bi_e(
-					'Die Eurasien Gesellschaft e. V. ist ein unabhängiger, gemeinnütziger Think Tank für Dialog und Verständigung. Sie erarbeitet Analysen zu Entwicklungen im eurasischen Raum und bringt Wissenschaft, Kultur, Wirtschaft und Politik miteinander ins Gespräch.',
-					'The Eurasien Gesellschaft e. V. is an independent, non-profit think tank for dialogue and understanding. It produces analyses of developments across the Eurasian space and brings science, culture, business and politics into dialogue.'
+					'Die Eurasien Gesellschaft e. V. ist ein unabhängiger Think Tank für Dialog und Verständigung. Sie erarbeitet Analysen zu Entwicklungen im eurasischen Raum und bringt Wissenschaft, Kultur, Wirtschaft und Politik miteinander ins Gespräch.',
+					'The Eurasien Gesellschaft e. V. is an independent think tank for dialogue and understanding. It produces analyses of developments across the Eurasian space and brings science, culture, business and politics into dialogue.'
 				); ?></p>
 				<div class="hero__cta">
 					<a class="btn btn--nav" href="<?php echo esc_url( eg_route( 'p-analysen' ) ); ?>"><?php eg_bi_e( 'Analysen & Perspektiven', 'Analysis & perspectives' ); ?></a>
@@ -58,7 +58,7 @@ get_header();
 			</a>
 			<a class="home-quick__item home-quick__item--ink" href="<?php echo esc_url( eg_route( 'p-mitgliedschaft-vorteile' ) ); ?>">
 				<span class="home-quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-4.2 2.4-6.3 5.5-6.3s5 2.1 5.5 6.3M17 8v6m-3-3h6"/></svg></span>
-				<span><b class="de">Mitglied werden</b><b class="en" hidden>Become a member</b><small class="de">Dialog aktiv mitgestalten</small><small class="en" hidden>Help shape the dialogue</small></span>
+				<span><b class="de">Mitgliedschaft beantragen</b><b class="en" hidden>Apply for membership</b><small class="de">Dialog aktiv mitgestalten</small><small class="en" hidden>Help shape the dialogue</small></span>
 				<i aria-hidden="true">↗</i>
 			</a>
 		</div>
@@ -199,8 +199,8 @@ get_header();
 			</div>
 			<div class="grid grid-2" style="gap:34px;align-items:center">
 				<p class="muted" style="margin:0"><?php eg_bi_e(
-					'Als gemeinnützige Plattform bringt die Eurasien Gesellschaft Fachleute, Wissenschaftler:innen, Kulturschaffende und Journalist:innen zusammen.',
-					'As a non-profit platform, the Eurasien Gesellschaft brings together experts, scholars, cultural figures and journalists.'
+					'Die Eurasien Gesellschaft bringt Fachleute, Wissenschaftler, Kulturschaffende und Journalisten zusammen.',
+					'The Eurasien Gesellschaft brings together experts, scholars, cultural figures and journalists.'
 				); ?></p>
 				<div class="grid grid-2" style="gap:14px">
 					<a class="card card--link" href="<?php echo esc_url( eg_route( 'p-vorstand' ) ); ?>" style="text-decoration:none;padding:18px"><span class="card__k"><?php eg_bi_e( 'Vorstand', 'Board' ); ?></span><h3 class="card__t" style="font-size:1.05rem"><?php eg_bi_e( 'Fünf öffentlich benannte Mitglieder', 'Five publicly named members' ); ?></h3></a>
@@ -271,7 +271,7 @@ get_header();
 					); ?></p>
 				</div>
 				<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;align-items:center">
-					<a class="btn btn--accent" href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url() : eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
+					<a class="btn btn--accent" href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
 					<a class="btn btn--onnavy" href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Partner werden', 'Become a partner' ); ?></a>
 				</div>
 			</div>

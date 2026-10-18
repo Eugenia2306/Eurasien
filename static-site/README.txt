@@ -1,6 +1,7 @@
 Eurasien Gesellschaft: static multipage site (Phase 1)
 Source of truth: eurasien_gesellschaft_54.html
 Rebuild: python tools/build_static_site.py
+The rebuild automatically runs tools/apply_seo.py before packaging.
 
 Contents
 - Public brochure pages (Home, Mission, Partner, Regionen, Mediathek, ...)
@@ -9,8 +10,8 @@ Contents
   Login, membership checkout, and event booking CTAs go to /app/ (Phase 2)
 - Apache: .htaccess (HTTPS + mitglieder/*.html redirects into /app/)
 
-cPanel deploy
-1. Open File Manager (or FTP) for the staging subdomain document root.
+ALL-INKL deploy
+1. Open File Manager (or SFTP) for the production document root.
 2. Upload EVERYTHING inside this folder into the document root.
    Do not upload the parent "static-site" folder name; upload its contents
    so that index.html sits at /index.html.

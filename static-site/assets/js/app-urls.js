@@ -1,8 +1,7 @@
 /**
  * Eurasien Gesellschaft: WordPress / Paid Memberships Pro URL map.
- * Paths stay root-relative (/app/...) so the same file works on staging and production.
- * Staging: https://eurasia.uwzghana.com/app/
- * Production: https://www.eurasien-gesellschaft.org/app/
+ * Paths stay root-relative (/app/...) so the same file remains portable.
+ * Production: https://eurasiengesellschaft.de/app/
  * Levels: 1 = Leserzugang (5 EUR/mo), 2 = Vereinsmitgliedschaft (120 EUR/yr)
  */
 (function (w) {

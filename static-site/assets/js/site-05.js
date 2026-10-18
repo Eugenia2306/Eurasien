@@ -1,5 +1,4 @@
-
-{
+window.EG_TAXONOMY = {
   "hinweis": "Redaktionelle Metadaten-Taxonomie der Eurasien Gesellschaft. Einzige Quelle der Wahrheit fuer die Verschlagwortung von Analysen. Karten zeigen max. 2-4 relevante Tags; die volle Logik lebt hier bzw. in data-* Attributen.",
   "regionen": [
     {
@@ -224,4 +223,4 @@
     ],
     "vermeiden": "wertende oder parteiische Begriffe (z. B. 'Schaden')."
   }
-}
+};

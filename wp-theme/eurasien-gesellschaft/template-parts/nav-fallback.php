@@ -13,7 +13,7 @@ declare(strict_types=1);
 		<div class="mega">
 			<a href="<?php echo esc_url( eg_route( 'p-mission' ) ); ?>"><?php eg_bi_e( 'Mission', 'Mission' ); ?></a>
 			<a href="<?php echo esc_url( eg_route( 'p-vorstand' ) ); ?>"><?php eg_bi_e( 'Vorstand & Experten', 'Board & Experts' ); ?></a>
-			<a href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Partner', 'Partners' ); ?></a>
+			<a href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Kooperationen', 'Cooperation' ); ?></a>
 			<a href="<?php echo esc_url( eg_route( 'p-news' ) ); ?>"><?php eg_bi_e( 'Gesellschaftsnachrichten', 'Society News' ); ?></a>
 		</div>
 	</div>
@@ -62,8 +62,6 @@ declare(strict_types=1);
 		<a class="nav-link" href="<?php echo esc_url( eg_route( 'p-mediathek' ) ); ?>"><?php eg_bi_e( 'Mediathek', 'Media Library' ); ?></a>
 		<div class="mega">
 			<a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer"><?php eg_bi_e( 'YouTube-Kanal', 'YouTube Channel' ); ?></a>
-			<a href="<?php echo esc_url( eg_route( 'p-recordings-archive' ) ); ?>"><?php eg_bi_e( 'Aufzeichnungen', 'Recordings' ); ?></a>
-			<a href="<?php echo esc_url( eg_route( 'p-mediathek' ) ); ?>"><?php eg_bi_e( 'Presse', 'Press' ); ?></a>
 		</div>
 	</div>
 	<div class="nav-item">

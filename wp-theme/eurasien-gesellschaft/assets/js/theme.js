@@ -1083,3 +1083,4 @@
   /* Re-render search labels after language changes. */
   d.querySelectorAll('.lang button[data-lang]').forEach(function(btn){btn.addEventListener('click',function(){setTimeout(function(){if(dialog&&!dialog.hidden) renderSearch(input?input.value:'');},0);});});
 })();
+})();

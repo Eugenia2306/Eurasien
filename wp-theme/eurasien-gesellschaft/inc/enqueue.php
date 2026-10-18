@@ -42,6 +42,18 @@ add_action(
 			EG_THEME_VERSION
 		);
 
+		if (
+			function_exists( 'is_woocommerce' )
+			&& ( is_woocommerce() || is_cart() || is_checkout() )
+		) {
+			wp_enqueue_style(
+				'eg-woocommerce',
+				EG_THEME_URI . '/assets/css/woocommerce.css',
+				array( 'eg-app-pages' ),
+				EG_THEME_VERSION
+			);
+		}
+
 		// Language switcher: small, isolated, always loads.
 		wp_enqueue_script(
 			'eg-lang',
@@ -55,6 +67,14 @@ add_action(
 			'eg-theme',
 			EG_THEME_URI . '/assets/js/theme.js',
 			array( 'eg-lang' ),
+			EG_THEME_VERSION,
+			true
+		);
+
+		wp_enqueue_script(
+			'eg-scroll-cues',
+			EG_THEME_URI . '/assets/js/scroll-cues.js',
+			array(),
 			EG_THEME_VERSION,
 			true
 		);

@@ -12,7 +12,9 @@ if (!is_readable($wp_load)) {
 require_once $wp_load;
 
 header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: public, max-age=60');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+nocache_headers();
 
 if (!function_exists('eg_event_admin_feed_payload')) {
     echo wp_json_encode(array('events' => array(), 'error' => 'plugin-missing'));

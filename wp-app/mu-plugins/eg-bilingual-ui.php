@@ -37,12 +37,12 @@ function eg_ui_replace_outside_tags( $html, $needle, $replacement ) {
 		return $html;
 	}
 	return preg_replace_callback(
-		'/(<[^>]*>)|([^<]+)/',
+		'/(<script\b[^>]*>.*?<\/script>)|(<style\b[^>]*>.*?<\/style>)|(<[^>]*>)|([^<]+)/is',
 		static function ( $m ) use ( $needle, $replacement ) {
-			if ( ! empty( $m[1] ) ) {
-				return $m[1];
+			if ( empty( $m[4] ) ) {
+				return $m[0];
 			}
-			return str_replace( $needle, $replacement, $m[2] );
+			return str_replace( $needle, $replacement, $m[4] );
 		},
 		$html
 	);
@@ -155,8 +155,6 @@ add_filter(
 			'Username or Email Address' => array( 'Benutzername oder E-Mail-Adresse', 'Username or Email Address' ),
 			'Remember Me'               => array( 'Angemeldet bleiben', 'Remember Me' ),
 			'Lost Password?'            => array( 'Passwort vergessen?', 'Lost Password?' ),
-			'Show Password'             => array( 'Passwort anzeigen', 'Show Password' ),
-			'Hide Password'             => array( 'Passwort verbergen', 'Hide Password' ),
 			'Add to cart'               => array( 'In den Warenkorb', 'Add to cart' ),
 			'View cart'                 => array( 'Warenkorb ansehen', 'View cart' ),
 		);
@@ -212,6 +210,22 @@ add_action(
   function lang() {
     return document.documentElement.getAttribute('data-eg-lang') === 'en' ? 'en' : 'de';
   }
+  function passwordLabels() {
+    var L = lang();
+    return L === 'en'
+      ? { show: 'Show Password', hide: 'Hide Password' }
+      : { show: 'Passwort anzeigen', hide: 'Passwort verbergen' };
+  }
+  function applyPasswordToggle() {
+    var labels = passwordLabels();
+    document.querySelectorAll('.pmpro_form_field-password-toggle button, [id^="pmpro_btn-password-toggle"]').forEach(function (btn) {
+      var showing = btn.getAttribute('data-toggle') === '1';
+      var t = showing ? labels.hide : labels.show;
+      var state = btn.querySelector('.pmpro_form_field-password-toggle-state');
+      if (state) state.textContent = t;
+      btn.setAttribute('aria-label', t);
+    });
+  }
   function apply() {
     var L = lang();
     pairs.forEach(function (p) {
@@ -222,7 +236,13 @@ add_action(
         else el.textContent = t;
       });
     });
+    applyPasswordToggle();
   }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.pmpro_form_field-password-toggle button, [id^="pmpro_btn-password-toggle"]');
+    if (!btn) return;
+    setTimeout(applyPasswordToggle, 0);
+  });
   document.addEventListener('eg:lang', apply);
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
   else apply();

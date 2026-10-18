@@ -200,7 +200,7 @@ function eg_render_stripe_classic_form(string $notice = ''): void
 
     echo '<h3>Go live (real cards)</h3>';
     echo '<ol>';
-    echo '<li>Finish DNS so the shop runs on <code>www.eurasien-gesellschaft.org/app/</code></li>';
+    echo '<li>Confirm the shop runs on <code>https://eurasiengesellschaft.de/app/</code></li>';
     echo '<li>Open <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener">dashboard.stripe.com/apikeys</a> (live mode)</li>';
     echo '<li>Paste <code>pk_live_...</code> and <code>sk_live_...</code> above</li>';
     echo '<li>Uncheck <strong>Test mode</strong>, Save, hard-refresh checkout</li>';

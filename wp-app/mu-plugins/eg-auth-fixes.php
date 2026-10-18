@@ -114,7 +114,7 @@ function eg_membership_signup_url($plan = '')
  */
 add_filter('pmpro_non_member_text_filter', function ($text) {
     $login = esc_url(wp_login_url(get_permalink()));
-    $signup = esc_url(eg_membership_signup_url());
+    $signup = esc_url(eg_membership_signup_url('expert'));
     $bi = static function ($de, $en) {
         if (function_exists('eg_bi')) {
             return eg_bi($de, $en);
@@ -123,7 +123,7 @@ add_filter('pmpro_non_member_text_filter', function ($text) {
     };
     $extra = '<p class="eg-gate-cta" style="margin-top:1.25rem">'
         . '<a class="pmpro_btn" style="margin-right:10px" href="' . $login . '">' . $bi('Anmelden', 'Log In') . '</a>'
-        . '<a class="pmpro_btn" href="' . $signup . '">' . $bi('Mitglied werden', 'Become a member') . '</a>'
+        . '<a class="pmpro_btn" href="' . $signup . '">' . $bi('Mitgliedschaft beantragen', 'Apply for membership') . '</a>'
         . '</p>';
     return $text . $extra;
 }, 20);
@@ -329,15 +329,16 @@ add_filter('retrieve_password_message', function ($message, $key, $user_login) {
 }, 99, 3);
 
 /**
- * Hostinger often drops mail() when From is not on the hosting domain.
+ * Transactional From address. SMTP (eg-smtp.php) overrides this when configured.
  */
 add_filter('wp_mail_from', function ($email) {
-    $admin = get_option('admin_email');
-    if (is_email($admin)) {
-        return $admin;
+    if (defined('EG_MAIL_FROM') && is_email(EG_MAIL_FROM)) {
+        return EG_MAIL_FROM;
     }
-    $host = wp_parse_url(home_url(), PHP_URL_HOST);
-    return $host ? 'noreply@' . $host : $email;
+    if (defined('EG_SMTP_USER') && is_email(EG_SMTP_USER)) {
+        return EG_SMTP_USER;
+    }
+    return 'noreply@eurasiengesellschaft.de';
 });
 
 add_filter('wp_mail_from_name', function () {

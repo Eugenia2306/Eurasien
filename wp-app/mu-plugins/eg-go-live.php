@@ -58,7 +58,7 @@ function eg_go_live_status(): array
         && defined('EG_SMTP_PASS') && EG_SMTP_PASS !== '';
 
     $home = home_url('/');
-    $is_prod_host = (bool) preg_match('/eurasien-gesellschaft\.org/i', $home);
+    $is_prod_host = (bool) preg_match('/eurasiengesellschaft\.de/i', $home);
 
     $levels = array();
     if (function_exists('pmpro_getAllLevels')) {
@@ -180,7 +180,7 @@ function eg_go_live_render()
     echo '</ul>';
     echo '<p><a class="button button-primary" href="' . esc_url(admin_url('tools.php?page=eg-stripe-settings')) . '">Open EG Stripe</a></p>';
     echo '<ol>';
-    echo '<li>Stay on test while the host is <code>eurasia.uwzghana.com</code></li>';
+    echo '<li>Use Stripe test mode until the production checkout has been verified end to end</li>';
     echo '<li>On production: paste <code>pk_live_</code> / <code>sk_live_</code>, uncheck Test mode, Save</li>';
     echo '<li>Place one small real card order, confirm thank-you + download + email</li>';
     echo '<li>Keep bank transfer enabled as fallback</li>';
@@ -193,9 +193,9 @@ function eg_go_live_render()
     echo '<li>Site title: ' . esc_html((string) $st['blogname']) . '</li>';
     echo '</ul>';
     echo '<ol>';
-    echo '<li>Point <code>www.eurasien-gesellschaft.org</code> document root at Hostinger <code>public_html/eurasia/</code> (brochure + <code>/app/</code>)</li>';
-    echo '<li>In WP: set WordPress Address and Site Address to <code>https://www.eurasien-gesellschaft.org/app</code></li>';
-    echo '<li>Purge Hostinger CDN / cache</li>';
+    echo '<li>Point <code>eurasiengesellschaft.de</code> at the ALL-INKL document root containing the brochure and <code>/app/</code></li>';
+    echo '<li>In WP: set WordPress Address and Site Address to <code>https://eurasiengesellschaft.de/app</code></li>';
+    echo '<li>Clear host and browser caches after deployment</li>';
     echo '<li>Confirm brochure <code>/</code> and shop <code>/app/shop/</code></li>';
     echo '<li>Switch Stripe to live keys after DNS works</li>';
     echo '</ol>';

@@ -1,0 +1,52 @@
+---
+description: Mandatory SEO + GEO for all web projects — audit existing sites on load, backfill if missing
+alwaysApply: true
+---
+
+# SEO + GEO (every web project — new and existing)
+
+Applies to **new** sites and **any existing** website/webapp we open to work on. Do not leave SEO/GEO half-done.
+
+## On session start (existing projects)
+
+When the workspace is (or contains) a public website/webapp:
+
+1. **Quick audit** — check for `sitemap.xml`, `robots.txt` (with `Sitemap:`), `llms.txt`, and whether public pages have unique title/description/canonical/OG/Twitter/JSON-LD.
+2. **If gaps exist** — treat fixing them as part of the current work (or do it first if the user only asked for unrelated edits that touch the public site). Do not wait to be asked.
+3. **If already complete** — do not rework; keep metadata in sync when adding/changing pages.
+4. **Say briefly** what was missing and what you added (one short note).
+
+Prefer one config + generator (this repo: `tools/seo_config.py` + `python tools/apply_seo.py`) over hand-editing every HTML head.
+
+## Day-one / backfill deliverables (non-negotiable)
+
+| Artifact | Purpose |
+|---|---|
+| `sitemap.xml` (or sitemap index) | Absolute HTTPS URLs, `lastmod`, sensible `changefreq`/`priority`; only indexable URLs |
+| `robots.txt` | `Allow` public content; `Disallow` admin, login, gated, draft; **`Sitemap:`** absolute URL |
+| `llms.txt` | Plain-language site summary + key URLs for LLM/GEO crawlers |
+| `ai.txt` (optional but preferred) | Allow/disallow for AI bots + contact + sitemap pointer |
+| Favicon + `site.webmanifest` | Branding / PWA hints |
+
+## Every public HTML page
+
+- Unique `<title>` (~50–60 chars where practical) + unique meta `description` (~150–160)
+- Absolute HTTPS `canonical`; `robots` `index,follow` (or `noindex` for login/gated/preview)
+- Open Graph + Twitter `summary_large_image` (absolute `og:image`)
+- JSON-LD: Organization/WebSite sitewide; page types as needed (`WebPage`, `Article`, `Event`, `Person`, `FAQPage`, `BreadcrumbList`, …)
+- One H1; crawlable HTML (critical content not JS-only); no orphan indexable pages
+
+## GEO
+
+- Allow reputable AI crawlers in `robots.txt` when content should be cited; keep `llms.txt` accurate
+- Factual, attributable copy; stable public URLs
+
+## Search Console readiness
+
+Canonical host only (www vs apex), HTTPS, sitemap only public URLs, noindex gated/admin, bump `lastmod` on content changes.
+
+## Do not
+
+- Skip the audit on an existing public site
+- Ship or leave live public pages without sitemap + robots Sitemap line
+- Duplicate titles/descriptions; index login/member/staging; relative URLs in sitemap/canonical/`og:image`

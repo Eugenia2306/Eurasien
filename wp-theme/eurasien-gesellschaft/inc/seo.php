@@ -30,10 +30,17 @@ function eg_seo_brochure_base(): string {
 }
 
 /**
- * Absolute logo / default OG image on the brochure host.
+ * Absolute site logo on the brochure host (header / JSON-LD).
+ */
+function eg_seo_logo_url(): string {
+	return eg_seo_brochure_base() . '/assets/images/logo.png?v=3';
+}
+
+/**
+ * Square share image so WhatsApp and similar apps show the full logo.
  */
 function eg_seo_default_image(): string {
-	return eg_seo_brochure_base() . '/assets/images/embed-62c28610d17731c2.png';
+	return eg_seo_brochure_base() . '/assets/images/og-share.png';
 }
 
 /**
@@ -163,13 +170,16 @@ function eg_seo_current_meta(): array {
 	$brochure = eg_seo_brochure_base();
 	$default  = array(
 		'title'       => 'Eurasien Gesellschaft e. V.',
-		'description' => 'Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum.',
+		'description' => 'Unabhängige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum.',
 		'robots'      => 'noindex,follow',
 		'canonical'   => home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) ),
 		'og_type'     => 'website',
 	);
 
-	if ( is_singular() ) {
+	$is_shop = function_exists( 'is_shop' ) && is_shop();
+	if ( $is_shop && function_exists( 'wc_get_page_permalink' ) ) {
+		$default['canonical'] = wc_get_page_permalink( 'shop' );
+	} elseif ( is_singular() ) {
 		$permalink = get_permalink();
 		if ( is_string( $permalink ) && $permalink !== '' ) {
 			$default['canonical'] = $permalink;
@@ -180,7 +190,9 @@ function eg_seo_current_meta(): array {
 
 	$map  = eg_seo_page_map();
 	$slug = '';
-	if ( is_singular() ) {
+	if ( $is_shop ) {
+		$slug = 'shop';
+	} elseif ( is_singular() ) {
 		$qid = get_queried_object_id();
 		if ( $qid ) {
 			$slug = (string) get_post_field( 'post_name', $qid );
@@ -248,16 +260,13 @@ function eg_seo_wp_head(): void {
 	$meta     = eg_seo_current_meta();
 	$brochure = eg_seo_brochure_base();
 	$image    = eg_seo_default_image();
+	$logo     = eg_seo_logo_url();
 	$org_id   = $brochure . '/#organization';
 	$site_id  = $brochure . '/#website';
 
 	echo "\n<!-- EG SEO + GEO (/app/) -->\n";
 	echo '<meta name="description" content="' . esc_attr( $meta['description'] ) . '">' . "\n";
-	echo '<meta name="robots" content="' . esc_attr( $meta['robots'] ) . '">' . "\n";
 	echo '<link rel="canonical" href="' . esc_url( $meta['canonical'] ) . '">' . "\n";
-	echo '<link rel="alternate" hreflang="de" href="' . esc_url( $meta['canonical'] ) . '">' . "\n";
-	echo '<link rel="alternate" hreflang="en" href="' . esc_url( $meta['canonical'] ) . '">' . "\n";
-	echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $meta['canonical'] ) . '">' . "\n";
 
 	echo '<meta property="og:type" content="' . esc_attr( $meta['og_type'] ) . '">' . "\n";
 	echo '<meta property="og:site_name" content="Eurasien Gesellschaft e. V.">' . "\n";
@@ -268,15 +277,18 @@ function eg_seo_wp_head(): void {
 	echo '<meta property="og:locale:alternate" content="en_US">' . "\n";
 	echo '<meta property="og:image" content="' . esc_url( $image ) . '">' . "\n";
 	echo '<meta property="og:image:alt" content="Eurasien Gesellschaft e. V.">' . "\n";
+	echo '<meta property="og:image:width" content="1200">' . "\n";
+	echo '<meta property="og:image:height" content="1200">' . "\n";
+	echo '<meta property="og:image:type" content="image/png">' . "\n";
 
-	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+	echo '<meta name="twitter:card" content="summary">' . "\n";
 	echo '<meta name="twitter:title" content="' . esc_attr( $meta['title'] ) . '">' . "\n";
 	echo '<meta name="twitter:description" content="' . esc_attr( $meta['description'] ) . '">' . "\n";
 	echo '<meta name="twitter:image" content="' . esc_url( $image ) . '">' . "\n";
 
 	echo '<meta name="theme-color" content="#0032A0">' . "\n";
-	echo '<link rel="icon" href="' . esc_url( $image ) . '" type="image/png">' . "\n";
-	echo '<link rel="apple-touch-icon" href="' . esc_url( $image ) . '">' . "\n";
+	echo '<link rel="icon" href="' . esc_url( $logo ) . '" type="image/png">' . "\n";
+	echo '<link rel="apple-touch-icon" href="' . esc_url( $logo ) . '">' . "\n";
 
 	$graph = array(
 		array(
@@ -287,11 +299,11 @@ function eg_seo_wp_head(): void {
 			'url'           => $brochure . '/',
 			'logo'          => array(
 				'@type' => 'ImageObject',
-				'url'   => $image,
+				'url'   => $logo,
 			),
 			'email'         => 'kontakt@eurasien-gesellschaft.org',
 			'foundingDate'  => '2021',
-			'description'   => 'Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum: Kultur, Wissenschaft, Wirtschaft und Geopolitik.',
+			'description'   => 'Unabhängige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum: Kultur, Wissenschaft, Wirtschaft und Geopolitik.',
 			'address'       => array(
 				'@type'           => 'PostalAddress',
 				'streetAddress'   => 'Kunz-Buntschuh-Straße 11',
@@ -367,3 +379,9 @@ add_filter(
 	},
 	99
 );
+
+/*
+ * Public discovery is owned by the brochure sitemap at /sitemap.xml.
+ * /app/ is transactional or gated and intentionally noindex.
+ */
+add_filter( 'wp_sitemaps_enabled', '__return_false' );

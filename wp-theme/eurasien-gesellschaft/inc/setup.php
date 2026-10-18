@@ -33,6 +33,7 @@ add_action(
 		);
 		add_theme_support( 'align-wide' );
 		add_theme_support( 'responsive-embeds' );
+		add_theme_support( 'woocommerce' );
 
 		register_nav_menus(
 			array(

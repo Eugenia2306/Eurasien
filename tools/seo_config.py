@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 SITE_NAME = "Eurasien Gesellschaft e. V."
-SITE_BASE = "https://www.eurasien-gesellschaft.org"
-DEFAULT_OG_IMAGE = f"{SITE_BASE}/assets/images/embed-62c28610d17731c2.png"
-LOGO_URL = DEFAULT_OG_IMAGE
+SITE_BASE = "https://eurasiengesellschaft.de"
+# Sitewide logo (header, footer, favicon, JSON-LD Organization.logo)
+LOGO_URL = f"{SITE_BASE}/assets/images/logo.png"
+# Square 1200x1200 share card so WhatsApp/Telegram show the full logo
+DEFAULT_OG_IMAGE = f"{SITE_BASE}/assets/images/og-share.png"
+OG_IMAGE_WIDTH = 1200
+OG_IMAGE_HEIGHT = 1200
 
 ORG = {
     "@id": f"{SITE_BASE}/#organization",
@@ -401,6 +405,13 @@ PAGES: dict[str, dict] = {
         "title": "Studien | Eurasien Gesellschaft",
         "description": "Mitgliederbereich: Studien der Eurasien Gesellschaft (Zugang erforderlich).",
         "robots": "noindex,follow",
+        "sitemap": False,
+        "schema": "webpage",
+    },
+    "404.html": {
+        "title": "Seite nicht gefunden | Eurasien Gesellschaft",
+        "description": "Die angeforderte Seite wurde nicht gefunden.",
+        "robots": "noindex,nofollow",
         "sitemap": False,
         "schema": "webpage",
     },

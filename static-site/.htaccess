@@ -1,16 +1,28 @@
-# Eurasien Gesellschaft static site (Apache / cPanel)
+# Eurasien Gesellschaft static site (Apache / ALL-INKL)
 # Upload as .htaccess in the document root (same folder as index.html).
 
 Options -Indexes
 ServerSignature Off
+DirectoryIndex index.php index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Force HTTPS (safe on cPanel when SSL is active)
+  # Canonical host
+  RewriteCond %{HTTP_HOST} ^www\.eurasiengesellschaft\.de$ [NC]
+  RewriteRule ^ https://eurasiengesellschaft.de%{REQUEST_URI} [R=301,L]
+
+  # Force HTTPS once SSL is active
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !=https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Homepage is / — never show index.html in the address bar
+  RewriteRule ^index\.html$ / [R=301,L]
+
+  # Former recordings placeholder: the Mediathek is the single media page
+  RewriteRule ^aufzeichnungen\.html$ /mediathek.html [R=301,L]
+  RewriteRule ^personen/andreas-schraps\.html$ /personen/uwe-schraps.html [R=301,L]
 
   # Phase 2+: send gated brochure pages into WordPress
   RewriteRule ^mitglieder/positionen\.html$ /app/mitglieder/positionen/ [R=302,L]
@@ -23,6 +35,10 @@ ServerSignature Off
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   Header set X-Frame-Options "SAMEORIGIN"
+  # Never let browsers cache HTML error bodies as CSS/JS/images
+  <FilesMatch "\.(css|js|mjs|map|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|otf)$">
+    Header set X-Content-Type-Options "nosniff"
+  </FilesMatch>
 </IfModule>
 
 # Cache static assets
@@ -36,4 +52,6 @@ ServerSignature Off
   ExpiresByType image/svg+xml "access plus 30 days"
 </IfModule>
 
-ErrorDocument 404 /index.html
+# Important: do NOT point 404 at index.html — that returns HTML for missing
+# CSS/JS/image URLs; with nosniff, Chrome then shows an unstyled page.
+ErrorDocument 404 /404.html

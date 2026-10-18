@@ -134,7 +134,7 @@
     results.innerHTML=found.map(function(x,i){
       var title=visibleText(x.h,lang)||x.id.replace(/^p-/,'');
       var desc=visibleText(x.p,lang).slice(0,120);
-      return '<a class="search-result" href="#'+esc(x.id)+'"><span class="search-result__icon">'+String(i+1).padStart(2,'0')+'</span><span><b>'+esc(title)+'</b><small>'+esc(desc)+'</small></span><i aria-hidden="true">→</i></a>';
+      return '<a class="search-result" href="'+(x.id==='p-home'?'/':'#'+esc(x.id))+'"><span class="search-result__icon">'+String(i+1).padStart(2,'0')+'</span><span><b>'+esc(title)+'</b><small>'+esc(desc)+'</small></span><i aria-hidden="true">→</i></a>';
     }).join('');
     results.querySelectorAll('a').forEach(function(a){a.addEventListener('click',closeSearch);});
   }

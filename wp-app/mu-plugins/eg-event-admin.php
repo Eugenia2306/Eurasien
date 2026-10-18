@@ -90,6 +90,23 @@ add_action('init', function () {
         )
     );
 
+    /* Optional links shown on past events: report and recording. */
+    foreach (array('eg_event_report_url', 'eg_event_recording_url') as $key) {
+        register_post_meta(
+            'eg_event',
+            $key,
+            array(
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => 'esc_url_raw',
+                'auth_callback'     => static function () {
+                    return current_user_can('edit_posts');
+                },
+            )
+        );
+    }
+
     /* Longer EN body: allow basic HTML via textarea sanitize. */
     register_post_meta(
         'eg_event',
@@ -200,6 +217,7 @@ function eg_event_admin_render_metabox($post)
     $start = $get('eg_event_start', '');
     $t_start = $get('eg_event_time_start', '19:00');
     $t_end = $get('eg_event_time_end', '21:00');
+    $time_tba = (bool) get_post_meta($post->ID, 'eg_event_time_tba', true);
     $loc = $get('eg_event_location', '');
     $loc_en = $get('eg_event_location_en', '');
     $title_en = $get('eg_event_title_en', '');
@@ -211,8 +229,10 @@ function eg_event_admin_render_metabox($post)
     $speaker = $get('eg_event_speaker', '');
     $speaker_en = $get('eg_event_speaker_en', '');
     $body_en = (string) get_post_meta($post->ID, 'eg_event_body_en', true);
+    $report_url = (string) get_post_meta($post->ID, 'eg_event_report_url', true);
+    $recording_url = (string) get_post_meta($post->ID, 'eg_event_recording_url', true);
 
-    echo '<style>.eg-ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;max-width:920px}.eg-ev-grid .full{grid-column:1/-1}.eg-ev-grid label{display:block;font-weight:600;margin:0 0 4px}.eg-ev-grid input[type=text],.eg-ev-grid input[type=date],.eg-ev-grid input[type=time],.eg-ev-grid input[type=number],.eg-ev-grid select,.eg-ev-grid textarea{width:100%;max-width:100%}@media(max-width:782px){.eg-ev-grid{grid-template-columns:1fr}}#eg-event-details-panel .inside{padding:12px 16px 16px}</style>';
+    echo '<style>.eg-ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;max-width:920px}.eg-ev-grid .full{grid-column:1/-1}.eg-ev-grid label{display:block;font-weight:600;margin:0 0 4px}.eg-ev-grid input[type=text],.eg-ev-grid input[type=url],.eg-ev-grid input[type=date],.eg-ev-grid input[type=time],.eg-ev-grid input[type=number],.eg-ev-grid select,.eg-ev-grid textarea{width:100%;max-width:100%}@media(max-width:782px){.eg-ev-grid{grid-template-columns:1fr}}#eg-event-details-panel .inside{padding:12px 16px 16px}</style>';
     echo '<p style="margin-top:0;color:#646970"><strong>Required for the public calendar:</strong> date, location, type. Check <em>Bookable</em> and set a price to show Register + Stripe.</p>';
     echo '<div class="eg-ev-grid">';
 
@@ -230,6 +250,10 @@ function eg_event_admin_render_metabox($post)
 
     echo '<p><label for="eg_event_time_end">End time</label>';
     echo '<input type="time" id="eg_event_time_end" name="eg_event_time_end" value="' . esc_attr($t_end) . '"></p>';
+
+    echo '<p class="full"><label for="eg_event_time_tba" style="display:flex;align-items:center;gap:8px;font-weight:600">';
+    echo '<input type="checkbox" id="eg_event_time_tba" name="eg_event_time_tba" value="1"' . checked($time_tba, true, false) . '> ';
+    echo 'Uhrzeit folgt / time to be announced (the website shows "Uhrzeit folgt" instead of the times above)</label></p>';
 
     echo '<p class="full"><label for="eg_event_title_en">Title (English, optional)</label>';
     echo '<input type="text" id="eg_event_title_en" name="eg_event_title_en" value="' . esc_attr($title_en) . '" placeholder="Leave empty to use the German title"></p>';
@@ -262,6 +286,12 @@ function eg_event_admin_render_metabox($post)
     echo '<p class="full"><label for="eg_event_body_en">Description (English, optional)</label>';
     echo '<textarea id="eg_event_body_en" name="eg_event_body_en" rows="5">' . esc_textarea($body_en) . '</textarea>';
     echo '<span class="description">German description = main editor content below.</span></p>';
+
+    echo '<p class="full"><label for="eg_event_report_url">Link zum Bericht / report link (optional, shown on past events)</label>';
+    echo '<input type="url" id="eg_event_report_url" name="eg_event_report_url" value="' . esc_attr($report_url) . '" placeholder="https://"></p>';
+
+    echo '<p class="full"><label for="eg_event_recording_url">Link zur Aufzeichnung / recording link, e.g. YouTube (optional, shown on past events)</label>';
+    echo '<input type="url" id="eg_event_recording_url" name="eg_event_recording_url" value="' . esc_attr($recording_url) . '" placeholder="https://www.youtube.com/watch?v=..."></p>';
 
     echo '</div>';
 }
@@ -309,11 +339,18 @@ add_action('save_post_eg_event', function ($post_id) {
     $price = isset($_POST['eg_event_price']) ? round((float) wp_unslash($_POST['eg_event_price']), 2) : 10;
     update_post_meta($post_id, 'eg_event_price', $price);
     update_post_meta($post_id, 'eg_event_bookable', !empty($_POST['eg_event_bookable']));
+    update_post_meta($post_id, 'eg_event_time_tba', !empty($_POST['eg_event_time_tba']));
 
     if (isset($_POST['eg_event_body_en'])) {
         update_post_meta($post_id, 'eg_event_body_en', wp_kses_post(wp_unslash($_POST['eg_event_body_en'])));
     }
-});
+
+    foreach (array('eg_event_report_url', 'eg_event_recording_url') as $key) {
+        if (isset($_POST[$key])) {
+            update_post_meta($post_id, $key, esc_url_raw(trim((string) wp_unslash($_POST[$key]))));
+        }
+    }
+}, 99);
 
 /**
  * Admin list columns.
@@ -870,19 +907,10 @@ function eg_event_admin_run_seed()
     );
 }
 
-/**
- * Tools submenu: import brochure events.
+/*
+ * The "Import brochure" admin menu was removed on 2026-10-07: re-running the old seed
+ * reset edited events to the original catalog and trashed events added since.
  */
-add_action('admin_menu', function () {
-    add_submenu_page(
-        'edit.php?post_type=eg_event',
-        'Import brochure events',
-        'Import brochure',
-        'manage_options',
-        'eg-event-seed',
-        'eg_event_admin_seed_page'
-    );
-});
 
 function eg_event_admin_seed_page()
 {
@@ -988,7 +1016,7 @@ function eg_event_admin_to_feed_item(WP_Post $post)
 
     $slug = $post->post_name ?: ('ev-' . $id);
 
-    return array(
+    $item = array(
         'id'           => $slug,
         'date'         => $date,
         'status'       => $status,
@@ -997,6 +1025,7 @@ function eg_event_admin_to_feed_item(WP_Post $post)
         'bookable'     => $bookable && $status === 'upcoming',
         'time_start'   => (string) get_post_meta($id, 'eg_event_time_start', true) ?: '19:00',
         'time_end'     => (string) get_post_meta($id, 'eg_event_time_end', true) ?: '21:00',
+        'time_tba'     => (bool) get_post_meta($id, 'eg_event_time_tba', true),
         'location'     => $loc,
         'location_en'  => $loc_en,
         'title'        => $title_de,
@@ -1007,7 +1036,17 @@ function eg_event_admin_to_feed_item(WP_Post $post)
         'speaker_en'   => $speaker_en,
         'body_html'    => $body_de,
         'body_html_en' => $body_en,
+        'report_url'   => esc_url_raw((string) get_post_meta($id, 'eg_event_report_url', true)),
+        'recording_url' => esc_url_raw((string) get_post_meta($id, 'eg_event_recording_url', true)),
     );
+
+    /**
+     * Overlay live calendar / ticket data (The Events Calendar, etc.).
+     *
+     * @param array   $item Feed row.
+     * @param WP_Post $post Event post.
+     */
+    return apply_filters('eg_event_feed_item', $item, $post);
 }
 
 /**

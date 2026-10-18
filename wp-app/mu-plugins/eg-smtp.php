@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: EG SMTP
- * Description: Hostinger SMTP for WordPress mail (password reset, memberships).
+ * Description: ALL-INKL SMTP for WordPress mail (password reset, memberships).
  * Author: d4rl1ngt0n
  */
 
@@ -16,8 +16,32 @@ if (is_readable($config)) {
     require_once $config;
 }
 
+if (!defined('EG_MAIL_FROM')) {
+    define('EG_MAIL_FROM', 'noreply@eurasiengesellschaft.de');
+}
+
 /**
- * Send all wp_mail() traffic through Hostinger SMTP when credentials exist.
+ * Visible From address. Must stay on the same domain as the SMTP mailbox
+ * or providers reject the message.
+ */
+function eg_smtp_from_address()
+{
+    $fallback = 'noreply@eurasiengesellschaft.de';
+    $user     = (defined('EG_SMTP_USER') && is_email(EG_SMTP_USER)) ? EG_SMTP_USER : '';
+    $from     = (defined('EG_MAIL_FROM') && is_email(EG_MAIL_FROM)) ? EG_MAIL_FROM : $fallback;
+    if ($user === '') {
+        return $from;
+    }
+    $from_dom = strtolower((string) substr(strrchr($from, '@'), 1));
+    $user_dom = strtolower((string) substr(strrchr($user, '@'), 1));
+    if ($from_dom !== '' && $from_dom === $user_dom) {
+        return $from;
+    }
+    return $user;
+}
+
+/**
+ * Send all wp_mail() traffic through SMTP when credentials exist.
  * If our SMTP config is missing, force PHP mail() so other plugins cannot leave
  * a broken SMTP auth setup that fails with "Could not authenticate".
  */
@@ -26,16 +50,17 @@ add_action('phpmailer_init', function ($phpmailer) {
         && defined('EG_SMTP_PASS') && EG_SMTP_PASS !== '';
 
     if ($configured) {
+        $from = eg_smtp_from_address();
         $phpmailer->isSMTP();
-        $phpmailer->Host       = defined('EG_SMTP_HOST') ? EG_SMTP_HOST : 'smtp.hostinger.com';
+        $phpmailer->Host       = defined('EG_SMTP_HOST') ? EG_SMTP_HOST : 'w0220438.kasserver.com';
         $phpmailer->SMTPAuth   = true;
         $phpmailer->Port       = defined('EG_SMTP_PORT') ? (int) EG_SMTP_PORT : 465;
         $phpmailer->Username   = EG_SMTP_USER;
         $phpmailer->Password   = EG_SMTP_PASS;
         $phpmailer->SMTPSecure = defined('EG_SMTP_SECURE') ? EG_SMTP_SECURE : 'ssl';
-        $phpmailer->From       = EG_SMTP_USER;
+        $phpmailer->From       = $from;
         $phpmailer->FromName   = defined('EG_SMTP_FROM_NAME') ? EG_SMTP_FROM_NAME : 'Eurasien Gesellschaft';
-        $phpmailer->Sender     = EG_SMTP_USER;
+        $phpmailer->Sender     = $from;
         return;
     }
 
@@ -45,10 +70,7 @@ add_action('phpmailer_init', function ($phpmailer) {
 }, 999);
 
 add_filter('wp_mail_from', function ($email) {
-    if (defined('EG_SMTP_USER') && is_email(EG_SMTP_USER)) {
-        return EG_SMTP_USER;
-    }
-    return $email;
+    return eg_smtp_from_address();
 }, 20);
 
 add_filter('wp_mail_from_name', function ($name) {
@@ -119,7 +141,7 @@ add_action('admin_notices', function () {
     if ($configured) {
         return;
     }
-    echo '<div class="notice notice-error"><p><strong>Eurasien email:</strong> SMTP is not configured. Password reset and membership emails will not reach inboxes. Add Hostinger mailbox credentials in <code>wp-content/mu-plugins/eg-private/smtp-config.php</code> (see <code>wp-app/SMTP_SETUP.txt</code>).</p></div>';
+    echo '<div class="notice notice-error"><p><strong>Eurasien email:</strong> SMTP is not configured. Password reset and membership emails will not reach inboxes. Add ALL-INKL mailbox credentials in <code>wp-content/mu-plugins/eg-private/smtp-config.php</code>.</p></div>';
 });
 
 add_action('admin_menu', function () {
@@ -155,7 +177,7 @@ function eg_mail_test_page()
     echo '<div class="wrap"><h1>EG Mail Test</h1>';
     echo $result; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     if (!$configured) {
-        echo '<p><strong>SMTP is not configured.</strong> Create <code>mu-plugins/eg-private/smtp-config.php</code> from <code>wp-app/eg-smtp-config.example.php</code>.</p>';
+        echo '<p><strong>SMTP is not configured.</strong> Create <code>mu-plugins/eg-private/smtp-config.php</code> from <code>wp-app/eg-smtp-config.example.php</code> using an ALL-INKL mailbox on eurasiengesellschaft.de.</p>';
     } else {
         echo '<p>SMTP user: <code>' . esc_html(EG_SMTP_USER) . '</code></p>';
         echo '<form method="post">';

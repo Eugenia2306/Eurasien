@@ -19,7 +19,7 @@ $ctx = function_exists( 'eg_app_header_context' ) ? eg_app_header_context() : ar
 	'account'        => home_url( '/membership-account/' ),
 	'login'          => function_exists( 'eg_member_login_url' ) ? eg_member_login_url() : home_url( '/login/' ),
 	'logout'         => function_exists( 'eg_member_logout_url' ) ? eg_member_logout_url( '/' ) : wp_logout_url( '/' ),
-	'signup'         => function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url() : '/mitgliedschaft.html#membership-registration',
+	'signup'         => function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : '/mitgliedschaft.html?plan=expert#membership-registration',
 );
 $home = $ctx['brochure_home'];
 ?>
@@ -27,7 +27,7 @@ $home = $ctx['brochure_home'];
 <!-- ============ UTILITY BAR (same pattern as brochure) ============ -->
 <div class="ubar">
 	<div class="ubar__in">
-		<span class="ubar__l"><?php eg_bi_e( 'Unabhängige, gemeinnützige Plattform für Dialog und Verständigung im eurasischen Raum', 'Independent non-profit platform for dialogue and understanding in the Eurasian space' ); ?></span>
+		<span class="ubar__l"><?php eg_bi_e( 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum', 'Independent platform for dialogue and understanding in the Eurasian space' ); ?></span>
 		<span class="ubar__r">
 			<?php if ( ! empty( $ctx['logged_in'] ) ) : ?>
 				<a href="<?php echo esc_url( $ctx['account'] ); ?>" data-analytics="account_click"><?php eg_bi_e( 'Mein Konto', 'My Account' ); ?></a>
@@ -50,7 +50,7 @@ $home = $ctx['brochure_home'];
 <header class="hd">
 	<div class="hd__in">
 		<a class="brand" href="<?php echo esc_url( $home ); ?>" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) . ', Startseite' ); ?>">
-			<img class="brand__logo" src="<?php echo esc_url( eg_logo_url() ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="303" height="78" decoding="async">
+			<img class="brand__logo" src="<?php echo esc_url( eg_logo_url() ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="267" height="78" decoding="async">
 		</a>
 
 		<?php if ( has_nav_menu( 'primary' ) ) : ?>
@@ -76,7 +76,7 @@ $home = $ctx['brochure_home'];
 			<?php if ( ! empty( $ctx['logged_in'] ) ) : ?>
 				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['account'] ); ?>" data-analytics="account_click"><?php eg_bi_e( 'Mein Konto', 'My Account' ); ?></a>
 			<?php else : ?>
-				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['signup'] ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
+				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['signup'] ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
 			<?php endif; ?>
 			<button class="burger" type="button" aria-label="<?php esc_attr_e( 'Menü', 'eurasien-gesellschaft' ); ?>" aria-expanded="false"><span></span><span></span><span></span></button>
 		</div>

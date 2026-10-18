@@ -25,10 +25,9 @@ Bookable + future date → “Register for this event” → Stripe.
 
 First-time import of the old static list
 ----------------------------------------
-WP admin: Veranstaltungen → Import brochure → Import / refresh brochure events
-
-Or one-shot URL (then delete the file if you want):
-  /app/eg-event-seed.php?k=eg-setup-2026
+The old one-shot seed script (eg-event-seed.php) was removed from the server on 2026-10-07.
+Do not use WP admin > Veranstaltungen > Import brochure either: it resets edited events to the
+old catalog and moves events that are not in that catalog to the trash.
 
 Public feed
 -----------

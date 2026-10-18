@@ -266,7 +266,7 @@
         var fee=d.createElement('div'); fee.className='ev__fee';
         fee.innerHTML='<span class="de">Teilnahme: '+feeAmt+' \u20ac</span><span class="en" hidden>Participation: \u20ac'+feeAmt+'</span>';
         var btn=d.createElement('button'); btn.type='button'; btn.className='ev__reg'; btn.setAttribute('data-event-open','');
-        btn.innerHTML='<span class="de">F\u00fcr diese Veranstaltung anmelden</span><span class="en" hidden>Register for this event</span>';
+        btn.innerHTML='<span class="de">Tickets holen</span><span class="en" hidden>Get tickets</span>';
         btn.addEventListener('click', function(){ openModal(ev, btn); });
         side.appendChild(fee); side.appendChild(btn);
       } else if(!isUpcoming(ev)){
@@ -282,6 +282,19 @@
     window.EG_EVENT_REG = { bindRegisterButtons: bindRegisterButtons };
   }
   bindRegisterButtons();
+  function openTicketsFromUrl(){
+    try{
+      var q=new URLSearchParams(location.search||'');
+      if(q.get('eg_tickets')!=='1') return;
+      var h=(location.hash||'').replace(/^#/, '');
+      var ev=h?d.getElementById(h):d.querySelector('#p-veranstaltungen .ev[data-bookable="1"]');
+      if(!ev || !isBookable(ev)) return;
+      openModal(ev, ev.querySelector('.ev__reg'));
+    }catch(err){}
+  }
+  if(window.EG_EVENT_REG){
+    window.EG_EVENT_REG.openTicketsFromUrl = openTicketsFromUrl;
+  }
   /* Open the correct plan form when arriving from Vorteile CTAs (?plan=reader|expert). */
   var fromUrl = planFromUrl();
   selectTab(fromUrl || 'reader');

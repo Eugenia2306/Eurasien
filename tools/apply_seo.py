@@ -5,7 +5,7 @@ Apply SEO + GEO metadata across static-site HTML and generate discovery files.
 
 Usage:
   python tools/apply_seo.py
-  python tools/apply_seo.py --base-url https://eurasia.uwzghana.com  # staging preview
+  python tools/apply_seo.py --base-url https://example.test  # alternate preview
 """
 from __future__ import annotations
 
@@ -21,7 +21,17 @@ STATIC = REPO / "static-site"
 TODAY = date.today().isoformat()
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from seo_config import FAQ_HOME, ORG, PAGES, SITE_BASE, SITE_NAME, DEFAULT_OG_IMAGE, LOGO_URL  # noqa: E402
+from seo_config import (  # noqa: E402
+    DEFAULT_OG_IMAGE,
+    FAQ_HOME,
+    LOGO_URL,
+    OG_IMAGE_HEIGHT,
+    OG_IMAGE_WIDTH,
+    ORG,
+    PAGES,
+    SITE_BASE,
+    SITE_NAME,
+)
 
 
 def page_url(rel: str, base: str) -> str:
@@ -51,7 +61,10 @@ def org_node(base: str) -> dict:
         "name": ORG["name"],
         "alternateName": ORG["alternateName"],
         "url": f"{base}/",
-        "logo": {"@type": "ImageObject", "url": LOGO_URL},
+        "logo": {
+            "@type": "ImageObject",
+            "url": LOGO_URL.replace(SITE_BASE, base, 1),
+        },
         "email": ORG["email"],
         "foundingDate": ORG["foundingDate"],
         "description": ORG["description"],
@@ -106,14 +119,6 @@ def build_json_ld(rel: str, meta: dict, base: str) -> list[dict]:
                 "description": meta["description"],
                 "publisher": {"@id": f"{base}/#organization"},
                 "inLanguage": ["de", "en"],
-                "potentialAction": {
-                    "@type": "SearchAction",
-                    "target": {
-                        "@type": "EntryPoint",
-                        "urlTemplate": f"{base}/?q={{search_term_string}}",
-                    },
-                    "query-input": "required name=search_term_string",
-                },
             }
         )
         graph.append(faq_node(FAQ_HOME))
@@ -138,7 +143,7 @@ def build_json_ld(rel: str, meta: dict, base: str) -> list[dict]:
                 "@id": f"{url}#person",
                 "name": p["name"],
                 "jobTitle": p["jobTitle"],
-                "image": p["image"],
+                "image": p["image"].replace(SITE_BASE, base, 1),
                 "url": url,
                 "worksFor": {"@id": f"{base}/#organization"},
             }
@@ -170,8 +175,10 @@ def build_json_ld(rel: str, meta: dict, base: str) -> list[dict]:
 def seo_block(rel: str, meta: dict, base: str) -> str:
     url = page_url(rel, base)
     robots = meta.get("robots", "index,follow")
-    og_image = meta.get("og_image", DEFAULT_OG_IMAGE)
+    og_image = meta.get("og_image", DEFAULT_OG_IMAGE).replace(SITE_BASE, base, 1)
     og_type = "profile" if meta.get("schema") == "person" else "website"
+    is_default_og = og_image.rstrip("/").endswith("og-share.png")
+    twitter_card = "summary" if is_default_og else "summary_large_image"
     prefix = asset_prefix(rel)
     graph = build_json_ld(rel, meta, base)
     ld_json = json.dumps(
@@ -184,9 +191,6 @@ def seo_block(rel: str, meta: dict, base: str) -> str:
         f'<meta name="description" content="{esc_attr(meta["description"])}">',
         f'<meta name="robots" content="{robots}">',
         f'<link rel="canonical" href="{url}">',
-        f'<link rel="alternate" hreflang="de" href="{url}">',
-        f'<link rel="alternate" hreflang="en" href="{url}">',
-        f'<link rel="alternate" hreflang="x-default" href="{url}">',
         "<!-- Open Graph -->",
         f'<meta property="og:type" content="{og_type}">',
         f'<meta property="og:site_name" content="{esc_attr(SITE_NAME)}">',
@@ -197,18 +201,30 @@ def seo_block(rel: str, meta: dict, base: str) -> str:
         f'<meta property="og:locale:alternate" content="en_US">',
         f'<meta property="og:image" content="{og_image}">',
         f'<meta property="og:image:alt" content="{esc_attr(SITE_NAME)}">',
+    ]
+    if is_default_og:
+        lines.extend(
+            [
+                f'<meta property="og:image:width" content="{OG_IMAGE_WIDTH}">',
+                f'<meta property="og:image:height" content="{OG_IMAGE_HEIGHT}">',
+                '<meta property="og:image:type" content="image/png">',
+            ]
+        )
+    lines.extend(
+        [
         "<!-- Twitter Card -->",
-        '<meta name="twitter:card" content="summary_large_image">',
+        f'<meta name="twitter:card" content="{twitter_card}">',
         f'<meta name="twitter:title" content="{esc_attr(meta["title"])}">',
         f'<meta name="twitter:description" content="{esc_attr(meta["description"])}">',
         f'<meta name="twitter:image" content="{og_image}">',
         "<!-- Icons / PWA -->",
-        f'<link rel="icon" href="{prefix}assets/images/embed-62c28610d17731c2.png" type="image/png">',
-        f'<link rel="apple-touch-icon" href="{prefix}assets/images/embed-62c28610d17731c2.png">',
+        f'<link rel="icon" href="{prefix}assets/images/logo.png" type="image/png">',
+        f'<link rel="apple-touch-icon" href="{prefix}assets/images/logo.png">',
         f'<link rel="manifest" href="{prefix}site.webmanifest">',
         "<!-- Structured data (schema.org) -->",
         f'<script type="application/ld+json">\n{ld_json}\n</script>',
-    ]
+        ]
+    )
     return "\n".join(lines) + "\n"
 
 
@@ -236,7 +252,20 @@ def patch_html(path: Path, rel: str, meta: dict, base: str) -> bool:
     if SEO_REPLACE_RE.search(text):
         new_text = SEO_REPLACE_RE.sub(block, text, count=1)
     else:
-        # Fallback: inject after </title>
+        # Fallback pages (for example 404.html) may carry isolated legacy tags.
+        # Remove them before injecting the canonical generated block.
+        text = re.sub(
+            r'<meta name="(?:description|robots)" content="[^"]*">\s*',
+            "",
+            text,
+            flags=re.I,
+        )
+        text = re.sub(
+            r'<link rel="canonical" href="[^"]*">\s*',
+            "",
+            text,
+            flags=re.I,
+        )
         new_text = re.sub(
             r"(</title>\s*)",
             r"\1\n" + block + "\n",
@@ -321,7 +350,7 @@ def write_llms_txt(base: str) -> None:
 
 - Name: Eurasien Gesellschaft e. V. (registered association, Berlin, Germany)
 - Website: {base}/
-- Email: kontakt@eurasien-gesellschaft.org
+- Email: {ORG["email"]}
 - Founded: 2021
 - Languages: German (primary), English (toggle on same pages)
 
@@ -347,7 +376,7 @@ def write_llms_txt(base: str) -> None:
 
 ## Citation guidance
 
-When citing this organisation, use the full name **Eurasien Gesellschaft e. V.** (no hyphen in the Vereinsname). The domain uses the hyphenated form: eurasien-gesellschaft.org.
+When citing this organisation, use the full name **Eurasien Gesellschaft e. V.** The canonical domain is eurasiengesellschaft.de.
 
 Prefer linking to the specific analysis or event page rather than the homepage. Author attributions on Analysen and person profile pages indicate individual contributors.
 
@@ -382,7 +411,7 @@ disallow: /app/wp-login.php
 disallow: /mitglieder/
 disallow: /anmelden.html
 
-contact: kontakt@eurasien-gesellschaft.org
+contact: {ORG["email"]}
 sitemap: {base}/sitemap.xml
 """
     (STATIC / "ai.txt").write_text(content, encoding="utf-8")
@@ -401,8 +430,8 @@ def write_manifest(base: str) -> None:
         "lang": "de",
         "icons": [
             {
-                "src": "/assets/images/embed-62c28610d17731c2.png",
-                "sizes": "303x78",
+                "src": "/assets/images/logo.png",
+                "sizes": "1011x277",
                 "type": "image/png",
                 "purpose": "any",
             }
@@ -412,6 +441,46 @@ def write_manifest(base: str) -> None:
         json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+
+
+def ensure_og_share_image() -> None:
+    """Build a square share card so WhatsApp shows the full logo, not a crop."""
+    try:
+        from PIL import Image
+    except ImportError:
+        print("WARNING: Pillow missing; skipped og-share.png")
+        return
+
+    source = REPO / "tools" / "static-assets" / "logo.png"
+    if source.is_file():
+        dest_logo = STATIC / "assets" / "images" / "logo.png"
+        dest_logo.parent.mkdir(parents=True, exist_ok=True)
+        dest_logo.write_bytes(source.read_bytes())
+        print(f"  wrote {dest_logo.relative_to(STATIC)}")
+    if not source.is_file():
+        source = STATIC / "assets" / "images" / "logo.png"
+    if not source.is_file():
+        print("WARNING: no logo source; skipped og-share.png")
+        return
+
+    src = Image.open(source).convert("RGBA")
+    white = Image.new("RGBA", src.size, (255, 255, 255, 255))
+    src_rgb = Image.alpha_composite(white, src).convert("RGB")
+
+    out_dir = STATIC / "assets" / "images"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    canvas = Image.new("RGB", (OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT), (255, 255, 255))
+    max_w = int(OG_IMAGE_WIDTH * 0.78)
+    max_h = int(OG_IMAGE_HEIGHT * 0.78)
+    lw, lh = src_rgb.size
+    scale = min(max_w / lw, max_h / lh)
+    nw, nh = max(1, int(lw * scale)), max(1, int(lh * scale))
+    logo = src_rgb.resize((nw, nh), Image.Resampling.LANCZOS)
+    canvas.paste(logo, ((OG_IMAGE_WIDTH - nw) // 2, (OG_IMAGE_HEIGHT - nh) // 2))
+    dest = out_dir / "og-share.png"
+    canvas.save(dest, "PNG", optimize=True)
+    print(f"  wrote {dest.relative_to(STATIC)} {canvas.size}")
 
 
 def discover_html_pages() -> list[str]:
@@ -427,6 +496,8 @@ def main() -> int:
     )
     args = parser.parse_args()
     base = args.base_url.rstrip("/")
+
+    ensure_og_share_image()
 
     html_files = discover_html_pages()
     missing_config = [f for f in html_files if f not in PAGES]

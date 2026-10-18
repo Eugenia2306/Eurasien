@@ -14,6 +14,8 @@ from __future__ import annotations
 import hashlib
 import re
 import shutil
+import subprocess
+import sys
 import zipfile
 from pathlib import Path
 
@@ -28,6 +30,7 @@ OUT = REPO / "static-site"
 ZIP_OUT = REPO / "Eurasien-static-site.zip"
 FLUID = Path(__file__).resolve().parent / "static-assets" / "fluid-layout.css"
 DEEPLINK = Path(__file__).resolve().parent / "static-assets" / "multipage-deeplink.js"
+CANONICAL_LOGO = Path(__file__).resolve().parent / "static-assets" / "logo.png"
 
 SLUGS: dict[str, str] = {
     "p-home": "index.html",
@@ -100,7 +103,10 @@ def depth_prefix(rel_path: str) -> str:
 
 
 def rel_href(from_page: str, to_page: str) -> str:
-    return depth_prefix(from_page) + to_page.replace("\\", "/")
+    target = to_page.replace("\\", "/")
+    if target == "index.html":
+        return "/"
+    return depth_prefix(from_page) + target
 
 
 def extract_balanced_section(html: str, start: int) -> tuple[str, int]:
@@ -199,6 +205,25 @@ def extract_base64_images(html: str, img_dir: Path, path_prefix: str) -> str:
     )
 
 
+def apply_canonical_logo(html: str) -> str:
+    """Use the current house logo, not the hashed extract from the prototype."""
+    dest = OUT / "assets" / "images" / "logo.png"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if CANONICAL_LOGO.is_file():
+        shutil.copy2(CANONICAL_LOGO, dest)
+    html = re.sub(
+        r'(<img class="brand__logo" src=")[^"]+(")',
+        r'\1/assets/images/logo.png\2',
+        html,
+    )
+    html = re.sub(
+        r'(<div class="ft__logo"[^>]*>\s*<img src=")[^"]+',
+        r'\1/assets/images/logo.png',
+        html,
+    )
+    return html
+
+
 def extract_all_styles(full_html: str) -> tuple[str, str]:
     """
     Collect EVERY <style> block from the document (head AND body).
@@ -265,8 +290,8 @@ def build() -> None:
     def take_script(m: re.Match[str], bucket: list[tuple[str, str]]) -> str:
         attrs = m.group(1) or ""
         body = m.group(2) or ""
-        if re.search(r'type=["\']application/ld\+json["\']', attrs, re.I):
-            return m.group(0)  # keep in head
+        if re.search(r'type=["\']application/(?:ld\+)?json["\']', attrs, re.I):
+            return m.group(0)  # keep structured/data JSON inline
         bucket.append((attrs, body))
         return ""
 
@@ -356,6 +381,7 @@ def build() -> None:
         doc_body = rewrite_hash_links(doc_body, rel)
         # Extract images (bytes identical)
         doc_body = extract_base64_images(doc_body, OUT / "assets" / "images", prefix)
+        doc_body = apply_canonical_logo(doc_body)
 
         js_html = "\n".join(
             tag.replace('src="assets/', f'src="{prefix}assets/')
@@ -372,13 +398,21 @@ def build() -> None:
         hi = re.sub(r"\n{3,}", "\n\n", hi)
 
         title = TITLES.get(pid, "Eurasien Gesellschaft e. V.")
-        # Hash shim for legacy scripts that expect #p-* page ids.
-        # Do not overwrite deep-link fragments (#partner-*, #mediathek-videoarchiv, ...).
+        # Strip redundant #p-* page ids from the URL. Keep real deep-links
+        # (#partner-*, #europa, #an-fmt-*, #ev-*, #membership-registration, ...).
+        extra = ""
+        if pid == "p-veranstaltungen":
+            extra = (
+                "if(h==='#ev-list-root'||/^#ev-/.test(h)){"
+                "try{if(history.scrollRestoration)history.scrollRestoration='manual';}catch(e3){}"
+                "}"
+            )
         shim = (
             "<script>(function(){var id="
             + repr(pid)
             + ";var h=location.hash||'';"
-            + "if(!h){try{history.replaceState(null,\"\",\"#\"+id);}catch(e){try{location.hash=id;}catch(e2){}}}"
+            + "if(h==='#'+id){try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}}"
+            + extra
             + "})();</script>"
         )
 
@@ -407,6 +441,7 @@ def build() -> None:
     (OUT / "README.txt").write_text(
         """Eurasien Gesellschaft – static multipage site
 Source of truth: eurasien_gesellschaft_54.html
+Build pipeline: build_static_site.py → apply_seo.py → deploy
 
 This folder is a faithful split of that single file:
 - UI markup and DE/EN copy come from the source unchanged
@@ -418,6 +453,11 @@ This folder is a faithful split of that single file:
 Upload the contents of this folder to your web host document root.
 """,
         encoding="utf-8",
+    )
+
+    subprocess.run(
+        [sys.executable, str(REPO / "tools" / "apply_seo.py")],
+        check=True,
     )
 
     if ZIP_OUT.exists():

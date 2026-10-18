@@ -11,10 +11,10 @@ $datenschutz = function_exists( 'eg_brochure_public_url' )
 		<div class="ft__grid">
 			<div>
 				<div class="ft__logo" style="margin-bottom:12px">
-					<img src="<?php echo esc_url( eg_logo_url() ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="303" height="78" decoding="async">
+					<img src="<?php echo esc_url( eg_logo_url() ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="267" height="78" decoding="async">
 				</div>
 				<p style="color:#9fb0c4;font-size:.9rem;max-width:34ch;margin:0 0 6px">
-					<?php eg_bi_e( 'Unabhängige, gemeinnützige Plattform für Dialog und Verständigung im eurasischen Raum.', 'Independent non-profit platform for dialogue and understanding in the Eurasian space.' ); ?>
+					<?php eg_bi_e( 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum.', 'Independent platform for dialogue and understanding in the Eurasian space.' ); ?>
 				</p>
 				<div class="ft__soc">
 					<a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer">YouTube</a>
@@ -39,7 +39,7 @@ $datenschutz = function_exists( 'eg_brochure_public_url' )
 					?>
 					<a href="<?php echo esc_url( eg_route( 'p-mission' ) ); ?>">Mission</a>
 					<a href="<?php echo esc_url( eg_route( 'p-vorstand' ) ); ?>"><?php eg_bi_e( 'Vorstand & Experten', 'Board & Experts' ); ?></a>
-					<a href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Partner', 'Partners' ); ?></a>
+					<a href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Kooperationen', 'Cooperation' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-news' ) ); ?>"><?php eg_bi_e( 'Gesellschaftsnachrichten', 'Society News' ); ?></a>
 					<?php
 				}
@@ -82,7 +82,7 @@ $datenschutz = function_exists( 'eg_brochure_public_url' )
 				<?php else : ?>
 					<a href="<?php echo esc_url( eg_route( 'p-veranstaltungen' ) ); ?>"><?php eg_bi_e( 'Veranstaltungen', 'Events' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-mediathek' ) ); ?>"><?php eg_bi_e( 'Mediathek', 'Media Library' ); ?></a>
-					<a href="<?php echo esc_url( eg_route( 'p-mitgliedschaft' ) ); ?>#membership-registration" data-analytics="membership_click"><?php eg_bi_e( 'Mitglied werden', 'Become a member' ); ?></a>
+					<a href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : add_query_arg( 'plan', 'expert', eg_route( 'p-mitgliedschaft' ) ) . '#membership-registration' ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
 					<a href="<?php echo esc_url( function_exists( 'eg_member_login_url' ) ? eg_member_login_url() : eg_route( 'p-login' ) ); ?>" data-analytics="login_click"><?php eg_bi_e( 'Anmelden', 'Login' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-impressum' ) ); ?>">Impressum</a>
 				<?php endif; ?>

@@ -104,6 +104,8 @@ def audit_playwright(base_url: str) -> list[str]:
         "/analysen.html",
         "/mitgliedschaft.html",
         "/themen.html",
+        "/themen/geopolitik.html",
+        "/kultur.html",
         "/vorstand.html",
         "/app/login/",
     ]
@@ -141,7 +143,22 @@ def audit_playwright(base_url: str) -> list[str]:
                               offenders.push(tag + cls + ' w=' + Math.round(r.width));
                             }
                           });
-                          return { sw, cw, overflow: sw > cw + 2, offenders: offenders.slice(0, 8) };
+                          const multi = [];
+                          const check = [
+                            '.home-quick__grid','.grid-2','.grid-3','.media','.topics',
+                            '.reg-cards-grid','.people','.plans','.eg-coopteaser','.kx-grid','.sx-grid','.cx-grid'
+                          ];
+                          check.forEach(sel => {
+                            document.querySelectorAll(sel).forEach(el => {
+                              if (el.offsetParent === null) return;
+                              const g = getComputedStyle(el).gridTemplateColumns || '';
+                              const cols = g.split(' ').filter(x => x && x !== 'none');
+                              if (cols.length >= 2 && !cols.every(c => c === '0px')) {
+                                multi.push(sel + ' => ' + g);
+                              }
+                            });
+                          });
+                          return { sw, cw, overflow: sw > cw + 2, offenders: offenders.slice(0, 8), multi: multi.slice(0, 12) };
                         }"""
                     )
                     if overflow.get("overflow"):
@@ -150,6 +167,8 @@ def audit_playwright(base_url: str) -> list[str]:
                             f"[{name} {w}x{h}] {path}: horizontal overflow "
                             f"(scrollWidth={overflow['sw']} > clientWidth={overflow['cw']}) — {offs}"
                         )
+                    for m in overflow.get("multi") or []:
+                        issues.append(f"[{name} {w}x{h}] {path}: multi-column on phone — {m}")
                 except Exception as exc:  # noqa: BLE001
                     issues.append(f"[{name}] {path}: load failed — {exc}")
             context.close()

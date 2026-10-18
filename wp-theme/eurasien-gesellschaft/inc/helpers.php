@@ -156,14 +156,7 @@ function eg_bi_e( string $de, string $en ): void {
  * Theme logo URL (custom logo or bundled asset).
  */
 function eg_logo_url(): string {
-	$custom = get_theme_mod( 'custom_logo' );
-	if ( $custom ) {
-		$url = wp_get_attachment_image_url( (int) $custom, 'full' );
-		if ( $url ) {
-			return $url;
-		}
-	}
-	return EG_THEME_URI . '/assets/images/logo.png';
+	return EG_THEME_URI . '/assets/images/logo.png?v=3';
 }
 
 /**
@@ -203,3 +196,44 @@ function eg_event_is_past( int $post_id ): bool {
 	$ts = strtotime( $raw );
 	return false !== $ts && $ts < time();
 }
+
+/**
+ * Keep WordPress and WooCommerce privacy links on the public brochure site.
+ */
+function eg_public_privacy_policy_url( string $fallback = '' ): string {
+	if ( function_exists( 'eg_brochure_public_url' ) ) {
+		return eg_brochure_public_url( 'datenschutz.html' );
+	}
+
+	$parts = wp_parse_url( home_url( '/' ) );
+	if ( empty( $parts['scheme'] ) || empty( $parts['host'] ) ) {
+		return $fallback;
+	}
+
+	$origin = $parts['scheme'] . '://' . $parts['host'];
+	if ( ! empty( $parts['port'] ) ) {
+		$origin .= ':' . $parts['port'];
+	}
+
+	return $origin . '/datenschutz.html';
+}
+
+add_filter(
+	'privacy_policy_url',
+	static function ( string $url ): string {
+		return eg_public_privacy_policy_url( $url );
+	}
+);
+
+add_filter(
+	'woocommerce_get_privacy_policy_text',
+	static function ( string $text ): string {
+		$link = sprintf(
+			'<a href="%1$s" class="woocommerce-privacy-policy-link" target="_blank">%2$s</a>',
+			esc_url( eg_public_privacy_policy_url() ),
+			esc_html__( 'privacy policy', 'woocommerce' )
+		);
+
+		return str_replace( '[privacy_policy]', $link, $text );
+	}
+);

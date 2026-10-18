@@ -285,7 +285,7 @@ function eg_event_handoff_gcal_url(array $meta)
  */
 function eg_event_handoff_ics_body(array $meta)
 {
-    $uid = 'eg-' . sanitize_title((string) ($meta['event_id'] ?? 'event')) . '-' . wp_generate_password(8, false) . '@eurasien-gesellschaft.org';
+    $uid = 'eg-' . sanitize_title((string) ($meta['event_id'] ?? 'event')) . '-' . wp_generate_password(8, false) . '@eurasiengesellschaft.de';
     $start = eg_event_handoff_ics_local($meta['event_date'] ?? '', $meta['event_time_start'] ?? '19:00');
     $end = eg_event_handoff_ics_local($meta['event_date'] ?? '', $meta['event_time_end'] ?? '21:00');
     $summary = str_replace(array("\n", "\r", ','), array(' ', ' ', '\\,'), (string) ($meta['event_title'] ?? 'Event'));
@@ -312,6 +312,94 @@ function eg_event_handoff_ics_body(array $meta)
 }
 
 /**
+ * Send paid booking confirmations once per Stripe Checkout Session.
+ *
+ * @param array<string,mixed> $session Stripe Checkout Session.
+ * @param array<string,string> $meta    Sanitized session metadata.
+ */
+function eg_event_handoff_send_emails(array $session, array $meta, $gcal_url, $ics_url)
+{
+    if (!function_exists('eg_email_layout') || !function_exists('eg_email_summary_rows')) {
+        return;
+    }
+
+    $session_id = sanitize_text_field((string) ($session['id'] ?? ''));
+    $email = sanitize_email((string) ($meta['email'] ?? ($session['customer_details']['email'] ?? '')));
+    if ($session_id === '' || !is_email($email)) {
+        return;
+    }
+
+    $title = sanitize_text_field((string) ($meta['event_title'] ?? 'Veranstaltung'));
+    $first = sanitize_text_field((string) ($meta['first_name'] ?? ''));
+    $last = sanitize_text_field((string) ($meta['last_name'] ?? ''));
+    $qty = max(1, (int) ($meta['qty'] ?? 1));
+    $unit = (float) ($meta['unit_price'] ?? 0);
+    $total = number_format_i18n($qty * $unit, 2) . ' €';
+    $rows = array(
+        'Veranstaltung' => esc_html($title),
+        'Datum'         => esc_html((string) ($meta['event_date'] ?? '')),
+        'Uhrzeit'       => esc_html((string) ($meta['event_time_start'] ?? '')) . '–' . esc_html((string) ($meta['event_time_end'] ?? '')),
+        'Ort'           => esc_html((string) ($meta['event_location'] ?? '')),
+        'Tickets'       => esc_html((string) $qty),
+        'Gesamt'        => esc_html($total),
+    );
+
+    $customer_key = 'eg_event_customer_mailed_' . md5($session_id);
+    if (!get_option($customer_key)) {
+        $content = eg_email_summary_rows($rows)
+            . '<p>Ihre Buchung ist verbindlich bestätigt. Bitte bewahren Sie diese E-Mail als Buchungsnachweis auf.</p>'
+            . '<p><a href="' . esc_url($ics_url) . '" style="color:#0032a0;font-weight:700;">Kalenderdatei (.ics) herunterladen</a></p>';
+        $message = eg_email_layout(
+            array(
+                'eyebrow'   => 'Veranstaltungsbuchung',
+                'heading'   => 'Ihre Teilnahme ist bestätigt',
+                'preheader' => 'Buchungsbestätigung für ' . $title,
+                'intro'     => 'Hallo ' . esc_html(trim($first . ' ' . $last)) . ', vielen Dank für Ihre Anmeldung.',
+                'content'   => $content,
+                'cta_url'   => $gcal_url,
+                'cta_text'  => 'Zum Google Kalender hinzufügen',
+            )
+        );
+        if (wp_mail($email, 'Buchungsbestätigung: ' . $title, $message, eg_email_html_headers())) {
+            update_option($customer_key, gmdate('c'), false);
+        }
+    }
+
+    $admin_emails = function_exists('eg_admin_notification_recipients')
+        ? eg_admin_notification_recipients()
+        : array(sanitize_email((string) get_option('admin_email')));
+    $admin_emails = array_values(array_filter($admin_emails, 'is_email'));
+    $admin_key = 'eg_event_admin_mailed_' . md5($session_id);
+    if ($admin_emails && !get_option($admin_key)) {
+        $admin_rows = array(
+            'Name'          => esc_html(trim($first . ' ' . $last)),
+            'Kontakt'       => '<a href="mailto:' . esc_attr($email) . '" style="color:#0032a0;">' . esc_html($email) . '</a>',
+            'Veranstaltung' => esc_html($title),
+            'Wann'          => esc_html(trim((string) ($meta['event_date'] ?? '') . ' ' . (string) ($meta['event_time_start'] ?? ''))),
+            'Wo'            => esc_html((string) ($meta['event_location'] ?? '')),
+            'Plätze'        => esc_html((string) $qty),
+            'Beitrag'       => esc_html($total),
+        );
+        $admin_message = eg_email_layout(
+            array(
+                'eyebrow'   => 'Veranstaltung',
+                'heading'   => 'Eine neue Anmeldung ist da',
+                'preheader' => trim($first . ' ' . $last) . ' nimmt an ' . $title . ' teil.',
+                'intro'     => esc_html(trim($first . ' ' . $last)) . ' hat sich für „' . esc_html($title) . '“ angemeldet. Die Teilnahme ist bestätigt.',
+                'content'   => eg_email_summary_rows($admin_rows, 'admin')
+                    . '<p>Wenn Sie möchten, können Sie sich kurz bei der Person melden. Alles Weitere ist bereits erledigt.</p>',
+                'cta_url'   => function_exists('eg_email_public_url') ? eg_email_public_url('veranstaltungen.html') : '',
+                'cta_text'  => 'Veranstaltungen ansehen',
+                'admin'     => true,
+            )
+        );
+        if (wp_mail($admin_emails, 'Neue Anmeldung: ' . $title, $admin_message, eg_email_html_headers())) {
+            update_option($admin_key, gmdate('c'), false);
+        }
+    }
+}
+
+/**
  * Render success page HTML (or serve ICS download).
  */
 function eg_event_handoff_render_success()
@@ -330,7 +418,7 @@ function eg_event_handoff_render_success()
         exit;
     }
 
-    $paid = (($session['payment_status'] ?? '') === 'paid') || (($session['status'] ?? '') === 'complete');
+    $paid = in_array((string) ($session['payment_status'] ?? ''), array('paid', 'no_payment_required'), true);
     $meta = isset($session['metadata']) && is_array($session['metadata']) ? $session['metadata'] : array();
 
     if (!empty($_GET['download']) && $_GET['download'] === 'ics' && $paid) {
@@ -356,6 +444,9 @@ function eg_event_handoff_render_success()
         ),
         home_url('/eg-event-success.php')
     );
+    if ($paid) {
+        eg_event_handoff_send_emails($session, $meta, $gcal, $ics_url);
+    }
     $back = eg_event_handoff_brochure_events_url((string) ($meta['event_id'] ?? ''));
     $home = function_exists('eg_brochure_public_url') ? eg_brochure_public_url('') : '/';
 

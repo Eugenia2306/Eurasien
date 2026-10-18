@@ -6,7 +6,7 @@ out_path = Path(__file__).resolve().parent.parent / "static-site/datenschutz.htm
 
 main = """<main id="main">
 <section class="page" id="p-datenschutz">
-  <div class="phead"><div class="wrap"><p class="crumb"><a href="index.html">Start</a> › <a href="impressum.html"><span class="de">Impressum</span><span class="en" hidden>Imprint</span></a> › <span class="de">Datenschutz</span><span class="en" hidden>Privacy</span></p><p class="eyebrow"><span class="de">Rechtliches</span><span class="en" hidden>Legal</span></p><h1><span class="de">Datenschutz</span><span class="en" hidden>Privacy Policy</span></h1><p><span class="de">Informationen zum Umgang mit personenbezogenen Daten auf dieser Website.</span><span class="en" hidden>Information on how personal data is handled on this website.</span></p></div></div>
+  <div class="phead"><div class="wrap"><p class="crumb"><a href="/">Start</a> › <a href="impressum.html"><span class="de">Impressum</span><span class="en" hidden>Imprint</span></a> › <span class="de">Datenschutz</span><span class="en" hidden>Privacy</span></p><p class="eyebrow"><span class="de">Rechtliches</span><span class="en" hidden>Legal</span></p><h1><span class="de">Datenschutz</span><span class="en" hidden>Privacy Policy</span></h1><p><span class="de">Informationen zum Umgang mit personenbezogenen Daten auf dieser Website.</span><span class="en" hidden>Information on how personal data is handled on this website.</span></p></div></div>
 
   <section class="sec"><div class="wrap" style="max-width:820px">
     <div class="prose" style="margin-top:24px">
@@ -33,7 +33,7 @@ main = """<main id="main">
       <h3><span class="de">7. Speicherdauer und Rechte</span><span class="en" hidden>7. Retention and your rights</span></h3>
       <p><span class="de">Bestell- und Mitgliedsdaten werden so lange gespeichert, wie gesetzliche Aufbewahrungsfristen oder die Mitgliedschaft es erfordern. Sie haben Rechte auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit sowie Beschwerde bei einer Aufsichtsbehörde.</span><span class="en" hidden>Order and membership data are stored for as long as statutory retention periods or membership require. You have rights of access, rectification, erasure, restriction, objection and data portability, and the right to lodge a complaint with a supervisory authority.</span></p>
 
-      <p class="muted" style="margin-top:32px"><a href="impressum.html"><span class="de">Impressum</span><span class="en" hidden>Imprint</span></a> · <a href="index.html"><span class="de">Start</span><span class="en" hidden>Home</span></a></p>
+      <p class="muted" style="margin-top:32px"><a href="impressum.html"><span class="de">Impressum</span><span class="en" hidden>Imprint</span></a> · <a href="/"><span class="de">Start</span><span class="en" hidden>Home</span></a></p>
     </div>
   </div></section>
 </section>

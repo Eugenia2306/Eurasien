@@ -100,8 +100,8 @@ function eg_app_header_context(): array {
 		? eg_member_logout_url( '/' )
 		: wp_logout_url( '/' );
 	$signup        = function_exists( 'eg_membership_signup_url' )
-		? eg_membership_signup_url()
-		: '/mitgliedschaft.html#membership-registration';
+		? eg_membership_signup_url( 'expert' )
+		: '/mitgliedschaft.html?plan=expert#membership-registration';
 
 	$display_name = '';
 	if ( $logged_in && $user instanceof WP_User ) {

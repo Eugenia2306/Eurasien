@@ -27,7 +27,7 @@ function eg_seed_page_defs(): array {
 			'slug'     => 'mission',
 			'template' => $migrated,
 			'content'  => 'p-mission.html',
-			'excerpt'  => 'Unabhängige, gemeinnützige Plattform für Dialog und Verständigung im eurasischen Raum.',
+			'excerpt'  => 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum.',
 		),
 		array(
 			'title'    => 'Vorstand & Experten',

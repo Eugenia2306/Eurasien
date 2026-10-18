@@ -1,47 +1,123 @@
 # Eurasien Gesellschaft e. V.
 
-> Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum (Europa, Russland, Zentralasien, Ostasien, Südasien, Naher Osten).
+> A Berlin-based think tank for dialogue and understanding between Europe and Asia (German: "Ein Berliner Think Tank für Dialog und Verständigung zwischen Europa und Asien"). The registered association organises lectures, panel discussions, expert talks and book talks, and publishes analyses on geopolitics, security, energy, economics, science and culture across the Eurasian space.
 
-## About
+## Key facts
 
-- Name: Eurasien Gesellschaft e. V. (registered association, Berlin, Germany)
-- Website: https://www.eurasien-gesellschaft.org/
+- Name: Eurasien Gesellschaft e. V. (short: Eurasien Gesellschaft; in English texts the German name is kept and "the Society" is used as a short form)
+- Type: think tank; registered association (eingetragener Verein) in the register of associations at the Amtsgericht Charlottenburg, Berlin, register number VR 39470 B
+- Address: Kunz-Buntschuh-Straße 11, 14193 Berlin, Germany
+- Founded: 2021 by Alexander Rahr together with long-standing companions; Christoph Polajner is a co-founder
+- Chairman: Alexander Rahr
 - Email: kontakt@eurasien-gesellschaft.org
-- Founded: 2021
-- Languages: German (primary), English (toggle on same pages)
+- Website: https://eurasiengesellschaft.de/ (German and English on the same pages, switched with a language toggle)
+- Channels: YouTube https://www.youtube.com/@EurasienGesellschaft · LinkedIn https://www.linkedin.com/company/eurasien-gesellschaft/ · Telegram https://t.me/EurasienGesellschaft
+- WhatsApp: +49 1522 3399100
+- Financial support: bank transfer to Eurasien Gesellschaft e. V., IBAN DE54 1009 0000 2894 9370 01, payment reference "Spende" (or "Donation"). Contributions are not tax-deductible; the Society cannot issue receipts for tax purposes.
+
+## Mission
+
+The Society brings together people from politics, culture, science, business, society and diplomacy who are committed to peaceful coexistence, international understanding and a better understanding of the Eurasian space. It shares well-founded knowledge about cultural, historical and political developments in Europe, Central Asia and the Near and Far East; holds factual, multi-perspective debates; creates personal encounters; takes part in initiatives that support peace and dialogue; and puts media reports into context through lectures and publications.
+
+Mission page: https://eurasiengesellschaft.de/mission.html
+
+## Board (Vorstand)
+
+- Alexander Rahr – Chairman (Vorsitzender). Historian, Eastern Europe expert and author; born 1959 in Taipei. https://eurasiengesellschaft.de/personen/alexander-rahr.html
+- Dr. Alexander S. Neu – Deputy Chairman. Political and social scientist; member of the German Bundestag 2013–2021 (defence and foreign affairs committees). https://eurasiengesellschaft.de/personen/alexander-neu.html
+- Christoph Polajner – Deputy Chairman and co-founder. Policy and business adviser focused on China and the international order. https://eurasiengesellschaft.de/personen/christoph-polajner.html
+- Uwe Schraps – Board member and Managing Director (Geschäftsführer). Engineer and business lawyer with many years of work in Russia and Eastern Europe, including energy. https://eurasiengesellschaft.de/personen/uwe-schraps.html
+- Dr. Christian Wipperfürth – Board member. Historian and publicist; foreign and security policy, post-Soviet space. https://eurasiengesellschaft.de/personen/christian-wipperfuerth.html
+
+Alexander Rahr, Dr. Alexander S. Neu, Christoph Polajner and Uwe Schraps legally represent the association. The board has further members who are not named publicly.
+
+The Society also works with a wider network of experts in political science, history, security policy, energy, economics, sinology and area studies. Board overview: https://eurasiengesellschaft.de/vorstand.html
+
+## Topics and regions
+
+- Topics: geopolitics (https://eurasiengesellschaft.de/themen/geopolitik.html), energy (https://eurasiengesellschaft.de/themen/energie.html), economy (https://eurasiengesellschaft.de/themen/wirtschaft.html), science (https://eurasiengesellschaft.de/themen/wissenschaft.html), culture (https://eurasiengesellschaft.de/kultur.html), countries and societies (https://eurasiengesellschaft.de/laender-gesellschaften.html)
+- Regions: Europe, Eastern Europe, Central Asia, the Caucasus, East Asia, South Asia and the Middle East (https://eurasiengesellschaft.de/regionen.html)
+
+## Membership
+
+- Association membership (Vereinsmitgliedschaft): 120 € per year. Interested people get in touch through the form on the membership page; the Society responds personally, and the board decides on admission. There is no online sign-up or payment for membership.
+- Reader access (Leserzugang): 5 € per month, free during the current trial phase. Unlocks members-only content (positions, dossiers, studies).
+- Page: https://eurasiengesellschaft.de/mitgliedschaft.html
+
+## Cooperation
+
+The Society works with: Berlin im Dialog e. V.; Deutscher Friedensrat e. V. (https://www.deutscher-friedensrat.de/); Deutsch-Russisches Forum e. V. (https://www.deutsch-russisches-forum.de/); European Democracy Lab e. V. (https://www.europeandemocracylab.org/); KulturKreis Pankow e. V. (https://kulturkreis-pankow.de/); Literatursalon (https://www.literatursalon.online/); WCR e. V. (https://wcr-ev.de/); WeltTrends (https://welttrends.de/). Overview: https://eurasiengesellschaft.de/partner.html
+
+<!-- events:start -->
+## Events (Veranstaltungen)
+
+Full calendar and archive with descriptions: https://eurasiengesellschaft.de/veranstaltungen.html
+
+Format of each line: date – title – speakers – place – format – link.
+
+### Upcoming
+
+- 2026-10-20, time to be announced – Aktuelle Entwicklungen in Asien: Was haben die Gipfel von BRICS, SOZ und APEC gebracht? (EN: Current Developments in Asia: What Did the BRICS, SCO, and APEC Summits Achieve?) – Sprechsaal, Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-asien-brics-soz-apec-2026-10
+- 2026-12-03, time to be announced – Podiumsdiskussion mit dem Liedermacher Hans-Eckardt Wenzel (EN: Panel discussion with singer-songwriter Hans-Eckardt Wenzel) – Hans-Eckardt Wenzel, Liedermacher – Logenhaus Berlin-Dahlem, Peter-Lenné-Straße 1, 14195 Berlin – Save the Date – https://eurasiengesellschaft.de/veranstaltungen.html#ev-wenzel-podium-2026-12
+
+### Past events
+
+- 2026-08-26 – Buchgespräch: „Die verschlüsselte Chronik der Menschheitsgeschichte&#8220; (EN: Book discussion: “The Encrypted Chronicle of Human History) – Alexander Rahr, Autor und Historiker – Preußensaal des Logenhauses, Peter-Lenné-Straße 1, 14195 Berlin – Buchgespräch – https://eurasiengesellschaft.de/veranstaltungen.html#ev-buchgespraech-chronik-2026-08
+- 2026-06-25 – Sommerfest 2026 (EN: Summer festival 2026) – Podiumsdiskussion & Begegnung – Logenhaus, Berlin – Vergangen – https://eurasiengesellschaft.de/veranstaltungen.html#ev-sommerfest-2026
+- 2026-05-05 – Energie-Krise: Können wir ohne russisches Öl und Gas auskommen? (EN: Energy crisis: can we manage without Russian oil and gas?) – Wolfgang J. Hummel – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-energie-krise-koennen-wir-2026
+- 2026-04-29 – Teilnahme am Petersburger Dialog (EN: Participation in the Petersburg Dialogue) – Nahost-Konflikt & Ukraine – Moskau – Fachgespräch – https://eurasiengesellschaft.de/veranstaltungen.html#ev-teilnahme-petersburger-dialog-2026
+- 2026-04-16 – Rüstungskontrolle, mit Vizeaußenminister Ryabkov (EN: Arms control, with Deputy Foreign Minister Ryabkov) – Christoph Polajner – Moskau – Fachgespräch – https://eurasiengesellschaft.de/veranstaltungen.html#ev-ruestungskontrolle-vizeaussenminister-ryabkov-2026
+- 2026-03-26 – 2026: Krieg oder Frieden? (EN: 2026: War or peace?) – Rahr, Neu, Polajner, Wipperfürth – Berlin – Podiumsdiskussion – https://eurasiengesellschaft.de/veranstaltungen.html#ev-krieg-oder-frieden-2026
+- 2026-01-12 – Veränderungen in der internationalen Ordnung (EN: Changes in the international order) – Christoph Polajner – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-veraenderungen-internationalen-ordnung-2026
+- 2025-11-20 – 10th China Global Think Tank Innovation Forum – Christoph Polajner – Peking – Konferenz – https://eurasiengesellschaft.de/veranstaltungen.html#ev-10th-china-global-think-2025
+- 2025-10-09 – Gespräch mit Prof. Theodore Postol (EN: Conversation with Prof. Theodore Postol) – Nukleare Abschreckung – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-gespraech-prof-theodore-postol-2025
+- 2025-09-11 – Von der passiven zur aktiven Abschreckung: Russlands neue Sicherheits- und Geopolitik (EN: From passive to active deterrence: Russia’s new security and geopolitics) – S. Fischer, A. Rahr, Dr. A. Neu – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-passiven-aktiven-abschreckung-russlands-2025
+- 2025-07-11 – Fachgespräch mit amerikanischen Experten (EN: Expert circle with US experts) – Ray McGovern, Elizabeth Murray – Berlin – Fachgespräch – https://eurasiengesellschaft.de/veranstaltungen.html#ev-fachgespraech-amerikanischen-experten-2025
+- 2025-07-04 – Die deutsche Außenpolitik in Eurasien (EN: German foreign policy in Eurasia) – Dr. Thomas Falk – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-deutsche-aussenpolitik-eurasien-2025
+- 2025-03-11 – Erbe und Vermächtnis bewahren: Wofür Vollmer und Gorbatschow wirklich kämpften (EN: Preserving heritage and legacy: what Vollmer and Gorbachev really fought for) – P. Erler, A. Rahr u. a. – Berlin – Podiumsdiskussion – https://eurasiengesellschaft.de/veranstaltungen.html#ev-erbe-vermaechtnis-bewahren-wofuer-2025
+- 2025-02-27 – Chancen für Frieden in der Ukraine: der Trump-Putin-Gipfel (EN: Opportunities for peace in Ukraine: the Trump-Putin summit) – H. Kujat, Gy. Varga – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-chancen-frieden-ukraine-trump-2025
+- 2025-01-14 – Sieben Gründe, warum 2025 kein gutes Jahr für die EU sein könnte (EN: Seven reasons why 2025 might not be a good year for the EU) – Michael von der Schulenburg – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-sieben-gruende-warum-kein-2025
+- 2024-12-06 – Vom Niedergang des Westens zur Neuerfindung Europas (EN: From the decline of the West to the reinvention of Europe) – Dr. H. Ritz, Prof. Dr. W. Streeck – Köln – Lesung – https://eurasiengesellschaft.de/veranstaltungen.html#ev-vom-niedergang-des-westens-2024
+- 2024-12-05 – Teilnahme am Verona Eurasian Economic Forum (EN: Participation in the Verona Eurasian Economic Forum) – Teilnahme der Eurasien Gesellschaft – Ras Al Khaimah, VAE – Konferenz – https://eurasiengesellschaft.de/veranstaltungen.html#ev-teilnahme-verona-eurasian-economic-2024
+- 2024-11-27 – European Silk Road Summit – Konnektivität Europa-Asien – Wien – Konferenz – https://eurasiengesellschaft.de/veranstaltungen.html#ev-european-silk-road-summit-2024
+- 2024-07-03 – Zeitenwende in Eurasien: Die Interessen Deutschlands (EN: A turning point in Eurasia: the interests of Germany) – Vizeadmiral a. D. K.-A. Schönbach – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-zeitenwende-eurasien-interessen-deutschlands-2024
+- 2024-06-13 – Je t’aime moi non plus: Was ist los mit Frankreich? (EN: Je t’aime moi non plus: What’s going on with France?) – Prof. Dr. Ulrike Guérot – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-je-taime-moi-non-2024
+- 2024-05-29 – Eurasische Handels- und Transportkorridore (EN: Eurasian trade and transport corridors) – Uwe Leuschner – Hamburg – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-eurasische-handels-transportkorridore-2024
+- 2024-05-14 – Friedenspläne für die Ukraine (EN: Peace plans for Ukraine) – Dr. A. Neu, C. Polajner, A. Rahr – Berlin – Podiumsdiskussion – https://eurasiengesellschaft.de/veranstaltungen.html#ev-friedensplaene-ukraine-2024
+- 2023-10-23 – Tanz auf dem Vulkan (EN: Dancing on the volcano) – Patrik Baab – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-tanz-dem-vulkan-2023
+- 2023-10-16 – Die selbsternannten Republiken im postsowjetischen Raum (EN: The self-proclaimed republics in the post-Soviet space) – Dr. C. Wipperfürth, W. Matzke – Berlin – Podiumsdiskussion – https://eurasiengesellschaft.de/veranstaltungen.html#ev-selbsternannten-republiken-postsowjetischen-raum-2023
+- 2023-06-26 – The Search for Peaceful Coexistence in Eurasia – Prof. Nicolai N. Petro – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-search-peaceful-coexistence-eurasia-2023
+- 2023-05-23 – China in der Logistik Eurasiens (EN: China in the logistics of Eurasia) – Uwe Leuschner – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-china-logistik-eurasiens-2023
+- 2022-11-11 – Hauke Ritz: Endspiel Europa (EN: Hauke Ritz: Endgame Europe) – Dr. Hauke Ritz – Berlin – Lesung – https://eurasiengesellschaft.de/veranstaltungen.html#ev-endspiel-europa-2022
+- 2022-10-17 – Prof. Anatol Lieven: Handlungsoptionen für die Ukraine, Russland und die EU (EN: Prof. Anatol Lieven: Choices for Ukraine, Russia and the EU) – Prof. Dr. Anatol Lieven – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-choices-ukraine-russia-eu-2022
+- 2022-10-14 – Globale Bedeutung der CICA-Konferenz (EN: The global significance of the CICA conference) – Dr. Dr. Arne Seifert – Kasachische Botschaft, Berlin – Konferenz – https://eurasiengesellschaft.de/veranstaltungen.html#ev-globale-bedeutung-cica-konferenz-2022
+- 2022-02-19 – Wladimir Putin: Eine politische Biographie (EN: Vladimir Putin: A political biography) – Thomas Fasbender – Berlin – Buchvorstellung – https://eurasiengesellschaft.de/veranstaltungen.html#ev-wladimir-putin-politische-biographie-2022
+<!-- events:end -->
 
 ## Key pages
 
-- Home: https://www.eurasien-gesellschaft.org/
-- Mission: https://www.eurasien-gesellschaft.org/mission.html
-- Board & experts: https://www.eurasien-gesellschaft.org/vorstand.html
-- Topics overview: https://www.eurasien-gesellschaft.org/themen.html
-- Geopolitik: https://www.eurasien-gesellschaft.org/themen/geopolitik.html
-- Energie: https://www.eurasien-gesellschaft.org/themen/energie.html
-- Wirtschaft: https://www.eurasien-gesellschaft.org/themen/wirtschaft.html
-- Wissenschaft: https://www.eurasien-gesellschaft.org/themen/wissenschaft.html
-- Kultur: https://www.eurasien-gesellschaft.org/kultur.html
-- Länder & Gesellschaften: https://www.eurasien-gesellschaft.org/laender-gesellschaften.html
-- Analysen (news, statements, studies): https://www.eurasien-gesellschaft.org/analysen.html
-- Regionen: https://www.eurasien-gesellschaft.org/regionen.html
-- Veranstaltungen (events): https://www.eurasien-gesellschaft.org/veranstaltungen.html
-- Mediathek: https://www.eurasien-gesellschaft.org/mediathek.html
-- Mitgliedschaft: https://www.eurasien-gesellschaft.org/mitgliedschaft.html
-- Impressum: https://www.eurasien-gesellschaft.org/impressum.html
-- Datenschutz: https://www.eurasien-gesellschaft.org/datenschutz.html
+- Home: https://eurasiengesellschaft.de/
+- Mission: https://eurasiengesellschaft.de/mission.html
+- Board and experts: https://eurasiengesellschaft.de/vorstand.html
+- Events: https://eurasiengesellschaft.de/veranstaltungen.html
+- Analyses (news, statements, studies): https://eurasiengesellschaft.de/analysen.html
+- Society news: https://eurasiengesellschaft.de/gesellschaftsnachrichten.html
+- Media library (videos and recordings): https://eurasiengesellschaft.de/mediathek.html
+- Topics: https://eurasiengesellschaft.de/themen.html
+- Membership: https://eurasiengesellschaft.de/mitgliedschaft.html
+- Cooperation: https://eurasiengesellschaft.de/partner.html
+- Legal notice (Impressum): https://eurasiengesellschaft.de/impressum.html
+- Privacy (Datenschutz): https://eurasiengesellschaft.de/datenschutz.html
 
 ## Citation guidance
 
-When citing this organisation, use the full name **Eurasien Gesellschaft e. V.** (no hyphen in the Vereinsname). The domain uses the hyphenated form: eurasien-gesellschaft.org.
-
-Prefer linking to the specific analysis or event page rather than the homepage. Author attributions on Analysen and person profile pages indicate individual contributors.
+Use the full name **Eurasien Gesellschaft e. V.** and the domain eurasiengesellschaft.de. Prefer linking to the specific event, analysis or profile page rather than the homepage. Statements by individual members are their own and not official positions of the Society unless stated.
 
 ## Members area (WordPress under /app/)
 
-Login, membership checkout and gated libraries (Positionen, Dossiers, Studien) live under https://www.eurasien-gesellschaft.org/app/. Those URLs are **not** for public indexing; use the public brochure pages above for citations. Organisation schema on `/app/` pages still identifies Eurasien Gesellschaft e. V. (Berlin).
+Login, membership checkout and the gated libraries (positions, dossiers, studies) live under https://eurasiengesellschaft.de/app/. Those URLs are not for public indexing; cite the public pages above.
 
 ## Optional
 
-- Sitemap: https://www.eurasien-gesellschaft.org/sitemap.xml
-- Events JSON feed: https://www.eurasien-gesellschaft.org/app/eg-events.json.php
-- Members login: https://www.eurasien-gesellschaft.org/app/login/
+- Sitemap: https://eurasiengesellschaft.de/sitemap.xml
+- Events JSON feed: https://eurasiengesellschaft.de/app/eg-events.json.php

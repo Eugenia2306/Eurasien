@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Deploy static-site + WordPress /app/ kit to Hostinger staging via FTP.
+Deploy static-site + WordPress /app/ kit via FTP.
 
 Streams:
-  1. static-site/*  -> /public_html/eurasia/
-  2. wp-theme + wp-app -> /public_html/eurasia/app/wp-content/...
+  1. static-site/*  -> $EG_FTP_REMOTE_ROOT/
+  2. wp-theme + wp-app -> $EG_FTP_REMOTE_ROOT/app/wp-content/...
 
 Usage: python tools/deploy_ftp.py
-Credentials: EG_FTP_HOST, EG_FTP_USER, EG_FTP_PASS (optional overrides).
+Required: EG_FTP_HOST, EG_FTP_USER, EG_FTP_PASS.
+Optional: EG_FTP_REMOTE_ROOT (default: /).
 """
 import ftplib
 import io
@@ -15,16 +16,16 @@ import os
 import sys
 from pathlib import Path
 
-HOST = os.environ.get("EG_FTP_HOST", "45.84.207.84")
-USER = os.environ.get("EG_FTP_USER", "u360353623.uwzghana.com")
-PW = os.environ.get("EG_FTP_PASS", "Pa55w0rd@137")
+HOST = os.environ.get("EG_FTP_HOST", "")
+USER = os.environ.get("EG_FTP_USER", "")
+PW = os.environ.get("EG_FTP_PASS", "")
 
 REPO = Path(__file__).resolve().parent.parent
 STATIC = REPO / "static-site"
 THEME = REPO / "wp-theme" / "eurasien-gesellschaft"
 MU_PLUGINS = REPO / "wp-app" / "mu-plugins"
 WP_APP_ROOT = REPO / "wp-app"
-REMOTE_ROOT = "/public_html/eurasia"
+REMOTE_ROOT = os.environ.get("EG_FTP_REMOTE_ROOT", "/").rstrip("/") or "/"
 
 SKIP_NAMES = {".DS_Store", "Thumbs.db", ".gitkeep"}
 SKIP_DIR_PARTS = {"eg-private", ".git", "__pycache__"}
@@ -103,6 +104,20 @@ def mkdirs(ftp: ftplib.FTP, path: str):
 
 
 def main():
+    missing = [
+        name
+        for name, value in (
+            ("EG_FTP_HOST", HOST),
+            ("EG_FTP_USER", USER),
+            ("EG_FTP_PASS", PW),
+        )
+        if not value
+    ]
+    if missing:
+        raise SystemExit(
+            "Missing required environment variables: " + ", ".join(missing)
+        )
+
     pairs = build_pairs()
     static_n = sum(1 for _, d in pairs if "/app/" not in d)
     app_n = len(pairs) - static_n
