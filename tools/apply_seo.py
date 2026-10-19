@@ -344,7 +344,7 @@ Sitemap: {base}/sitemap.xml
 def write_llms_txt(base: str) -> None:
     content = f"""# Eurasien Gesellschaft e. V.
 
-> Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum (Europa, Russland, Zentralasien, Ostasien, Südasien, Naher Osten).
+> Berliner Think Tank für Dialog, Analyse und Verständigung zwischen Europa und Asien (Europa, Russland, Zentralasien, Ostasien, Südasien, Naher Osten).
 
 ## About
 

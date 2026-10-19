@@ -170,7 +170,7 @@ function eg_seo_current_meta(): array {
 	$brochure = eg_seo_brochure_base();
 	$default  = array(
 		'title'       => 'Eurasien Gesellschaft e. V.',
-		'description' => 'Unabhängige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum.',
+		'description' => 'Berliner Think Tank für Dialog, Analyse und Verständigung zwischen Europa und Asien.',
 		'robots'      => 'noindex,follow',
 		'canonical'   => home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) ),
 		'og_type'     => 'website',
@@ -303,7 +303,7 @@ function eg_seo_wp_head(): void {
 			),
 			'email'         => 'kontakt@eurasien-gesellschaft.org',
 			'foundingDate'  => '2021',
-			'description'   => 'Unabhängige Berliner Think-Tank-Plattform für Dialog, Analyse und Verständigung im eurasischen Raum: Kultur, Wissenschaft, Wirtschaft und Geopolitik.',
+			'description'   => 'Berliner Think Tank für Dialog, Analyse und Verständigung zwischen Europa und Asien: Kultur, Wissenschaft, Wirtschaft und Geopolitik.',
 			'address'       => array(
 				'@type'           => 'PostalAddress',
 				'streetAddress'   => 'Kunz-Buntschuh-Straße 11',

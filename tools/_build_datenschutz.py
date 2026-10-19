@@ -42,7 +42,7 @@ main = """<main id="main">
 text = imp.read_text(encoding="utf-8")
 text = text.replace("Impressum | Eurasien Gesellschaft", "Datenschutz | Eurasien Gesellschaft")
 text = text.replace(
-    'content="Unabhängige, gemeinnützige Berliner Plattform für Dialog, Wissenschaft, Kultur, Wirtschaft und Geopolitik im eurasischen Raum."',
+    'content="Berliner Think Tank für Dialog und Verständigung zwischen Europa und Asien: Wissenschaft, Kultur, Wirtschaft und Geopolitik."',
     'content="Datenschutzhinweise der Eurasien Gesellschaft e. V."',
 )
 text = re.sub(r"<main id=\"main\">.*?</main>", main, text, count=1, flags=re.S)

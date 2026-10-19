@@ -27,7 +27,7 @@ function eg_seed_page_defs(): array {
 			'slug'     => 'mission',
 			'template' => $migrated,
 			'content'  => 'p-mission.html',
-			'excerpt'  => 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum.',
+			'excerpt'  => 'Berliner Think Tank für Dialog und Verständigung zwischen Europa und Asien.',
 		),
 		array(
 			'title'    => 'Vorstand & Experten',

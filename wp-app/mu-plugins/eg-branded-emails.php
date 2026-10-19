@@ -177,7 +177,7 @@ function eg_email_layout( $args ) {
 		. $cta
 		. '</td></tr>'
 		. '<tr><td style="padding:22px 34px;background:#0032a0;color:#dce7ff;font:400 12px/1.6 Arial,sans-serif;">'
-		. '<strong style="color:#ffffff;">Eurasien Gesellschaft e. V.</strong><br>Unabhängige Plattform für Dialog und Verständigung<br>'
+		. '<strong style="color:#ffffff;">Eurasien Gesellschaft e. V.</strong><br>Berliner Think Tank für Dialog und Verständigung<br>'
 		. '<a href="' . esc_url( $home ) . '" style="color:#ffffff;text-decoration:underline;">Website</a>'
 		. '&nbsp;&nbsp;·&nbsp;&nbsp;<a href="' . esc_url( $privacy ) . '" style="color:#ffffff;text-decoration:underline;">Datenschutz</a>'
 		. '&nbsp;&nbsp;·&nbsp;&nbsp;<a href="' . esc_url( $contact ) . '" style="color:#ffffff;text-decoration:underline;">Kontakt</a>'
@@ -553,7 +553,7 @@ function eg_woocommerce_email_footer() {
 </td></tr></table></td></tr>
 <tr><td id="template_footer">
 	<strong style="color:#fff;">Eurasien Gesellschaft e. V.</strong><br>
-	Unabhängige Plattform für Dialog und Verständigung<br>
+	Berliner Think Tank für Dialog und Verständigung<br>
 	<a href="<?php echo esc_url( eg_email_public_url() ); ?>">Website</a>
 	&nbsp;&nbsp;·&nbsp;&nbsp;<a href="<?php echo esc_url( eg_email_public_url( 'datenschutz.html' ) ); ?>">Datenschutz</a>
 	&nbsp;&nbsp;·&nbsp;&nbsp;<a href="mailto:kontakt@eurasien-gesellschaft.org">Kontakt</a>

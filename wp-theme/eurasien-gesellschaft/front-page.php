@@ -12,11 +12,11 @@ get_header();
 	<div class="hero">
 		<div class="hero__in">
 			<div>
-				<p class="eyebrow"><?php eg_bi_e( 'Think Tank und Plattform für Dialog · Berlin', 'Think Tank and Dialogue Platform · Berlin' ); ?></p>
+				<p class="eyebrow"><?php eg_bi_e( 'Think Tank für Dialog · Berlin', 'Think Tank for Dialogue · Berlin' ); ?></p>
 				<h1><?php eg_bi_e( 'Europa und Asien verstehen.', 'Understanding Europe and Asia.' ); ?></h1>
 				<p class="lead"><?php eg_bi_e(
-					'Die Eurasien Gesellschaft e. V. ist ein unabhängiger Think Tank für Dialog und Verständigung. Sie erarbeitet Analysen zu Entwicklungen im eurasischen Raum und bringt Wissenschaft, Kultur, Wirtschaft und Politik miteinander ins Gespräch.',
-					'The Eurasien Gesellschaft e. V. is an independent think tank for dialogue and understanding. It produces analyses of developments across the Eurasian space and brings science, culture, business and politics into dialogue.'
+					'Die Eurasien Gesellschaft e. V. ist ein Berliner Think Tank für Dialog und Verständigung. Sie erarbeitet Analysen zu Entwicklungen im eurasischen Raum und bringt Wissenschaft, Kultur, Wirtschaft und Politik miteinander ins Gespräch.',
+					'The Eurasien Gesellschaft e. V. is a Berlin-based think tank for dialogue and understanding. It produces analyses of developments across the Eurasian space and brings science, culture, business and politics into dialogue.'
 				); ?></p>
 				<div class="hero__cta">
 					<a class="btn btn--nav" href="<?php echo esc_url( eg_route( 'p-analysen' ) ); ?>"><?php eg_bi_e( 'Analysen & Perspektiven', 'Analysis & perspectives' ); ?></a>

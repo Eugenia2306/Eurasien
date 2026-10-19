@@ -14,7 +14,7 @@ $datenschutz = function_exists( 'eg_brochure_public_url' )
 					<img src="<?php echo esc_url( eg_logo_url() ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="267" height="78" decoding="async">
 				</div>
 				<p style="color:#9fb0c4;font-size:.9rem;max-width:34ch;margin:0 0 6px">
-					<?php eg_bi_e( 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum.', 'Independent platform for dialogue and understanding in the Eurasian space.' ); ?>
+					<?php eg_bi_e( 'Berliner Think Tank für Dialog und Verständigung zwischen Europa und Asien.', 'Berlin-based think tank for dialogue and understanding between Europe and Asia.' ); ?>
 				</p>
 				<div class="ft__soc">
 					<a href="https://www.youtube.com/@EurasienGesellschaft" target="_blank" rel="noopener noreferrer">YouTube</a>

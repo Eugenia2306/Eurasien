@@ -27,7 +27,7 @@ $home = $ctx['brochure_home'];
 <!-- ============ UTILITY BAR (same pattern as brochure) ============ -->
 <div class="ubar">
 	<div class="ubar__in">
-		<span class="ubar__l"><?php eg_bi_e( 'Unabhängige Plattform für Dialog und Verständigung im eurasischen Raum', 'Independent platform for dialogue and understanding in the Eurasian space' ); ?></span>
+		<span class="ubar__l"><?php eg_bi_e( 'Berliner Think Tank für Dialog und Verständigung zwischen Europa und Asien', 'Berlin-based think tank for dialogue and understanding between Europe and Asia' ); ?></span>
 		<span class="ubar__r">
 			<?php if ( ! empty( $ctx['logged_in'] ) ) : ?>
 				<a href="<?php echo esc_url( $ctx['account'] ); ?>" data-analytics="account_click"><?php eg_bi_e( 'Mein Konto', 'My Account' ); ?></a>

@@ -20,8 +20,8 @@ ORG = {
     "email": "kontakt@eurasien-gesellschaft.org",
     "foundingDate": "2021",
     "description": (
-        "Unabhängige, gemeinnützige Berliner Think-Tank-Plattform für Dialog, "
-        "Analyse und Verständigung im eurasischen Raum: Kultur, Wissenschaft, "
+        "Berliner Think Tank für Dialog, Analyse und Verständigung zwischen "
+        "Europa und Asien: Kultur, Wissenschaft, "
         "Wirtschaft und Geopolitik."
     ),
     "address": {
@@ -44,7 +44,7 @@ PAGES: dict[str, dict] = {
     "index.html": {
         "title": "Eurasien Gesellschaft e. V.",
         "description": (
-            "Unabhängiger, gemeinnütziger Think Tank für Dialog und Verständigung "
+            "Berliner Think Tank für Dialog und Verständigung "
             "zwischen Europa und Eurasien. Analysen zu Geopolitik, Energie, "
             "Wirtschaft, Wissenschaft und Kultur."
         ),
@@ -421,7 +421,7 @@ FAQ_HOME = [
     {
         "q": "Was ist die Eurasien Gesellschaft e. V.?",
         "a": (
-            "Die Eurasien Gesellschaft e. V. ist ein unabhängiger, gemeinnütziger "
+            "Die Eurasien Gesellschaft e. V. ist ein "
             "Think Tank mit Sitz in Berlin. Sie fördert Dialog, Analyse und "
             "Verständigung zwischen Europa und dem eurasischen Raum in den Feldern "
             "Geopolitik, Energie, Wirtschaft, Wissenschaft und Kultur."
@@ -430,8 +430,8 @@ FAQ_HOME = [
     {
         "q": "Ist die Eurasien Gesellschaft parteipolitisch gebunden?",
         "a": (
-            "Nein. Die Gesellschaft versteht sich als unabhängige, gemeinnützige "
-            "Plattform für sachliche Analyse und Dialog – ohne Interessenvertretung "
+            "Nein. Die Gesellschaft versteht sich als Think Tank "
+            "für sachliche Analyse und Dialog – ohne Interessenvertretung "
             "einzelner Staaten oder Organisationen."
         ),
     },
