@@ -2701,4 +2701,4 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .cal__cell--past{background:var(--brand-blue,#0032A0);color:#fff;font-weight:700}
 .cal-legend i.cal-lg--past{background:var(--brand-blue,#0032A0)}
 /* Sections focused by an in-page link (accessibility): no browser focus frame (18 Oct 2026) */
-section[tabindex="-1"]:focus{outline:none}
+section[tabindex="-1"]:focus,.shead[tabindex="-1"]:focus{outline:none}
