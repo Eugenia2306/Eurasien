@@ -57,11 +57,11 @@ Format of each line: date – title – speakers – place – format – link.
 
 ### Upcoming
 
-- 2026-10-20, 18:30 – Aktuelle Entwicklungen in Asien – Was haben die Summits von BRICS, SCO und APEC gebracht? (EN: Current Developments in Asia: What Did the BRICS, SCO, and APEC Summits Achieve?) – Kai Kleinwächter (WeltTrends) und Dr. Hauke Ritz – Sprechsaal, Marienstraße 26, 10117 Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-asien-brics-soz-apec-2026-10
 - 2026-12-03, time to be announced – Podiumsdiskussion mit dem Liedermacher Hans-Eckardt Wenzel (EN: Panel discussion with singer-songwriter Hans-Eckardt Wenzel) – Hans-Eckardt Wenzel, Liedermacher – Logenhaus Berlin-Dahlem, Peter-Lenné-Straße 1, 14195 Berlin – Save the Date – https://eurasiengesellschaft.de/veranstaltungen.html#ev-wenzel-podium-2026-12
 
 ### Past events
 
+- 2026-10-20 – Aktuelle Entwicklungen in Asien – Was haben die Summits von BRICS, SCO und APEC gebracht? (EN: Current Developments in Asia: What Did the BRICS, SCO, and APEC Summits Achieve?) – Kai Kleinwächter (WeltTrends) und Dr. Hauke Ritz – Sprechsaal, Marienstraße 26, 10117 Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-asien-brics-soz-apec-2026-10
 - 2026-08-26 – Buchgespräch: „Die verschlüsselte Chronik der Menschheitsgeschichte&#8220; (EN: Book discussion: “The Encrypted Chronicle of Human History) – Alexander Rahr, Autor und Historiker – Preußensaal des Logenhauses, Peter-Lenné-Straße 1, 14195 Berlin – Buchgespräch – https://eurasiengesellschaft.de/veranstaltungen.html#ev-buchgespraech-chronik-2026-08
 - 2026-06-25 – Sommerfest 2026 (EN: Summer festival 2026) – Podiumsdiskussion & Begegnung – Logenhaus, Berlin – Vergangen – https://eurasiengesellschaft.de/veranstaltungen.html#ev-sommerfest-2026
 - 2026-05-05 – Energie-Krise: Können wir ohne russisches Öl und Gas auskommen? (EN: Energy crisis: can we manage without Russian oil and gas?) – Wolfgang J. Hummel – Berlin – Vortrag – https://eurasiengesellschaft.de/veranstaltungen.html#ev-energie-krise-koennen-wir-2026
