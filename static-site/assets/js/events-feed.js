@@ -42,6 +42,24 @@
       .replace(/"/g, "&quot;");
   }
 
+  var EV_IC = {
+    loc: '<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    date: '<path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+    time: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    who: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>'
+  };
+  /* One item of the event info line (place, date, time, speaker) with its icon. */
+  function metaItem(kind, html) {
+    return '<span class="ev__mi ev__mi--' + kind + '"><svg class="ev__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + EV_IC[kind] + '</svg>' + html + '</span>';
+  }
+  /* "Dienstag, 20. Oktober 2026 · 18:30 Uhr" -> date item + time item */
+  function whenItems(when) {
+    var de = String(when.de || "").split(" · "), en = String(when.en || "").split(" · ");
+    var out = metaItem("date", bi(de[0], en[0]));
+    if (de[1]) out += metaItem("time", bi(de[1], en[1] || de[1]));
+    return out;
+  }
+
   function bi(de, en) {
     var dText = de || "";
     var eText = en || de || "";
@@ -145,13 +163,13 @@
 
     var meta = "";
     if (ev.location || ev.location_en) {
-      meta += "<span>" + bi(ev.location, ev.location_en) + "</span>";
+      meta += metaItem("loc", bi(ev.location, ev.location_en));
     }
     if (when.de) {
-      meta += "<span>" + bi(when.de, when.en) + "</span>";
+      meta += whenItems(when);
     }
     if (ev.speaker || ev.speaker_en) {
-      meta += "<span>" + bi(ev.speaker, ev.speaker_en) + "</span>";
+      meta += metaItem("who", bi(ev.speaker, ev.speaker_en));
     }
 
     var more = "";
@@ -499,8 +517,8 @@
           "<div><h3 class=\"ev__t\">" +
           bi(ev.title, ev.title_en) +
           '</h3><div class="ev__meta">' +
-          (ev.location || ev.location_en ? "<span>" + bi(ev.location, ev.location_en) + "</span>" : "") +
-          (ev.speaker || ev.speaker_en ? "<span>" + bi(ev.speaker, ev.speaker_en) + "</span>" : "") +
+          (ev.location || ev.location_en ? metaItem("loc", bi(ev.location, ev.location_en)) : "") +
+          (ev.speaker || ev.speaker_en ? metaItem("who", bi(ev.speaker, ev.speaker_en)) : "") +
           "</div></div>" +
           '<div class="ev__side"><span class="' + badgeClass + '">' +
           bi(ev.badge, ev.badge_en) +

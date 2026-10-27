@@ -58,6 +58,28 @@ def bi(de, en):
     return '<span class="de">' + esc(de) + '</span><span class="en" hidden>' + esc(en) + "</span>"
 
 
+EV_IC = {
+    "loc": '<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>',
+    "date": '<path d="M8 2v4M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+    "time": '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+    "who": '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+}
+
+
+def meta_item(kind, html):
+    """One item of the event info line (place, date, time, speaker) with its icon."""
+    return '<span class="ev__mi ev__mi--' + kind + '"><svg class="ev__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + EV_IC[kind] + '</svg>' + html + '</span>'
+
+
+def when_items(when_de, when_en):
+    de = (when_de or "").split(" · ")
+    en = (when_en or "").split(" · ")
+    out = meta_item("date", bi(de[0], en[0]))
+    if len(de) > 1:
+        out += meta_item("time", bi(de[1], en[1] if len(en) > 1 else de[1]))
+    return out
+
+
 def bi_html(de, en):
     de = de or ""
     en = en or de
@@ -137,11 +159,11 @@ def render_card(ev):
     ])
     meta = ""
     if ev.get("location") or ev.get("location_en"):
-        meta += "<span>" + bi(ev.get("location"), ev.get("location_en")) + "</span>"
+        meta += meta_item("loc", bi(ev.get("location"), ev.get("location_en")))
     if when_de:
-        meta += "<span>" + bi(when_de, when_en) + "</span>"
+        meta += when_items(when_de, when_en)
     if ev.get("speaker") or ev.get("speaker_en"):
-        meta += "<span>" + bi(ev.get("speaker"), ev.get("speaker_en")) + "</span>"
+        meta += meta_item("who", bi(ev.get("speaker"), ev.get("speaker_en")))
     more = ""
     if ev.get("body_html") or ev.get("body_html_en"):
         lab = bi("Rückblick", "Review") if status == "past" else bi("Beschreibung und Veranstaltungsdetails", "Description and event details")
@@ -192,8 +214,8 @@ def render_home(events):
                    '</div><div class="ev__m">' + esc(MD[p[1] - 1] if p else "") +
                    '</div><div class="ev__y">' + esc(p[0] if p else "") + "</div></div>" +
                    '<div><h3 class="ev__t">' + bi(ev.get("title"), ev.get("title_en")) + '</h3><div class="ev__meta">' +
-                   ("<span>" + bi(ev.get("location"), ev.get("location_en")) + "</span>" if ev.get("location") or ev.get("location_en") else "") +
-                   ("<span>" + bi(ev.get("speaker"), ev.get("speaker_en")) + "</span>" if ev.get("speaker") or ev.get("speaker_en") else "") +
+                   (meta_item("loc", bi(ev.get("location"), ev.get("location_en"))) if ev.get("location") or ev.get("location_en") else "") +
+                   (meta_item("who", bi(ev.get("speaker"), ev.get("speaker_en"))) if ev.get("speaker") or ev.get("speaker_en") else "") +
                    "</div></div>" +
                    '<div class="ev__side"><span class="' + badge_class + '">' + bi(ev.get("badge"), ev.get("badge_en")) + "</span></div></a>")
     return "".join(out)

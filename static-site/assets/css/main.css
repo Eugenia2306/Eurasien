@@ -2702,3 +2702,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .cal-legend i.cal-lg--past{background:var(--brand-blue,#0032A0)}
 /* Sections focused by an in-page link (accessibility): no browser focus frame (18 Oct 2026) */
 section[tabindex="-1"]:focus,.shead[tabindex="-1"]:focus{outline:none}
+/* Event info line: icon before place, date, time, speaker (27 Oct 2026) */
+.ev__mi{display:inline-flex;align-items:flex-start;gap:6px}
+.ev__ic{width:17px;height:17px;flex:0 0 17px;margin-top:1px;color:#DA291C}

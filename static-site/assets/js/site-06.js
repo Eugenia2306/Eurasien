@@ -78,7 +78,7 @@
     var price=ev.getAttribute('data-price') || '10';
     var loc=ev.getAttribute('data-location') || '';
     if(!loc){
-      var meta=ev.querySelector('.ev__meta span');
+      var meta=ev.querySelector('.ev__mi--loc')||ev.querySelector('.ev__meta span');
       if(meta){ var c=meta.cloneNode(true); [].slice.call(c.querySelectorAll('[hidden]')).forEach(function(x){x.parentNode.removeChild(x);}); loc=c.textContent.replace(/\s+/g,' ').trim(); }
     }
     modal.setAttribute('data-event-id', ev.id || '');
