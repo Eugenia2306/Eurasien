@@ -84,6 +84,10 @@ def format_when(ev):
         return "", ""
     y, m, d = p
     wd = js_weekday(y, m, d)
+    if ev.get("time_tba") and ev.get("status") != "upcoming":
+        # past event without a known time: date only
+        return ("%s, %d. %s %d" % (WD_DE[wd], d, MD_FULL[m - 1], y),
+                "%s, %d %s %d" % (WD_EN[wd], d, ME[m - 1], y))
     if ev.get("time_tba"):
         return ("%s, %d. %s %d · Uhrzeit folgt" % (WD_DE[wd], d, MD_FULL[m - 1], y),
                 "%s, %d %s %d · Time to be announced" % (WD_EN[wd], d, ME[m - 1], y))

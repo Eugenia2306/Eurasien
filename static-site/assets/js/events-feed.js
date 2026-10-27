@@ -87,6 +87,13 @@
     var dt = new Date(Date.UTC(p.y, p.m - 1, p.d, 12, 0, 0));
     var wd = dt.getUTCDay();
     if (ev.time_tba) {
+      /* Past event without a known time: date only (no "Uhrzeit folgt", no invented 19:00). */
+      if (ev.status !== "upcoming") {
+        return {
+          de: WD_DE[wd] + ", " + p.d + ". " + MD_FULL[p.m - 1] + " " + p.y,
+          en: WD_EN[wd] + ", " + p.d + " " + ME[p.m - 1] + " " + p.y
+        };
+      }
       return {
         de: WD_DE[wd] + ", " + p.d + ". " + MD_FULL[p.m - 1] + " " + p.y + " · Uhrzeit folgt",
         en: WD_EN[wd] + ", " + p.d + " " + ME[p.m - 1] + " " + p.y + " · Time to be announced"
