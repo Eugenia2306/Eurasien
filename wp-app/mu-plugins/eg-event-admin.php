@@ -963,7 +963,8 @@ function eg_event_admin_to_feed_item(WP_Post $post)
     $price = get_post_meta($id, 'eg_event_price', true);
     $price = $price === '' || $price === null ? 0 : (float) $price;
 
-    $title_de = get_the_title($post);
+    /* get_the_title() turns quote marks into HTML codes (&#8220;); the site escapes text itself, so decode them. */
+    $title_de = html_entity_decode(get_the_title($post), ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $title_en = (string) get_post_meta($id, 'eg_event_title_en', true);
     if ($title_en === '') {
         $title_en = $title_de;
@@ -1011,6 +1012,11 @@ function eg_event_admin_to_feed_item(WP_Post $post)
     $body_de = apply_filters('the_content', $post->post_content);
     $body_en = (string) get_post_meta($id, 'eg_event_body_en', true);
     if ($body_en !== '') {
+        $body_en = str_replace(array("\r\n", "\r"), "\n", $body_en);
+        /* Text pasted from Word arrives with single line breaks: treat each line as a paragraph. */
+        if (strpos($body_en, '<p') === false && !preg_match('/\n\s*\n/', $body_en)) {
+            $body_en = preg_replace('/\n+/', "\n\n", trim($body_en));
+        }
         $body_en = wpautop($body_en);
     }
 
