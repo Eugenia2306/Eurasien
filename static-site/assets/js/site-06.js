@@ -128,6 +128,8 @@
   /* ---- membership tabs ---- */
   function selectTab(key){
     if(key === 'verein' || key === 'association') key = 'expert';
+    /* Reader access was discontinued (Nov 2026): without its panel, show the membership panel. */
+    if(key === 'reader' && !d.querySelector('[data-mpanel="reader"]')) key = 'expert';
     if(key !== 'reader' && key !== 'expert') return;
     [].slice.call(d.querySelectorAll('.mtab')).forEach(function(t){
       var on = t.getAttribute('data-mtab') === key;

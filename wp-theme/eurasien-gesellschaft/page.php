@@ -97,7 +97,7 @@ while ( have_posts() ) :
 				<p class="eg-auth-aside">
 					<?php eg_bi_e( 'Noch kein Zugang?', 'No account yet?' ); ?>
 					<a href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : '/mitgliedschaft.html?plan=expert#membership-registration' ); ?>" data-analytics="membership_click">
-						<?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?>
+						<?php eg_bi_e( 'Interesse an einer Mitgliedschaft', 'Interested in membership' ); ?>
 					</a>
 				</p>
 			<?php endif; ?>

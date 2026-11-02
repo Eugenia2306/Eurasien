@@ -584,6 +584,12 @@ function eg_membership_change_handle_post()
         exit;
     }
 
+    /* Reader access was discontinued (2 Nov 2026): no new reader plans, no switching to it. */
+    if ($target === 1 && $current !== 1) {
+        wp_safe_redirect(eg_membership_change_account_url(array('eg_change' => 'closed')));
+        exit;
+    }
+
     /* Paying for Leserzugang after scheduled Verein end. */
     if ($target === 1 && $pending && $pending['status'] === 'awaiting_payment') {
         eg_membership_change_redirect_to_stripe($user_id, 1);
@@ -666,6 +672,10 @@ function eg_membership_change_render_notices()
     }
 
     $messages = array(
+        'closed'             => array(
+            'de' => 'Der Leserzugang wird nicht mehr angeboten.',
+            'en' => 'Reader access is no longer offered.',
+        ),
         'cancelled'          => array(
             'de' => 'Vorgang abgebrochen. Ihre bisherige Mitgliedschaft bleibt aktiv.',
             'en' => 'Cancelled. Your current membership stays active.',
@@ -738,6 +748,9 @@ function eg_membership_change_render_panel()
     if ($confirm === 2 && $current !== 2) {
         $confirm = 0;
     }
+    if ($confirm === 1 && $current !== 1) {
+        $confirm = 0;
+    }
 
     $current_row = ($current && isset($catalog[$current])) ? $catalog[$current] : null;
 
@@ -756,8 +769,8 @@ function eg_membership_change_render_panel()
         echo '</p>';
     } else {
         echo '<p style="margin:0 0 16px;opacity:.9">';
-        echo '<span class="de">Keine aktive Mitgliedschaft. Sie können einen Tarif wählen und bezahlen.</span>';
-        echo '<span class="en" hidden>No active membership. Choose a plan and continue to payment.</span>';
+        echo '<span class="de">Keine aktive Mitgliedschaft.</span>';
+        echo '<span class="en" hidden>No active membership.</span>';
         echo '</p>';
     }
 
@@ -772,8 +785,8 @@ function eg_membership_change_render_panel()
     }
 
     echo '<p style="margin:18px 0 0;font-size:13px;opacity:.8">';
-    echo '<span class="de">Vereinsmitgliedschaft: kein Online-Abschluss. Teilen Sie uns Ihr Interesse über das Formular mit; wir melden uns persönlich, über die Aufnahme entscheidet der Vorstand. Wechsel vom Verein zum Leserzugang: Sie behalten die Vereinsmitgliedschaft bis zum Periodenende; die 5 €/Monat-Zahlung startet erst danach.</span>';
-    echo '<span class="en" hidden>Association membership: no online sign-up. Tell us about your interest through the form; we will get in touch personally, and the board decides on admission. Switching from association to reader access: you keep association membership until the period ends; the €5/month payment starts only then.</span>';
+    echo '<span class="de">Vereinsmitgliedschaft: kein Online-Abschluss. Teilen Sie uns Ihr Interesse über das Formular mit; wir melden uns persönlich, über die Aufnahme entscheidet der Vorstand.</span>';
+    echo '<span class="en" hidden>Association membership: no online sign-up. Tell us about your interest through the form; we will get in touch personally, and the board decides on admission.</span>';
     echo '</p>';
     echo '</section>';
 }
@@ -851,6 +864,10 @@ function eg_membership_change_render_choices($current, $catalog, $pending)
         if (!isset($catalog[$id])) {
             continue;
         }
+        /* Reader access discontinued (2 Nov 2026): only shown to someone who still has it. */
+        if ((int) $id === 1 && (int) $current !== 1) {
+            continue;
+        }
         $row = $catalog[$id];
         $is_current = ((int) $current === (int) $id);
         $direction = eg_membership_change_direction($current, $id);
@@ -870,7 +887,7 @@ function eg_membership_change_render_choices($current, $catalog, $pending)
             echo '<span style="font-weight:700;color:#0b1f33"><span class="de">Aktuell</span><span class="en" hidden>Current</span></span>';
         } elseif ((int) $id === 2) {
             echo '<a class="pmpro_btn" href="' . esc_url(eg_membership_change_interest_url()) . '" style="display:inline-block;text-decoration:none;background:#0b1f33;color:#fff;padding:10px 14px;font-weight:600">';
-            echo '<span class="de">Interesse mitteilen</span><span class="en" hidden>Express interest</span>';
+            echo '<span class="de">Interesse an einer Mitgliedschaft</span><span class="en" hidden>Interested in membership</span>';
             echo '</a>';
         } elseif ($downgrade_locked) {
             echo '<span style="opacity:.75"><span class="de">Bereits geplant</span><span class="en" hidden>Already scheduled</span></span>';

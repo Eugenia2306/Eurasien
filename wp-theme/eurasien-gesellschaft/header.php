@@ -76,7 +76,7 @@ $home = $ctx['brochure_home'];
 			<?php if ( ! empty( $ctx['logged_in'] ) ) : ?>
 				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['account'] ); ?>" data-analytics="account_click"><?php eg_bi_e( 'Mein Konto', 'My Account' ); ?></a>
 			<?php else : ?>
-				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['signup'] ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
+				<a class="btn btn--accent btn--sm" href="<?php echo esc_url( $ctx['signup'] ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Interesse an einer Mitgliedschaft', 'Interested in membership' ); ?></a>
 			<?php endif; ?>
 			<button class="burger" type="button" aria-label="<?php esc_attr_e( 'Menü', 'eurasien-gesellschaft' ); ?>" aria-expanded="false"><span></span><span></span><span></span></button>
 		</div>

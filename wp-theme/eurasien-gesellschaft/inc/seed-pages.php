@@ -102,14 +102,14 @@ function eg_seed_page_defs(): array {
 			'slug'     => 'mitgliedschaft',
 			'template' => $migrated,
 			'content'  => 'p-mitgliedschaft.html',
-			'excerpt'  => 'Registrierung und Antrag: Leserzugang und Vereinsmitgliedschaft.',
+			'excerpt'  => 'Interesse an einer Mitgliedschaft mitteilen.',
 		),
 		array(
 			'title'    => 'Vorteile',
 			'slug'     => 'mitgliedschaft-vorteile',
 			'template' => 'page-templates/template-vorteile.php',
 			'content'  => 'p-mitgliedschaft-vorteile.html',
-			'excerpt'  => 'Mitwirken, auf zwei Wegen: Leserzugang und Vereinsmitgliedschaft.',
+			'excerpt'  => 'Mitglied werden: die Vereinsmitgliedschaft.',
 		),
 		array(
 			'title'    => 'Aufzeichnungen',

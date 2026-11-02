@@ -27,8 +27,8 @@ while ( have_posts() ) :
 			'eyebrow' => eg_bi( 'Mitwirken', 'Get involved' ),
 			'title'   => eg_bi( 'Mitwirken, auf zwei Wegen', 'Two ways to take part' ),
 			'lead'    => eg_bi(
-				'Die Eurasien Gesellschaft bietet zwei unterschiedliche Formen der Teilnahme: Leserzugang und Vereinsmitgliedschaft.',
-				'The Eurasien Gesellschaft offers two distinct forms of participation: reader access and association membership.'
+				'Die Vereinsmitgliedschaft macht Sie zum Teil der Eurasien Gesellschaft und ihres Dialogs.',
+				'Association membership makes you part of the Eurasien Gesellschaft and its dialogue.'
 			),
 		)
 	);

@@ -82,7 +82,7 @@ $datenschutz = function_exists( 'eg_brochure_public_url' )
 				<?php else : ?>
 					<a href="<?php echo esc_url( eg_route( 'p-veranstaltungen' ) ); ?>"><?php eg_bi_e( 'Veranstaltungen', 'Events' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-mediathek' ) ); ?>"><?php eg_bi_e( 'Mediathek', 'Media Library' ); ?></a>
-					<a href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : add_query_arg( 'plan', 'expert', eg_route( 'p-mitgliedschaft' ) ) . '#membership-registration' ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
+					<a href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : add_query_arg( 'plan', 'expert', eg_route( 'p-mitgliedschaft' ) ) . '#membership-registration' ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Interesse an einer Mitgliedschaft', 'Interested in membership' ); ?></a>
 					<a href="<?php echo esc_url( function_exists( 'eg_member_login_url' ) ? eg_member_login_url() : eg_route( 'p-login' ) ); ?>" data-analytics="login_click"><?php eg_bi_e( 'Anmelden', 'Login' ); ?></a>
 					<a href="<?php echo esc_url( eg_route( 'p-impressum' ) ); ?>">Impressum</a>
 				<?php endif; ?>

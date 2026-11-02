@@ -17,8 +17,8 @@ while ( have_posts() ) :
 			'eyebrow' => eg_bi( 'Mitwirken', 'Get involved' ),
 			'title'   => get_the_title(),
 			'lead'    => eg_bi(
-				'Registrierung und Antrag für Leserzugang oder Vereinsmitgliedschaft.',
-				'Registration and application for reader access or association membership.'
+				'Interesse an einer Mitgliedschaft mitteilen.',
+				'Tell us you are interested in membership.'
 			),
 		)
 	);

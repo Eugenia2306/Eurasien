@@ -95,7 +95,7 @@ add_filter('login_form_bottom', function ($content) {
 function eg_membership_signup_url($plan = '')
 {
     if (function_exists('eg_member_handoff_brochure_url')) {
-        return eg_member_handoff_brochure_url($plan ? $plan : 'reader', array());
+        return eg_member_handoff_brochure_url($plan ? $plan : 'expert', array());
     }
     if (function_exists('eg_brochure_public_url')) {
         $url = eg_brochure_public_url('mitgliedschaft.html');
@@ -123,10 +123,40 @@ add_filter('pmpro_non_member_text_filter', function ($text) {
     };
     $extra = '<p class="eg-gate-cta" style="margin-top:1.25rem">'
         . '<a class="pmpro_btn" style="margin-right:10px" href="' . $login . '">' . $bi('Anmelden', 'Log In') . '</a>'
-        . '<a class="pmpro_btn" href="' . $signup . '">' . $bi('Mitgliedschaft beantragen', 'Apply for membership') . '</a>'
+        . '<a class="pmpro_btn" href="' . $signup . '">' . $bi('Interesse an einer Mitgliedschaft', 'Interested in membership') . '</a>'
         . '</p>';
     return $text . $extra;
 }, 20);
+
+/**
+ * Members' area pages: our own bilingual message for visitors without access.
+ * Replaces the plugin's English "You must be a Leserzugang member" box (reader access discontinued, 2 Nov 2026).
+ */
+add_filter('pmpro_membership_content_filter', function ($filtered, $content, $hasaccess) {
+    if ($filtered !== false || $hasaccess || is_admin()) {
+        return $filtered;
+    }
+    global $post;
+    $ids = get_option('eg_pmp_page_ids');
+    if (!$post || !is_array($ids) || !in_array((int) $post->ID, array_map('intval', array_values($ids)), true)) {
+        return $filtered;
+    }
+    $bi = static function ($de, $en) {
+        if (function_exists('eg_bi')) {
+            return eg_bi($de, $en);
+        }
+        return '<span class="de">' . esc_html($de) . '</span><span class="en" hidden>' . esc_html($en) . '</span>';
+    };
+    $login = esc_url(wp_login_url(get_permalink()));
+    $signup = esc_url(eg_membership_signup_url('expert'));
+    return '<div class="eg-gate">'
+        . '<p><strong>' . $bi('Mitgliederbereich', "Members' area") . '</strong></p>'
+        . '<p>' . $bi('Diese Inhalte sind den Mitgliedern der Eurasien Gesellschaft vorbehalten.', 'This content is reserved for members of the Eurasien Gesellschaft.') . '</p>'
+        . '<p class="eg-gate-cta" style="margin-top:1.25rem">'
+        . '<a class="pmpro_btn" style="margin-right:10px" href="' . $login . '">' . $bi('Anmelden', 'Log In') . '</a>'
+        . '<a class="pmpro_btn" href="' . $signup . '">' . $bi('Interesse an einer Mitgliedschaft', 'Interested in membership') . '</a>'
+        . '</p></div>';
+}, 10, 3);
 
 /**
  * Public site root (brochure), not the WordPress /app/ home.

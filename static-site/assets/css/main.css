@@ -2705,3 +2705,5 @@ section[tabindex="-1"]:focus,.shead[tabindex="-1"]:focus{outline:none}
 /* Event info line: icon before place, date, time, speaker (27 Oct 2026) */
 .ev__mi{display:inline-flex;align-items:flex-start;gap:6px}
 .ev__ic{width:17px;height:17px;flex:0 0 17px;margin-top:1px;color:#DA291C}
+/* Menu items stay on one line next to the longer button label (2 Nov 2026) */
+.nav-link{white-space:nowrap}

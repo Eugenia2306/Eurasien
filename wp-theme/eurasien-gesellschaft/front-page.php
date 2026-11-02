@@ -58,7 +58,7 @@ get_header();
 			</a>
 			<a class="home-quick__item home-quick__item--ink" href="<?php echo esc_url( eg_route( 'p-mitgliedschaft-vorteile' ) ); ?>">
 				<span class="home-quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-4.2 2.4-6.3 5.5-6.3s5 2.1 5.5 6.3M17 8v6m-3-3h6"/></svg></span>
-				<span><b class="de">Mitgliedschaft beantragen</b><b class="en" hidden>Apply for membership</b><small class="de">Dialog aktiv mitgestalten</small><small class="en" hidden>Help shape the dialogue</small></span>
+				<span><b class="de">Interesse an einer Mitgliedschaft</b><b class="en" hidden>Interested in membership</b><small class="de">Dialog aktiv mitgestalten</small><small class="en" hidden>Help shape the dialogue</small></span>
 				<i aria-hidden="true">↗</i>
 			</a>
 		</div>
@@ -271,7 +271,7 @@ get_header();
 					); ?></p>
 				</div>
 				<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;align-items:center">
-					<a class="btn btn--accent" href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Mitgliedschaft beantragen', 'Apply for membership' ); ?></a>
+					<a class="btn btn--accent" href="<?php echo esc_url( function_exists( 'eg_membership_signup_url' ) ? eg_membership_signup_url( 'expert' ) : eg_route( 'p-mitgliedschaft' ) ); ?>" data-analytics="membership_click"><?php eg_bi_e( 'Interesse an einer Mitgliedschaft', 'Interested in membership' ); ?></a>
 					<a class="btn btn--onnavy" href="<?php echo esc_url( eg_route( 'p-partner' ) ); ?>"><?php eg_bi_e( 'Partner werden', 'Become a partner' ); ?></a>
 				</div>
 			</div>
