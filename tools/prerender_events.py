@@ -266,6 +266,8 @@ def merge_archive(events, arch):
         a = desc.get(ev.get("id"))
         if not a or (a.get("date") and a.get("date") != ev.get("date")):
             continue
+        if a.get("report_url") and not ev.get("report_url"):
+            ev["report_url"] = a["report_url"]  # e.g. the LinkedIn post about the event
         if ev.get("body_html") or ev.get("body_html_en"):
             continue  # WordPress text wins
         ev["body_html"] = a.get("de") or ""

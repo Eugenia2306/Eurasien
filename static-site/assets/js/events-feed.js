@@ -293,9 +293,9 @@
     for (var i = 0; i < scripts.length; i++) {
       var src = scripts[i].getAttribute("src") || "";
       var m = src.match(/^(.*\/assets\/)/);
-      if (m) return m[1] + "data/event-archive.json?v=5";
+      if (m) return m[1] + "data/event-archive.json?v=6";
     }
-    return "assets/data/event-archive.json?v=5";
+    return "assets/data/event-archive.json?v=6";
   }
 
   function loadArchive() {
@@ -315,6 +315,7 @@
     events.forEach(function (ev) {
       var a = ev && desc[ev.id];
       if (!a || (a.date && a.date !== ev.date)) return;
+      if (a.report_url && !ev.report_url) ev.report_url = a.report_url; /* e.g. the LinkedIn post about the event */
       if (ev.body_html || ev.body_html_en) return; /* WordPress text wins */
       ev.body_html = a.de || "";
       ev.body_html_en = a.en || "";
