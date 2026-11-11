@@ -56,7 +56,8 @@ Format of each line: date – title – speakers – place – format – link.
 
 ### Upcoming
 
-- 2026-12-03, time to be announced – Podiumsdiskussion mit dem Liedermacher Hans-Eckardt Wenzel (EN: Panel discussion with singer-songwriter Hans-Eckardt Wenzel) – Hans-Eckardt Wenzel, Liedermacher – Logenhaus Berlin-Dahlem, Peter-Lenné-Straße 1, 14195 Berlin – Save the Date – https://eurasiengesellschaft.de/veranstaltungen.html#ev-wenzel-podium-2026-12
+- 2026-12-03, 18:30 – Archäologie und Meditationen zum Thema Frieden – mit Hans-Eckardt Wenzel (EN: Archaeology and Meditations on Peace – with Hans-Eckardt Wenzel) – Hans-Eckardt Wenzel, Liedermacher – Logenhaus, Peter-Lenné-Straße 1–3, 14195 Berlin-Dahlem – Vortrag · Gespräch · Lieder – https://eurasiengesellschaft.de/veranstaltungen.html#ev-wenzel-podium-2026-12
+- 2026-12-11, 18:30 – Weihnachtsfeier 2026 – Gemeinsam mit WCR e. V. (EN: Christmas Celebration 2026 – In Cooperation with WCR e. V.) – Restaurant Viale dei Tigli, Wilhelmstraße 75, 10117 Berlin – Weihnachtsfeier – https://eurasiengesellschaft.de/veranstaltungen.html#ev-weihnachtsfeier-2026-12
 
 ### Past events
 

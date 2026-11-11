@@ -52,6 +52,13 @@
   function metaItem(kind, html) {
     return '<span class="ev__mi ev__mi--' + kind + '"><svg class="ev__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + EV_IC[kind] + '</svg>' + html + '</span>';
   }
+  /* Place as a Google Maps link, only when it is a real place (street/venue), not just a city name. */
+  function mapLink(loc, inner) {
+    var q = String(loc || "").trim();
+    if (!/\d|,/.test(q)) return inner;
+    return '<a class="ev__map" href="https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(q) +
+      '" target="_blank" rel="noopener" title="Google Maps" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(0,50,160,.35);text-underline-offset:2px">' + inner + "</a>";
+  }
   /* "Dienstag, 20. Oktober 2026 · 18:30 Uhr" -> date item + time item */
   function whenItems(when) {
     var de = String(when.de || "").split(" · "), en = String(when.en || "").split(" · ");
@@ -163,7 +170,7 @@
 
     var meta = "";
     if (ev.location || ev.location_en) {
-      meta += metaItem("loc", bi(ev.location, ev.location_en));
+      meta += metaItem("loc", mapLink(ev.location || ev.location_en, bi(ev.location, ev.location_en)));
     }
     if (when.de) {
       meta += whenItems(when);

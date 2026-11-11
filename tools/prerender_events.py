@@ -21,6 +21,7 @@ import datetime as dt
 import html
 import json
 import re
+import urllib.parse
 import sys
 import urllib.request
 from pathlib import Path
@@ -69,6 +70,15 @@ EV_IC = {
 def meta_item(kind, html):
     """One item of the event info line (place, date, time, speaker) with its icon."""
     return '<span class="ev__mi ev__mi--' + kind + '"><svg class="ev__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + EV_IC[kind] + '</svg>' + html + '</span>'
+
+
+def map_link(loc, inner):
+    """Place as a Google Maps link, only when it is a real place (street/venue), not just a city name."""
+    q = (loc or "").strip()
+    if not re.search(r"\d|,", q):
+        return inner
+    return ('<a class="ev__map" href="https://www.google.com/maps/search/?api=1&amp;query=' + urllib.parse.quote(q, safe="") +
+            '" target="_blank" rel="noopener" title="Google Maps" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(0,50,160,.35);text-underline-offset:2px">' + inner + "</a>")
 
 
 def when_items(when_de, when_en):
@@ -159,7 +169,7 @@ def render_card(ev):
     ])
     meta = ""
     if ev.get("location") or ev.get("location_en"):
-        meta += meta_item("loc", bi(ev.get("location"), ev.get("location_en")))
+        meta += meta_item("loc", map_link(ev.get("location") or ev.get("location_en"), bi(ev.get("location"), ev.get("location_en"))))
     if when_de:
         meta += when_items(when_de, when_en)
     if ev.get("speaker") or ev.get("speaker_en"):
