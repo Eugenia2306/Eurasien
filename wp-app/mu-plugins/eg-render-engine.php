@@ -570,6 +570,9 @@ function eg_render_global($html)
         if (function_exists('eg_ws_apply_logo')) {
             $html = eg_ws_apply_logo($html);
         }
+        if (function_exists('eg_tx_apply') && strpos($html, '<!--wp:text:') !== false) {
+            $html = eg_tx_apply($html);
+        }
     } catch (Throwable $e) {
         unset($e);
     }
