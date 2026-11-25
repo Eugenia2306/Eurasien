@@ -35,7 +35,7 @@ BOARD = {  # speaker-name pattern -> person @id on the profile pages
     r"\bNeu\b": "alexander-neu",
     r"\bPolajner\b": "christoph-polajner",
     r"\bWipperf(?:ü|ue)rth\b": "christian-wipperfuerth",
-    r"\bSchraps\b": "andreas-schraps",
+    r"\bSchraps\b": "uwe-schraps",
 }
 IN_GERMANY = re.compile(r"Berlin|Köln|Hamburg|München|Deutschland|Logenhaus", re.I)
 

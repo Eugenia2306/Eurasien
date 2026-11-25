@@ -24,6 +24,10 @@ DirectoryIndex index.php index.html
   RewriteRule ^aufzeichnungen\.html$ /mediathek.html [R=301,L]
   RewriteRule ^personen/andreas-schraps\.html$ /personen/uwe-schraps.html [R=301,L]
 
+  # Pages with WordPress content: served by eg-render.php (cached, falls back to the file itself)
+  RewriteRule ^veranstaltungen\.html$ /eg-render.php?p=veranstaltungen [L]
+  RewriteRule ^llms\.txt$ /eg-render.php?p=llms [L]
+
   # Phase 2+: send gated brochure pages into WordPress
   RewriteRule ^mitglieder/positionen\.html$ /app/mitglieder/positionen/ [R=302,L]
   RewriteRule ^mitglieder/dossiers\.html$ /app/mitglieder/dossiers/ [R=302,L]
