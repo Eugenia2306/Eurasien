@@ -246,7 +246,7 @@ function eg_an_items()
         if (!isset(eg_an_cats()[$cat])) {
             $cat = 'stellungnahmen';
         }
-        $title = html_entity_decode(get_the_title($p), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $title = (string) $p->post_title; // as typed (get_the_title would turn " - " into a dash)
         $places = eg_an_places($p->ID);
         $items[] = array(
             'pos'         => $i,

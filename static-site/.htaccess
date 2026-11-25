@@ -29,6 +29,7 @@ DirectoryIndex index.php index.html
   RewriteRule ^llms\.txt$ /eg-render.php?p=llms [L]
   RewriteRule ^analysen\.html$ /eg-render.php?p=analysen [L]
   RewriteRule ^regionen\.html$ /eg-render.php?p=regionen [L]
+  RewriteRule ^mediathek\.html$ /eg-render.php?p=mediathek [L]
 
   # Phase 2+: send gated brochure pages into WordPress
   RewriteRule ^mitglieder/positionen\.html$ /app/mitglieder/positionen/ [R=302,L]

@@ -574,11 +574,15 @@ function eg_r_replace($html, $pattern, $replacement)
  */
 function eg_render_apply($page, $html)
 {
-    if ($page === 'analysen' || $page === 'regionen') {
-        if (!function_exists('eg_an_apply')) {
-            throw new RuntimeException('analysen plugin missing');
+    if ($page === 'analysen' || $page === 'regionen' || $page === 'mediathek') {
+        if (!function_exists('eg_an_apply') || !function_exists('eg_rec_apply')) {
+            throw new RuntimeException('analysen/mediathek plugin missing');
         }
-        return eg_an_apply($page, $html);
+        if ($page === 'mediathek') {
+            return eg_rec_apply('mediathek', $html);
+        }
+        $html = eg_an_apply($page, $html);
+        return $page === 'regionen' ? eg_rec_apply('regionen', $html) : $html;
     }
     $events = eg_render_events();
     if (!$events) {
