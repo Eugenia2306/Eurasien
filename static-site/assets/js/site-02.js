@@ -222,19 +222,34 @@
 
   /* Contributions / source-inventory filter (no groups; empty state for categories w/o rows) */
   var anFilterEl = d.getElementById('an-filter');
+  var anRegionEl = d.getElementById('an-region');
   var anItems = [].slice.call(d.querySelectorAll('#an-list .srcrow'));
   var anEmpty = d.getElementById('an-empty');
-  function applyAnFilter(f){
+  var anCat = 'all', anRegion = 'all';
+  /* Category chips (data-f) and region chips (data-r) combine: both must match. */
+  function applyAnFilter(f, r){
+    if(f) anCat = f;
+    if(r) anRegion = r;
     var shown = 0;
-    if(anFilterEl){ anFilterEl.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed', String(c.getAttribute('data-f') === f)); }); }
-    anItems.forEach(function(it){ var ok = matchItem(it, f); it.hidden = !ok; if(ok) shown++; });
+    if(anFilterEl){ anFilterEl.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed', String(c.getAttribute('data-f') === anCat)); }); }
+    if(anRegionEl){ anRegionEl.querySelectorAll('.chip').forEach(function(c){ c.setAttribute('aria-pressed', String(c.getAttribute('data-r') === anRegion)); }); }
+    anItems.forEach(function(it){
+      var inRegion = anRegion === 'all' || (' ' + (it.getAttribute('data-regions') || '') + ' ').indexOf(' ' + anRegion + ' ') !== -1;
+      var ok = matchItem(it, anCat) && inRegion; it.hidden = !ok; if(ok) shown++;
+    });
     if(anEmpty) anEmpty.hidden = (shown > 0);
-    trackEvent('analysis_filter', f);
+    trackEvent('analysis_filter', anCat + (anRegion !== 'all' ? ':' + anRegion : ''));
   }
   if(anFilterEl){
     anFilterEl.addEventListener('click', function(e){
       var btn = e.target.closest('.chip'); if(!btn) return;
       applyAnFilter(btn.getAttribute('data-f'));
+    });
+  }
+  if(anRegionEl){
+    anRegionEl.addEventListener('click', function(e){
+      var btn = e.target.closest('.chip'); if(!btn) return;
+      applyAnFilter(null, btn.getAttribute('data-r'));
     });
   }
 
@@ -530,8 +545,8 @@
       }
       return focusElementById(h);
     }
-    if(h.indexOf('filter-') === 0 && typeof applyAnFilter === 'function'){
-      applyAnFilter(h.slice(7));
+    if((h.indexOf('filter-') === 0 || h.indexOf('an-region-') === 0) && typeof applyAnFilter === 'function'){
+      if(h.indexOf('an-region-') === 0) applyAnFilter(null, h.slice(10)); else applyAnFilter(h.slice(7));
       var list = d.getElementById('an-filter') || d.getElementById('an-list');
       if(list){
         var reduce2 = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -568,12 +568,18 @@ function eg_r_replace($html, $pattern, $replacement)
 }
 
 /**
- * Fill one page template. $page: index | veranstaltungen | llms.
+ * Fill one page template. $page: index | veranstaltungen | llms | analysen | regionen.
  *
- * @throws RuntimeException When there is no event data (the caller then serves its fallback).
+ * @throws RuntimeException When the data is missing (the caller then serves its fallback).
  */
 function eg_render_apply($page, $html)
 {
+    if ($page === 'analysen' || $page === 'regionen') {
+        if (!function_exists('eg_an_apply')) {
+            throw new RuntimeException('analysen plugin missing');
+        }
+        return eg_an_apply($page, $html);
+    }
     $events = eg_render_events();
     if (!$events) {
         throw new RuntimeException('no events');

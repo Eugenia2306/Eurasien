@@ -23,6 +23,8 @@ function eg_render_pages()
         'index'           => array('index.html', 'text/html; charset=utf-8'),
         'veranstaltungen' => array('veranstaltungen.html', 'text/html; charset=utf-8'),
         'llms'            => array('llms.txt', 'text/plain; charset=utf-8'),
+        'analysen'        => array('analysen.html', 'text/html; charset=utf-8'),
+        'regionen'        => array('regionen.html', 'text/html; charset=utf-8'),
     );
 }
 
@@ -77,6 +79,7 @@ function eg_render_begin($page)
         EG_RENDER_ROOT . '/assets/data/event-archive.json',
         EG_RENDER_ROOT . '/app/wp-content/eg-render-stamp',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-render-engine.php',
+        EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-analysen.php',
         __FILE__,
     );
     $newest = 0;
