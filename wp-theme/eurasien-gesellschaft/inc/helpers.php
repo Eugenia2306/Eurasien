@@ -156,7 +156,8 @@ function eg_bi_e( string $de, string $en ): void {
  * Theme logo URL (custom logo or bundled asset).
  */
 function eg_logo_url(): string {
-	return EG_THEME_URI . '/assets/images/logo.png?v=3';
+	$custom = (string) get_option( 'eg_site_logo', '' ); // set under Website → Logo (mu-plugin eg-website.php)
+	return '' !== $custom ? $custom : EG_THEME_URI . '/assets/images/logo.png?v=3';
 }
 
 /**

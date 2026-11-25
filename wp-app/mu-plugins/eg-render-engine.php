@@ -563,6 +563,19 @@ function eg_r_event_llms($events)
 
 /* ---------- page assembly ---------- */
 
+/** Site-wide parts of every HTML page (logo). Never fails the page. */
+function eg_render_global($html)
+{
+    try {
+        if (function_exists('eg_ws_apply_logo')) {
+            $html = eg_ws_apply_logo($html);
+        }
+    } catch (Throwable $e) {
+        unset($e);
+    }
+    return $html;
+}
+
 /** Replace the first marked region; leave the page unchanged if the marker is missing. */
 function eg_r_replace($html, $pattern, $replacement)
 {
@@ -581,6 +594,9 @@ function eg_r_replace($html, $pattern, $replacement)
  */
 function eg_render_apply($page, $html, $slug = '')
 {
+    if ($page === 'page') {
+        return $html; // plain page: only the site-wide parts (eg_render_global)
+    }
     if (in_array($page, array('vorstand', 'person', 'sitemap'), true)) {
         if (!function_exists('eg_ps_apply')) {
             throw new RuntimeException('personen plugin missing');

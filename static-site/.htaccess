@@ -40,6 +40,11 @@ DirectoryIndex index.php index.html
   RewriteRule ^mitglieder/positionen\.html$ /app/mitglieder/positionen/ [R=302,L]
   RewriteRule ^mitglieder/dossiers\.html$ /app/mitglieder/dossiers/ [R=302,L]
   RewriteRule ^mitglieder/studien\.html$ /app/mitglieder/studien/ [R=302,L]
+
+  # All other pages: site-wide parts such as the logo (404.html stays a plain file)
+  RewriteRule ^404\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule ^([a-z0-9][a-z0-9-]*(?:/[a-z0-9][a-z0-9-]*)?)\.html$ /eg-render.php?p=page&path=$1 [L]
 </IfModule>
 
 # Security headers (best-effort; host may override)

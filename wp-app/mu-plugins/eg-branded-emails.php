@@ -36,7 +36,9 @@ function eg_email_public_url( $path = '' ) {
  * http:// or /app/wp-content/ URLs that many inboxes block.
  */
 function eg_email_logo_url() {
-	return 'https://eurasiengesellschaft.de/assets/images/logo.png?v=3';
+	// A PNG chosen under Website → Logo (e-mail programs cannot show SVG); otherwise the bundled logo.
+	$custom = (string) get_option( 'eg_site_logo_email', '' );
+	return ( '' !== $custom && 0 === strpos( $custom, 'https://' ) ) ? $custom : 'https://eurasiengesellschaft.de/assets/images/logo.png?v=3';
 }
 
 /**

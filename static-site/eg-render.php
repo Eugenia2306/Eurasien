@@ -29,6 +29,7 @@ function eg_render_pages()
         'vorstand'        => array('vorstand.html', 'text/html; charset=utf-8'),
         'sitemap'         => array('sitemap.xml', 'application/xml; charset=utf-8'),
         'person'          => array('', 'text/html; charset=utf-8'),
+        'page'            => array('', 'text/html; charset=utf-8'),
     );
 }
 
@@ -73,6 +74,15 @@ function eg_render_begin($page)
         $file = is_readable(EG_RENDER_ROOT . '/personen/' . $slug . '.html') ? 'personen/' . $slug . '.html' : 'personen/_profil.html';
         $key = 'person-' . $slug;
     }
+    if ($page === 'page') {
+        // any other page (e.g. mission.html, themen/energie.html): only the site-wide parts such as the logo
+        $path = isset($_GET['path']) ? (string) $_GET['path'] : '';
+        if (!preg_match('#^[a-z0-9][a-z0-9-]{0,80}(/[a-z0-9][a-z0-9-]{0,80})?$#', $path) || !is_readable(EG_RENDER_ROOT . '/' . $path . '.html')) {
+            eg_render_not_found();
+        }
+        $file = $path . '.html';
+        $key = 'page-' . str_replace('/', '--', $path);
+    }
     $template = EG_RENDER_ROOT . '/' . $file;
     if (!is_readable($template)) {
         http_response_code(500);
@@ -97,6 +107,7 @@ function eg_render_begin($page)
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-analysen.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-mediathek.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-personen.php',
+        EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-website.php',
         __FILE__,
     );
     $newest = 0;
@@ -156,6 +167,9 @@ function eg_render_finish($st)
         throw new RuntimeException('render engine missing');
     }
     $out = eg_render_apply($st['page'], (string) file_get_contents($st['template']), $st['slug']);
+    if (strpos($st['type'], 'text/html') === 0 && function_exists('eg_render_global')) {
+        $out = eg_render_global($out);
+    }
     while (ob_get_level() > 0) {
         ob_end_clean();
     }
