@@ -30,6 +30,11 @@ DirectoryIndex index.php index.html
   RewriteRule ^analysen\.html$ /eg-render.php?p=analysen [L]
   RewriteRule ^regionen\.html$ /eg-render.php?p=regionen [L]
   RewriteRule ^mediathek\.html$ /eg-render.php?p=mediathek [L]
+  RewriteRule ^vorstand\.html$ /eg-render.php?p=vorstand [L]
+  RewriteRule ^sitemap\.xml$ /eg-render.php?p=sitemap [L]
+  # Profiles (also people added in WordPress); the template itself is not a page
+  RewriteRule ^personen/_ - [R=404,L]
+  RewriteRule ^personen/([a-z0-9][a-z0-9-]*)\.html$ /eg-render.php?p=person&slug=$1 [L]
 
   # Phase 2+: send gated brochure pages into WordPress
   RewriteRule ^mitglieder/positionen\.html$ /app/mitglieder/positionen/ [R=302,L]

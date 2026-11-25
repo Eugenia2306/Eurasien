@@ -26,6 +26,9 @@ function eg_render_pages()
         'analysen'        => array('analysen.html', 'text/html; charset=utf-8'),
         'regionen'        => array('regionen.html', 'text/html; charset=utf-8'),
         'mediathek'       => array('mediathek.html', 'text/html; charset=utf-8'),
+        'vorstand'        => array('vorstand.html', 'text/html; charset=utf-8'),
+        'sitemap'         => array('sitemap.xml', 'application/xml; charset=utf-8'),
+        'person'          => array('', 'text/html; charset=utf-8'),
     );
 }
 
@@ -59,6 +62,17 @@ function eg_render_begin($page)
         exit;
     }
     list($file, $type) = $pages[$page];
+    $slug = '';
+    $key = $page;
+    if ($page === 'person') {
+        // personen/<slug>.html: the person's own file, or the template for people added in WordPress
+        $slug = isset($_GET['slug']) ? (string) $_GET['slug'] : '';
+        if (!preg_match('/^[a-z0-9][a-z0-9-]{0,80}$/', $slug)) {
+            eg_render_not_found();
+        }
+        $file = is_readable(EG_RENDER_ROOT . '/personen/' . $slug . '.html') ? 'personen/' . $slug . '.html' : 'personen/_profil.html';
+        $key = 'person-' . $slug;
+    }
     $template = EG_RENDER_ROOT . '/' . $file;
     if (!is_readable($template)) {
         http_response_code(500);
@@ -74,7 +88,7 @@ function eg_render_begin($page)
         @file_put_contents($cache_dir . '/.htaccess', "Require all denied\n");
     }
     $berlin = new DateTime('now', new DateTimeZone('Europe/Berlin'));
-    $cache = $cache_dir . '/' . $page . '-' . $berlin->format('Ymd') . '.cache';
+    $cache = $cache_dir . '/' . $key . '-' . $berlin->format('Ymd') . '.cache';
     $deps = array(
         $template,
         EG_RENDER_ROOT . '/assets/data/event-archive.json',
@@ -82,6 +96,7 @@ function eg_render_begin($page)
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-render-engine.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-analysen.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-mediathek.php',
+        EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-personen.php',
         __FILE__,
     );
     $newest = 0;
@@ -98,17 +113,36 @@ function eg_render_begin($page)
     }
     return array(
         'page'      => $page,
+        'slug'      => $slug,
+        'key'       => $key,
         'type'      => $type,
         'template'  => $template,
         'cache'     => $cache,
         'cache_dir' => $cache_dir,
-        'last_good' => $cache_dir . '/' . $page . '-last.cache',
+        'last_good' => $cache_dir . '/' . $key . '-last.cache',
     );
+}
+
+/** 404 with the site's error page. */
+function eg_render_not_found()
+{
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    http_response_code(404);
+    header('Content-Type: text/html; charset=utf-8');
+    header('Cache-Control: no-cache, max-age=0');
+    $page404 = EG_RENDER_ROOT . '/404.html';
+    echo is_readable($page404) ? (string) file_get_contents($page404) : 'Not found';
+    exit;
 }
 
 function eg_render_fallback($st, $why)
 {
-    eg_render_log($st['page'] . ' fallback: ' . $why);
+    eg_render_log($st['key'] . ' fallback: ' . $why);
+    if ($st['page'] === 'person' && basename($st['template']) === '_profil.html' && !is_readable($st['last_good'])) {
+        eg_render_not_found();
+    }
     if (is_readable($st['last_good'])) {
         eg_render_send((string) file_get_contents($st['last_good']), $st['type'], 'last-good');
     } else {
@@ -121,7 +155,7 @@ function eg_render_finish($st)
     if (!function_exists('eg_render_apply')) {
         throw new RuntimeException('render engine missing');
     }
-    $out = eg_render_apply($st['page'], (string) file_get_contents($st['template']));
+    $out = eg_render_apply($st['page'], (string) file_get_contents($st['template']), $st['slug']);
     while (ob_get_level() > 0) {
         ob_end_clean();
     }
@@ -130,7 +164,7 @@ function eg_render_finish($st)
         @rename($tmp, $st['cache']);
         @copy($st['cache'], $st['last_good']);
     }
-    foreach (glob($st['cache_dir'] . '/' . $st['page'] . '-2*.cache') ?: array() as $old) {
+    foreach (glob($st['cache_dir'] . '/' . $st['key'] . '-2*.cache') ?: array() as $old) {
         if ($old !== $st['cache']) {
             @unlink($old);
         }
@@ -167,6 +201,10 @@ if ($eg_render_state !== null) {
             ob_end_clean();
         }
         $eg_render_done = true;
+        if (get_class($eg_render_e) === 'EgRenderNotFound') {
+            @unlink($eg_render_state['last_good']);
+            eg_render_not_found();
+        }
         eg_render_fallback($eg_render_state, get_class($eg_render_e) . ': ' . $eg_render_e->getMessage());
     }
 }

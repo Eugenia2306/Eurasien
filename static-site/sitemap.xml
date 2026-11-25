@@ -72,6 +72,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+  <!--wp:people-->
   <url>
     <loc>https://eurasiengesellschaft.de/personen/alexander-neu.html</loc>
     <lastmod>2026-10-16</lastmod>
@@ -102,6 +103,7 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <!--/wp:people-->
   <url>
     <loc>https://eurasiengesellschaft.de/regionen.html</loc>
     <lastmod>2026-10-16</lastmod>

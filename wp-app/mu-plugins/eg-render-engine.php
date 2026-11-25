@@ -9,6 +9,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (!class_exists('EgRenderNotFound')) {
+    /** Thrown when a page (e.g. a profile) does not exist: the root script answers 404. */
+    class EgRenderNotFound extends RuntimeException
+    {
+    }
+}
+
 /** Site root (the static site), one level above /app/. */
 function eg_render_site_root()
 {
@@ -572,8 +579,14 @@ function eg_r_replace($html, $pattern, $replacement)
  *
  * @throws RuntimeException When the data is missing (the caller then serves its fallback).
  */
-function eg_render_apply($page, $html)
+function eg_render_apply($page, $html, $slug = '')
 {
+    if (in_array($page, array('vorstand', 'person', 'sitemap'), true)) {
+        if (!function_exists('eg_ps_apply')) {
+            throw new RuntimeException('personen plugin missing');
+        }
+        return eg_ps_apply($page, $html, $slug);
+    }
     if ($page === 'analysen' || $page === 'regionen' || $page === 'mediathek') {
         if (!function_exists('eg_an_apply') || !function_exists('eg_rec_apply')) {
             throw new RuntimeException('analysen/mediathek plugin missing');
@@ -599,6 +612,13 @@ function eg_render_apply($page, $html)
         }
     } elseif ($page === 'llms') {
         $html = eg_r_replace($html, '/<!-- events:start -->.*?<!-- events:end -->/s', "<!-- events:start -->\n" . eg_r_event_llms($events) . "\n<!-- events:end -->");
+    }
+    if (($page === 'llms' || $page === 'index') && function_exists('eg_ps_apply')) {
+        try {
+            $html = eg_ps_apply($page, $html); // board data is an extra: the events part must not fail because of it
+        } catch (Throwable $e) {
+            unset($e);
+        }
     }
     return $html;
 }

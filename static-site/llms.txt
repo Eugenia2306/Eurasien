@@ -23,11 +23,13 @@ Mission page: https://eurasiengesellschaft.de/mission.html
 
 ## Board (Vorstand)
 
+<!-- board:start -->
 - Alexander Rahr – Chairman (Vorsitzender). Historian, Eastern Europe expert and author; born 1959 in Taipei. https://eurasiengesellschaft.de/personen/alexander-rahr.html
 - Dr. Alexander S. Neu – Deputy Chairman. Political and social scientist; member of the German Bundestag 2013–2021 (defence and foreign affairs committees). https://eurasiengesellschaft.de/personen/alexander-neu.html
 - Christoph Polajner – Deputy Chairman and co-founder. Policy and business adviser focused on China and the international order. https://eurasiengesellschaft.de/personen/christoph-polajner.html
 - Uwe Schraps – Board member and Managing Director (Geschäftsführer). Engineer and business lawyer with many years of work in Russia and Eastern Europe, including energy. https://eurasiengesellschaft.de/personen/uwe-schraps.html
 - Dr. Christian Wipperfürth – Board member. Historian and publicist; foreign and security policy, post-Soviet space. https://eurasiengesellschaft.de/personen/christian-wipperfuerth.html
+<!-- board:end -->
 
 Alexander Rahr, Dr. Alexander S. Neu, Christoph Polajner and Uwe Schraps legally represent the association. The board has further members who are not named publicly.
 
