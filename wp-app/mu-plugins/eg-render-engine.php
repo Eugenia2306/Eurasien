@@ -606,11 +606,21 @@ function eg_render_apply($page, $html, $slug = '')
     if ($page === 'page') {
         return $html; // plain page: only the site-wide parts (eg_render_global)
     }
+    if ($page === 'sitepage') {
+        if (!function_exists('eg_sb_page_render')) {
+            throw new RuntimeException('site builder plugin missing');
+        }
+        return eg_sb_page_render($page, $html, $slug);
+    }
     if (in_array($page, array('vorstand', 'person', 'sitemap'), true)) {
         if (!function_exists('eg_ps_apply')) {
             throw new RuntimeException('personen plugin missing');
         }
-        return eg_ps_apply($page, $html, $slug);
+        $html = eg_ps_apply($page, $html, $slug);
+        if ($page === 'sitemap' && function_exists('eg_sb_apply_sitemap')) {
+            $html = eg_sb_apply_sitemap($html);
+        }
+        return $html;
     }
     if ($page === 'analysen' || $page === 'regionen' || $page === 'mediathek') {
         if (!function_exists('eg_an_apply') || !function_exists('eg_rec_apply')) {

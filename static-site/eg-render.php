@@ -30,6 +30,7 @@ function eg_render_pages()
         'sitemap'         => array('sitemap.xml', 'application/xml; charset=utf-8'),
         'person'          => array('', 'text/html; charset=utf-8'),
         'page'            => array('', 'text/html; charset=utf-8'),
+        'sitepage'        => array('_seite.html', 'text/html; charset=utf-8'),
     );
 }
 
@@ -73,6 +74,14 @@ function eg_render_begin($page)
         }
         $file = is_readable(EG_RENDER_ROOT . '/personen/' . $slug . '.html') ? 'personen/' . $slug . '.html' : 'personen/_profil.html';
         $key = 'person-' . $slug;
+    }
+    if ($page === 'sitepage') {
+        // pages made in WordPress (Website → Seiten): /<address>.html without a file of its own
+        $slug = isset($_GET['slug']) ? (string) $_GET['slug'] : '';
+        if (!preg_match('/^[a-z0-9][a-z0-9-]{0,80}$/', $slug)) {
+            eg_render_not_found();
+        }
+        $key = 'sitepage-' . $slug;
     }
     if ($page === 'page') {
         // any other page (e.g. mission.html, themen/energie.html): only the site-wide parts such as the logo
@@ -152,7 +161,7 @@ function eg_render_not_found()
 function eg_render_fallback($st, $why)
 {
     eg_render_log($st['key'] . ' fallback: ' . $why);
-    if ($st['page'] === 'person' && basename($st['template']) === '_profil.html' && !is_readable($st['last_good'])) {
+    if (($st['page'] === 'sitepage' || ($st['page'] === 'person' && basename($st['template']) === '_profil.html')) && !is_readable($st['last_good'])) {
         eg_render_not_found();
     }
     if (is_readable($st['last_good'])) {

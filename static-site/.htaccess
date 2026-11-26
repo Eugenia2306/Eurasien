@@ -45,6 +45,10 @@ DirectoryIndex index.php index.html
   RewriteRule ^404\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^([a-z0-9][a-z0-9-]*(?:/[a-z0-9][a-z0-9-]*)?)\.html$ /eg-render.php?p=page&path=$1 [L]
+  # Pages made in WordPress (Website -> Seiten): no file of their own; the template itself is not a page
+  RewriteRule ^_seite\.html$ - [R=404,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^([a-z0-9][a-z0-9-]*)\.html$ /eg-render.php?p=sitepage&slug=$1 [L]
 </IfModule>
 
 # Security headers (best-effort; host may override)

@@ -301,3 +301,256 @@ add_action('rest_api_init', static function () {
         }),
     ));
 });
+
+/* =====================================================================
+ * Pages (Website → Seiten), administrators only.
+ * A page = a German entry (address, description, intro) and optionally an English entry ("English version of …").
+ * Both are written with the block editor. Rendered into static-site/_seite.html at /<address>.html.
+ * ===================================================================== */
+
+function eg_sb_page_caps()
+{
+    $c = eg_sb_cap();
+    return array(
+        'edit_post' => $c, 'read_post' => 'read', 'delete_post' => $c, 'edit_posts' => $c, 'edit_others_posts' => $c,
+        'publish_posts' => $c, 'read_private_posts' => $c, 'delete_posts' => $c, 'delete_others_posts' => $c,
+        'delete_published_posts' => $c, 'edit_published_posts' => $c, 'create_posts' => $c,
+    );
+}
+
+add_action('init', static function () {
+    register_post_type('eg_sitepage', array(
+        'labels' => array(
+            'name' => 'Seiten', 'singular_name' => 'Seite', 'add_new' => 'Neue Seite', 'add_new_item' => 'Neue Seite',
+            'edit_item' => 'Seite bearbeiten', 'all_items' => 'Seiten', 'menu_name' => 'Seiten',
+        ),
+        'public' => false, 'show_ui' => true, 'show_in_menu' => 'eg-website', 'show_in_rest' => true,
+        'supports' => array('title', 'editor', 'revisions', 'custom-fields'),
+        'capabilities' => eg_sb_page_caps(), 'map_meta_cap' => false,
+    ));
+    foreach (array('eg_page_lang', 'eg_page_slug', 'eg_page_desc', 'eg_page_lead', 'eg_page_of') as $k) {
+        register_post_meta('eg_sitepage', $k, array(
+            'type' => 'string', 'single' => true, 'show_in_rest' => true,
+            'sanitize_callback' => 'sanitize_text_field', 'auth_callback' => static function () {
+                return current_user_can(eg_sb_cap());
+            },
+        ));
+    }
+}, 30);
+
+/* blocks the pages may use (all styled in assets/css/blocks.css) */
+add_filter('allowed_block_types_all', static function ($allowed, $ctx) {
+    if (isset($ctx->post) && $ctx->post && $ctx->post->post_type === 'eg_sitepage') {
+        return array('core/paragraph', 'core/heading', 'core/list', 'core/list-item', 'core/quote', 'core/image', 'core/gallery',
+            'core/columns', 'core/column', 'core/buttons', 'core/button', 'core/embed', 'core/separator', 'core/spacer', 'core/group');
+    }
+    return $allowed;
+}, 10, 2);
+
+/** Addresses that belong to the website already (files in the site folder, WordPress, technical names). */
+function eg_sb_reserved_slug($slug)
+{
+    if ($slug === '' || in_array($slug, array('app', 'assets', 'personen', 'themen', 'mitglieder', 'index', 'eg-render', 'sitemap', 'llms', '404'), true)) {
+        return true;
+    }
+    $root = function_exists('eg_render_site_root') ? eg_render_site_root() : '';
+    return $root !== '' && (file_exists($root . '/' . $slug . '.html') || is_dir($root . '/' . $slug));
+}
+
+/** Published German pages: [id, slug, title]. */
+function eg_sb_pages()
+{
+    $out = array();
+    foreach (get_posts(array('post_type' => 'eg_sitepage', 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => 'title', 'order' => 'ASC')) as $p) {
+        if ((string) get_post_meta($p->ID, 'eg_page_lang', true) === 'en') {
+            continue;
+        }
+        $slug = (string) get_post_meta($p->ID, 'eg_page_slug', true);
+        if ($slug !== '') {
+            $out[] = array('id' => $p->ID, 'slug' => $slug, 'title' => (string) $p->post_title);
+        }
+    }
+    return $out;
+}
+
+add_action('add_meta_boxes_eg_sitepage', static function () {
+    remove_meta_box('postcustom', 'eg_sitepage', 'normal');
+    add_meta_box('eg_sb_page', 'Seite auf der Website', 'eg_sb_page_box', 'eg_sitepage', 'side', 'high');
+});
+
+function eg_sb_page_box($post)
+{
+    wp_nonce_field('eg_sb_page', 'eg_sb_page_nonce');
+    $m = static function ($k) use ($post) {
+        return (string) get_post_meta($post->ID, $k, true);
+    };
+    $lang = $m('eg_page_lang') === 'en' ? 'en' : 'de';
+    $slug = $m('eg_page_slug');
+    echo '<p><strong>Sprache dieser Fassung</strong><br><label><input type="radio" name="eg_page_lang" value="de"' . checked($lang, 'de', false) . '> Deutsch (Hauptseite)</label><br>'
+        . '<label><input type="radio" name="eg_page_lang" value="en"' . checked($lang, 'en', false) . '> English (Übersetzung)</label></p>';
+    echo '<div class="eg-de"' . ($lang === 'en' ? ' style="display:none"' : '') . '>';
+    echo '<p><label for="eg_page_slug"><strong>Adresse</strong></label><br><input type="text" class="widefat" id="eg_page_slug" name="eg_page_slug" value="' . esc_attr($slug) . '" placeholder="z. B. projekte"><br>'
+        . '<span class="description">eurasiengesellschaft.de/<strong>' . esc_html($slug !== '' ? $slug : 'projekte') . '</strong>.html · Kleinbuchstaben, Ziffern, Bindestriche</span>'
+        . ($slug !== '' && $post->post_status === 'publish' ? '<br><a href="' . esc_url('https://eurasiengesellschaft.de/' . $slug . '.html') . '" target="_blank" rel="noopener">Seite ansehen ↗</a>' : '') . '</p>';
+    echo '<p><label for="eg_page_lead"><strong>Einleitung unter der Überschrift</strong> (optional)</label><textarea class="widefat" rows="3" id="eg_page_lead" name="eg_page_lead">' . esc_textarea($m('eg_page_lead')) . '</textarea></p>';
+    echo '<p><label for="eg_page_desc"><strong>Beschreibung für Suchmaschinen</strong></label><textarea class="widefat" rows="3" id="eg_page_desc" name="eg_page_desc" placeholder="Ein Satz, höchstens etwa 160 Zeichen">' . esc_textarea($m('eg_page_desc')) . '</textarea></p>';
+    echo '</div><div class="eg-en"' . ($lang === 'de' ? ' style="display:none"' : '') . '>';
+    $opts = '<option value="">– deutsche Seite wählen –</option>';
+    foreach (eg_sb_pages() as $p) {
+        if ((int) $p['id'] !== (int) $post->ID) {
+            $opts .= '<option value="' . (int) $p['id'] . '"' . selected((int) $m('eg_page_of'), (int) $p['id'], false) . '>' . esc_html($p['title']) . '</option>';
+        }
+    }
+    echo '<p><label for="eg_page_of"><strong>English version of</strong></label><br><select class="widefat" id="eg_page_of" name="eg_page_of">' . $opts . '</select></p>';
+    echo '<p><label for="eg_page_lead_en"><strong>Intro below the heading</strong> (optional)</label><textarea class="widefat" rows="3" id="eg_page_lead_en" name="eg_page_lead_en">' . esc_textarea($lang === 'en' ? $m('eg_page_lead') : '') . '</textarea></p>';
+    echo '<p class="description">Titel und Inhalt dieser Fassung erscheinen auf der englischen Seite. Ohne englische Fassung zeigt die englische Seite den deutschen Text.</p></div>';
+    echo "<script>document.addEventListener('change',function(e){if(e.target.name!=='eg_page_lang')return;var en=e.target.value==='en';document.querySelector('#eg_sb_page .eg-de').style.display=en?'none':'';document.querySelector('#eg_sb_page .eg-en').style.display=en?'':'none';});</script>";
+}
+
+add_action('save_post_eg_sitepage', static function ($post_id) {
+    if (!isset($_POST['eg_sb_page_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['eg_sb_page_nonce'])), 'eg_sb_page')) {
+        return;
+    }
+    if ((defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) || !current_user_can(eg_sb_cap())) {
+        return;
+    }
+    $lang = (isset($_POST['eg_page_lang']) && wp_unslash($_POST['eg_page_lang']) === 'en') ? 'en' : 'de';
+    update_post_meta($post_id, 'eg_page_lang', $lang);
+    if ($lang === 'en') {
+        update_post_meta($post_id, 'eg_page_of', isset($_POST['eg_page_of']) ? (string) absint($_POST['eg_page_of']) : '');
+        update_post_meta($post_id, 'eg_page_lead', isset($_POST['eg_page_lead_en']) ? sanitize_textarea_field(wp_unslash($_POST['eg_page_lead_en'])) : '');
+        update_post_meta($post_id, 'eg_page_slug', '');
+    } else {
+        $slug = isset($_POST['eg_page_slug']) ? sanitize_title(wp_unslash($_POST['eg_page_slug'])) : '';
+        if ($slug === '') {
+            $slug = sanitize_title((string) get_post_field('post_title', $post_id));
+        }
+        $base = $slug;
+        $n = 2;
+        while (eg_sb_reserved_slug($slug) || eg_sb_slug_taken($slug, $post_id)) {
+            $slug = $base . '-' . $n++;
+        }
+        update_post_meta($post_id, 'eg_page_slug', $slug);
+        update_post_meta($post_id, 'eg_page_lead', isset($_POST['eg_page_lead']) ? sanitize_textarea_field(wp_unslash($_POST['eg_page_lead'])) : '');
+        update_post_meta($post_id, 'eg_page_desc', isset($_POST['eg_page_desc']) ? sanitize_textarea_field(wp_unslash($_POST['eg_page_desc'])) : '');
+    }
+}, 30);
+
+function eg_sb_slug_taken($slug, $except)
+{
+    $q = get_posts(array('post_type' => 'eg_sitepage', 'post_status' => array('publish', 'draft', 'pending', 'private', 'future'), 'numberposts' => 1,
+        'meta_key' => 'eg_page_slug', 'meta_value' => $slug, 'exclude' => array((int) $except), 'fields' => 'ids'));
+    return !empty($q);
+}
+
+/** Rendered content of one entry (blocks → HTML; YouTube without tracking cookies). */
+function eg_sb_page_content($post)
+{
+    $html = apply_filters('the_content', (string) $post->post_content);
+    return str_replace(array('https://www.youtube.com/embed/', 'https://youtube.com/embed/'), 'https://www.youtube-nocookie.com/embed/', (string) $html);
+}
+
+/** The German page with this address and its English version (if any). */
+function eg_sb_page_find($slug)
+{
+    $ids = get_posts(array('post_type' => 'eg_sitepage', 'post_status' => 'publish', 'numberposts' => 1,
+        'meta_key' => 'eg_page_slug', 'meta_value' => $slug, 'fields' => 'ids'));
+    if (!$ids) {
+        return null;
+    }
+    $de = get_post($ids[0]);
+    $en_ids = get_posts(array('post_type' => 'eg_sitepage', 'post_status' => 'publish', 'numberposts' => 1,
+        'meta_key' => 'eg_page_of', 'meta_value' => (string) $de->ID, 'fields' => 'ids'));
+    return array('de' => $de, 'en' => $en_ids ? get_post($en_ids[0]) : null);
+}
+
+function eg_sb_page_render($page, $html, $slug)
+{
+    $found = eg_sb_page_find($slug);
+    if (!$found) {
+        throw new EgRenderNotFound('no such page');
+    }
+    $de = $found['de'];
+    $en = $found['en'];
+    $site = 'https://eurasiengesellschaft.de';
+    $url = $site . '/' . $slug . '.html';
+    $title = (string) $de->post_title;
+    $title_en = $en ? (string) $en->post_title : $title;
+    $lead = (string) get_post_meta($de->ID, 'eg_page_lead', true);
+    $lead_en = $en ? (string) get_post_meta($en->ID, 'eg_page_lead', true) : '';
+    $desc = (string) get_post_meta($de->ID, 'eg_page_desc', true);
+    if ($desc === '') {
+        $desc = function_exists('eg_r_plain') ? eg_r_plain(eg_sb_page_content($de), 160) : $title;
+    }
+    $body_de = eg_sb_page_content($de);
+    $body_en = $en ? eg_sb_page_content($en) : $body_de;
+    $t = eg_r_esc($title . ' | Eurasien Gesellschaft');
+    $d = eg_r_esc($desc);
+    $img = $site . '/assets/images/og-share.png?v=3';
+    $head = '<title>' . $t . '</title>' . "\n\n\n" . '<meta name="description" content="' . $d . '">' . "\n" . '<meta name="robots" content="index,follow">' . "\n"
+        . '<link rel="canonical" href="' . eg_r_esc($url) . '">' . "\n" . '<!-- Open Graph -->' . "\n" . '<meta property="og:type" content="website">' . "\n"
+        . '<meta property="og:site_name" content="Eurasien Gesellschaft e. V.">' . "\n" . '<meta property="og:title" content="' . $t . '">' . "\n"
+        . '<meta property="og:description" content="' . $d . '">' . "\n" . '<meta property="og:url" content="' . eg_r_esc($url) . '">' . "\n"
+        . '<meta property="og:locale" content="de_DE">' . "\n" . '<meta property="og:locale:alternate" content="en_US">' . "\n"
+        . '<meta property="og:image" content="' . $img . '">' . "\n" . '<meta property="og:image:alt" content="Eurasien Gesellschaft e. V.">' . "\n"
+        . '<!-- Twitter Card -->' . "\n" . '<meta name="twitter:card" content="summary">' . "\n" . '<meta name="twitter:title" content="' . $t . '">' . "\n"
+        . '<meta name="twitter:description" content="' . $d . '">' . "\n" . '<meta name="twitter:image" content="' . $img . '">' . "\n";
+    $html = eg_r_replace($html, '/<!--wp:page-meta-->.*?<!--\/wp:page-meta-->/s', '<!--wp:page-meta-->' . $head . '<!--/wp:page-meta-->');
+    $html = preg_replace_callback('/(<!--wp:page-ld--><script type="application\/ld\+json">)(.*?)(<\/script><!--\/wp:page-ld-->)/s', static function ($m) use ($site, $url, $title, $desc) {
+        $data = json_decode($m[2], true);
+        $graph = array();
+        foreach ((array) ($data['@graph'] ?? array()) as $n) {
+            if (!in_array($n['@type'] ?? '', array('WebPage', 'BreadcrumbList'), true)) {
+                $graph[] = $n;
+            }
+        }
+        $graph[] = array('@type' => 'WebPage', '@id' => $url . '#webpage', 'url' => $url, 'name' => $title . ' | Eurasien Gesellschaft', 'description' => $desc,
+            'isPartOf' => array('@id' => $site . '/#website'), 'about' => array('@id' => $site . '/#organization'), 'inLanguage' => 'de');
+        $graph[] = array('@type' => 'BreadcrumbList', 'itemListElement' => array(
+            array('@type' => 'ListItem', 'position' => 1, 'name' => 'Start', 'item' => $site . '/'),
+            array('@type' => 'ListItem', 'position' => 2, 'name' => $title, 'item' => $url),
+        ));
+        $data['@graph'] = $graph;
+        return $m[1] . "\n" . str_replace('</', '<\/', (string) wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT)) . "\n" . $m[3];
+    }, $html);
+    $bi = static function ($a, $b) {
+        return '<span class="de">' . eg_r_esc($a) . '</span><span class="en" hidden>' . eg_r_esc($b !== '' ? $b : $a) . '</span>';
+    };
+    $content = "\n  " . '<div class="phead"><div class="wrap"><p class="crumb"><a href="/">Start</a> › ' . $bi($title, $title_en) . '</p>'
+        . '<h1>' . $bi($title, $title_en) . '</h1>'
+        . ($lead !== '' ? '<p>' . $bi($lead, $lead_en) . '</p>' : '') . '</div></div>'
+        . "\n  " . '<section class="sec"><div class="wrap">'
+        . '<div class="prose eg-blocks de">' . $body_de . '</div><div class="prose eg-blocks en" hidden>' . $body_en . '</div>'
+        . "</div></section>\n";
+    $html = eg_r_replace($html, '/<!--wp:page-content-->.*?<!--\/wp:page-content-->/s', '<!--wp:page-content-->' . $content . '<!--/wp:page-content-->');
+    return str_replace('<section class="page" id="p-seite">', '<section class="page" id="p-seite-' . eg_r_esc($slug) . '">', $html);
+}
+
+/** Page addresses in sitemap.xml. */
+function eg_sb_apply_sitemap($html)
+{
+    $urls = '';
+    foreach (eg_sb_pages() as $p) {
+        $urls .= "\n  <url>\n    <loc>https://eurasiengesellschaft.de/" . eg_r_esc($p['slug']) . ".html</loc>\n    <lastmod>"
+            . esc_html(get_post_modified_time('Y-m-d', true, $p['id'])) . "</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>";
+    }
+    return eg_r_replace($html, '/<!--wp:sitepages-->.*?<!--\/wp:sitepages-->/s', '<!--wp:sitepages-->' . $urls . ($urls !== '' ? "\n  " : '') . '<!--/wp:sitepages-->');
+}
+
+/* the list of pages: show address and language */
+add_filter('manage_eg_sitepage_posts_columns', static function ($cols) {
+    $cols['eg_addr'] = 'Adresse / Sprache';
+    return $cols;
+});
+add_action('manage_eg_sitepage_posts_custom_column', static function ($col, $id) {
+    if ($col !== 'eg_addr') {
+        return;
+    }
+    if ((string) get_post_meta($id, 'eg_page_lang', true) === 'en') {
+        $of = (int) get_post_meta($id, 'eg_page_of', true);
+        echo 'English' . ($of ? ' → ' . esc_html(get_the_title($of)) : ' (noch keiner deutschen Seite zugeordnet)');
+        return;
+    }
+    $slug = (string) get_post_meta($id, 'eg_page_slug', true);
+    echo $slug !== '' ? '<a href="' . esc_url('https://eurasiengesellschaft.de/' . $slug . '.html') . '" target="_blank" rel="noopener">/' . esc_html($slug) . '.html</a>' : '–';
+}, 10, 2);
