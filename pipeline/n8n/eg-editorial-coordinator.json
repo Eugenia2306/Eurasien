@@ -1,0 +1,162 @@
+{
+  "name": "EG editorial coordinator",
+  "active": false,
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "description": "Owned coordinator. Polls WordPress. Does not rewrite text. Does not approve. Does not publish. ChatGPT agent nodes stay as placeholders until MCP is connected."
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 2 }]
+        }
+      },
+      "id": "sched-poll",
+      "name": "Every 2 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [200, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { stage: 'analyst' } },\n  { json: { stage: 'reviewer' } },\n  { json: { stage: 'translator' } },\n  { json: { stage: 'bilingual_review' } },\n  { json: { stage: 'preview' } },\n  { json: { stage: 'blocked' } },\n  { json: { stage: 'approved' } }\n];"
+      },
+      "id": "code-stages",
+      "name": "Stages to poll",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [420, 420]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/queue",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [{ "name": "stage", "value": "={{$json.stage}}" }]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Accept", "value": "application/json" }
+          ]
+        },
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-queue",
+      "name": "WP queue by stage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [640, 420]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "items"
+      },
+      "id": "split-items",
+      "name": "Each material",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [860, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first().json;\nconst stage = String(item.stage || '');\nconst notes = {\n  analyst: 'Queue owned here. Waiting for analyst MCP. n8n must not write the card.',\n  reviewer: 'Waiting for reviewer MCP.',\n  translator: 'Waiting for translator MCP.',\n  bilingual_review: 'Waiting for bilingual review MCP.',\n  preview: 'Human approval only on the WordPress sandbox.',\n  blocked: 'Stopped for a human question. Do not continue agents.',\n  approved: 'Approved on the sandbox. Do not publish to analysen.html.'\n};\nreturn [{\n  json: {\n    id: item.id,\n    title: item.title,\n    stage,\n    version_hash: item.version_hash,\n    human_question: item.human_question || '',\n    action: notes[stage] || 'Recorded. No publish.'\n  }\n}];"
+      },
+      "id": "code-annotate",
+      "name": "Record next action",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1080, 420]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eg-editorial-ingest",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-ingest",
+      "name": "Ingest webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 160],
+      "webhookId": "eg-editorial-ingest"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/ingest",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ url: $json.url, text: $json.text, transcript: $json.transcript, is_video: $json.is_video, author: $json.author, date: $json.date, format: $json.format || 'stellungnahmen' }) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-ingest",
+      "name": "WP ingest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [420, 160]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "respond-ingest",
+      "name": "Respond ingest",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [640, 160]
+    },
+    {
+      "parameters": {
+        "content": "This workflow lives on n8n.uwzghana.com.\n\nNever call /approve or /publish from n8n.\nNever rewrite analyst/reviewer/translator text here.\n\nWhen ChatGPT MCP is ready, replace the Record next action branches for analyst, reviewer, translator, bilingual_review with get_task / save_result. Keep polling WordPress. Do not scrape ChatGPT.",
+        "height": 400,
+        "width": 360
+      },
+      "id": "sticky-rules",
+      "name": "Ownership rules",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1080, 80]
+    }
+  ],
+  "connections": {
+    "Every 2 minutes": {
+      "main": [[{ "node": "Stages to poll", "type": "main", "index": 0 }]]
+    },
+    "Stages to poll": {
+      "main": [[{ "node": "WP queue by stage", "type": "main", "index": 0 }]]
+    },
+    "WP queue by stage": {
+      "main": [[{ "node": "Each material", "type": "main", "index": 0 }]]
+    },
+    "Each material": {
+      "main": [[{ "node": "Record next action", "type": "main", "index": 0 }]]
+    },
+    "Ingest webhook": {
+      "main": [[{ "node": "WP ingest", "type": "main", "index": 0 }]]
+    },
+    "WP ingest": {
+      "main": [[{ "node": "Respond ingest", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "tags": []
+}

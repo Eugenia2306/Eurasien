@@ -22,8 +22,33 @@ pipeline/n8n/log/
 pipeline/secrets/
 
 # OS / editor
+/_status/
 .DS_Store
 Thumbs.db
 *.log
 __pycache__/
 *.pyc
+
+# --- added 2026-11-26 (move to Linux/Mac): secrets + local junk ---
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+CREDENTIALS.md
+**/session-secret*
+upload-worker-secrets.mjs
+.mcp.json
+.claude/settings.local.json
+node_modules/
+.next/
+.venv/
+venv/
+.pnpm-store/
+.playwright-mcp/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+__MACOSX/
+.~lock.*

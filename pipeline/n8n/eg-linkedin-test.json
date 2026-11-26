@@ -1,0 +1,256 @@
+{
+  "name": "EG LinkedIn test",
+  "active": false,
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "description": "Test only. Paste a LinkedIn URL, watch the run, write a DE+EN stub into the sandbox. Does not publish."
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Drop a LinkedIn link (test)",
+        "formDescription": "This is a dry run. Watch the execution on the canvas. Nothing is posted to the live Analysen page.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "LinkedIn URL",
+              "placeholder": "https://www.linkedin.com/posts/...",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {
+          "appendAttribution": false,
+          "path": "eg-linkedin-test"
+        }
+      },
+      "id": "form-drop",
+      "name": "Drop LinkedIn URL",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [160, 360],
+      "webhookId": "eg-linkedin-test"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json['LinkedIn URL'] || $json.linkedin_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" },
+            { "name": "Accept-Language", "value": "de-DE,de;q=0.9,en;q=0.8" }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "neverError": true
+            }
+          },
+          "redirect": {
+            "redirect": {
+              "followRedirects": true
+            }
+          },
+          "timeout": 20000
+        }
+      },
+      "id": "http-fetch",
+      "name": "Fetch LinkedIn page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [400, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const form = $('Drop LinkedIn URL').first().json;\nconst url = String(form['LinkedIn URL'] || form.linkedin_url || '').trim();\nconst raw = $input.first().json;\nlet html = '';\nif (typeof raw === 'string') html = raw;\nelse if (raw && typeof raw.data === 'string') html = raw.data;\nelse html = String(raw.body || raw.data || '');\nfunction pick(prop, name) {\n  const a = html.match(new RegExp('property=[\"\\']' + prop + '[\"\\']\\\\s+content=[\"\\']([^\"\\']*)[\"\\']', 'i'));\n  if (a) return a[1];\n  const b = html.match(new RegExp('content=[\"\\']([^\"\\']*)[\"\\']\\\\s+property=[\"\\']' + prop + '[\"\\']', 'i'));\n  if (b) return b[1];\n  if (name) {\n    const c = html.match(new RegExp('name=[\"\\']' + name + '[\"\\']\\\\s+content=[\"\\']([^\"\\']*)[\"\\']', 'i'));\n    if (c) return c[1];\n  }\n  return '';\n}\nfunction decode(s) {\n  return String(s || '')\n    .replace(/&amp;/g, '&')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\")\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/\\u2014/g, ', ')\n    .replace(/\\u2013/g, '-')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\nconst title = decode(pick('og:title'));\nconst text = decode(pick('og:description', 'description'));\nif (!url || text.length < 40) {\n  throw new Error('LinkedIn did not give enough public text. Open the post, copy the body, and try a post that is public.');\n}\nreturn [{ json: { url, title: title || 'LinkedIn-Beitrag', text } }];"
+      },
+      "id": "code-read",
+      "name": "Read public post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/ingest",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ url: $json.url, text: $json.text, author: 'Eurasien Gesellschaft', format: 'stellungnahmen' }) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-ingest",
+      "name": "WP ingest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const post = $('Read public post').first().json;\nconst ingest = $input.first().json;\nconst id = ingest.id || (ingest.task && ingest.task.id);\nif (!id) throw new Error('WordPress ingest did not return an id.');\nconst titleDe = String(post.title || '').slice(0, 140);\nconst excerptDe = String(post.text || '').slice(0, 420);\nreturn [{ json: {\n  id,\n  agent: 'analyst',\n  result: 'done',\n  payload: {\n    title_de: titleDe,\n    excerpt_de: excerptDe,\n    byline_de: 'Eurasien-Gesellschaft',\n    title_en: 'TEST EN: ' + titleDe,\n    excerpt_en: 'Test English card from a dry run. Source: the LinkedIn post. Nothing was published to the live Analysen page.',\n    byline_en: 'Eurasien Gesellschaft'\n  }\n} }];"
+      },
+      "id": "code-analyst",
+      "name": "Analyst (test stub)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/result",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-analyst",
+      "name": "Save analyst",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const id = $('Analyst (test stub)').first().json.id;\nreturn [{ json: { id, agent: 'reviewer', result: 'pass' } }];"
+      },
+      "id": "code-reviewer",
+      "name": "Reviewer (test stub)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1600, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/result",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-reviewer",
+      "name": "Save reviewer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1840, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const id = $('Analyst (test stub)').first().json.id;\nreturn [{ json: { id, agent: 'translator', result: 'done' } }];"
+      },
+      "id": "code-translator",
+      "name": "Translator (test stub)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2080, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/result",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-translator",
+      "name": "Save translator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2320, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const id = $('Analyst (test stub)').first().json.id;\nreturn [{ json: { id, agent: 'bilingual_review', result: 'pass' } }];"
+      },
+      "id": "code-bi",
+      "name": "Bilingual review (test stub)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2560, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/result",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "={{$env.EG_WP_BASIC}}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": { "timeout": 20000 }
+      },
+      "id": "http-bi",
+      "name": "Save bilingual review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2800, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const id = $('Analyst (test stub)').first().json.id;\nconst ingest = $('WP ingest').first().json;\nreturn [{ json: {\n  ok: true,\n  id,\n  duplicate: !!ingest.duplicate,\n  stage: (ingest.task && ingest.task.stage) || 'preview',\n  sandbox: 'https://eurasiengesellschaft.de/app/eg-editorial-sandbox.php?id=' + id,\n  note: 'Test run finished. Open the sandbox. The live Analysen page was not changed.'\n} }];"
+      },
+      "id": "code-done",
+      "name": "Test result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3040, 360]
+    }
+  ],
+  "connections": {
+    "Drop LinkedIn URL": { "main": [[{ "node": "Fetch LinkedIn page", "type": "main", "index": 0 }]] },
+    "Fetch LinkedIn page": { "main": [[{ "node": "Read public post", "type": "main", "index": 0 }]] },
+    "Read public post": { "main": [[{ "node": "WP ingest", "type": "main", "index": 0 }]] },
+    "WP ingest": { "main": [[{ "node": "Analyst (test stub)", "type": "main", "index": 0 }]] },
+    "Analyst (test stub)": { "main": [[{ "node": "Save analyst", "type": "main", "index": 0 }]] },
+    "Save analyst": { "main": [[{ "node": "Reviewer (test stub)", "type": "main", "index": 0 }]] },
+    "Reviewer (test stub)": { "main": [[{ "node": "Save reviewer", "type": "main", "index": 0 }]] },
+    "Save reviewer": { "main": [[{ "node": "Translator (test stub)", "type": "main", "index": 0 }]] },
+    "Translator (test stub)": { "main": [[{ "node": "Save translator", "type": "main", "index": 0 }]] },
+    "Save translator": { "main": [[{ "node": "Bilingual review (test stub)", "type": "main", "index": 0 }]] },
+    "Bilingual review (test stub)": { "main": [[{ "node": "Save bilingual review", "type": "main", "index": 0 }]] },
+    "Save bilingual review": { "main": [[{ "node": "Test result", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "pinData": {},
+  "tags": []
+}

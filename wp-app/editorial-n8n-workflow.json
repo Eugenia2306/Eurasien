@@ -1,0 +1,102 @@
+{
+  "name": "EG editorial coordinator",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "description": "Coordinator only. Does not rewrite text. Does not mark approval. Wire WordPress application passwords after access is confirmed. ChatGPT Workspace Agent trigger nodes stay empty until MCP is connected."
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "eg-editorial-ingest",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-ingest",
+      "name": "Ingest webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "webhookId": "eg-editorial-ingest"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/ingest",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify({ url: $json.url, text: $json.text, transcript: $json.transcript, is_video: $json.is_video, author: $json.author, date: $json.date, format: $json.format || 'stellungnahmen' })}}",
+        "options": {}
+      },
+      "id": "wp-ingest",
+      "name": "WP ingest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "id": "dup",
+              "leftValue": "={{$json.duplicate}}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-duplicate",
+      "name": "Already ingested?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{$env.EG_WP_BASE}}/wp-json/eg-editorial/v1/queue",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [{ "name": "stage", "value": "={{$json.stage || 'analyst'}}" }]
+        },
+        "options": {}
+      },
+      "id": "wp-queue",
+      "name": "WP queue by stage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [220, 560]
+    },
+    {
+      "parameters": {
+        "content": "MCP tools for the three existing Workspace Agents (do not create Coordinator or Publisher agents):\n\nGET  /wp-json/eg-editorial/v1/task/{id}     get_task\nPOST /wp-json/eg-editorial/v1/result        save_result  { id, agent, result, payload, comments, human_question }\nGET  /wp-json/eg-editorial/v1/queue?stage=  poll until save_result exists; do not scrape ChatGPT\nPOST /wp-json/eg-editorial/v1/approve       human editor only\nPOST /wp-json/eg-editorial/v1/publish       after approval hash matches\n\nPoll WP, never ChatGPT UI. Stop after stage=blocked and email human_question. Reviewer result=fail must not call publish.",
+        "height": 360,
+        "width": 420
+      },
+      "id": "sticky-mcp",
+      "name": "MCP contract",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [940, 200]
+    }
+  ],
+  "connections": {
+    "Ingest webhook": {
+      "main": [[{ "node": "WP ingest", "type": "main", "index": 0 }]]
+    },
+    "WP ingest": {
+      "main": [[{ "node": "Already ingested?", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": []
+}
