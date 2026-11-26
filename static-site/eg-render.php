@@ -108,6 +108,7 @@ function eg_render_begin($page)
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-mediathek.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-personen.php',
         EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-website.php',
+        EG_RENDER_ROOT . '/app/wp-content/mu-plugins/eg-site-builder.php',
         __FILE__,
     );
     $newest = 0;

@@ -573,6 +573,12 @@ function eg_render_global($html)
         if (function_exists('eg_tx_apply') && strpos($html, '<!--wp:text:') !== false) {
             $html = eg_tx_apply($html);
         }
+        if (function_exists('eg_sb_apply_menu')) {
+            $html = eg_sb_apply_menu($html);
+        }
+        if (function_exists('eg_sb_apply_design')) {
+            $html = eg_sb_apply_design($html);
+        }
     } catch (Throwable $e) {
         unset($e);
     }
