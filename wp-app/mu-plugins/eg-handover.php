@@ -78,6 +78,19 @@ add_action('admin_menu', static function () {
     }
 }, 999);
 
+/* Events: topics and regions are not used by the website, so their boxes and submenus are hidden. */
+add_action('add_meta_boxes_eg_event', static function () {
+    foreach (array('eg_topicdiv', 'tagsdiv-eg_topic', 'eg_regiondiv', 'tagsdiv-eg_region') as $box) {
+        remove_meta_box($box, 'eg_event', 'side');
+    }
+}, 99);
+add_action('admin_menu', static function () {
+    remove_submenu_page('edit.php?post_type=eg_event', 'edit-tags.php?taxonomy=eg_topic&amp;post_type=eg_event');
+    remove_submenu_page('edit.php?post_type=eg_event', 'edit-tags.php?taxonomy=eg_topic&post_type=eg_event');
+    remove_submenu_page('edit.php?post_type=eg_event', 'edit-tags.php?taxonomy=eg_region&amp;post_type=eg_event');
+    remove_submenu_page('edit.php?post_type=eg_event', 'edit-tags.php?taxonomy=eg_region&post_type=eg_event');
+}, 999);
+
 /* Opening a hidden screen directly shows a short note instead of a dead end. */
 add_action('current_screen', static function ($screen) {
     if (current_user_can('manage_options') || !$screen) {
