@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: EG Site Builder
- * Description: For administrators: the main menu of the website (Website → Menü). The menu is stored in WordPress and written into every page by the render engine (eg_render_global); without a saved menu the pages keep the menu from their files. The phone menu is built from it in the browser.
+ * Description: For administrators: the main menu (Website → Menü), new pages (Website → Seiten) and the house colours and heading font (Website → Gestaltung). The menu is stored in WordPress and written into every page by the render engine (eg_render_global); without a saved menu the pages keep the menu from their files. The phone menu is built from it in the browser.
  * Author: d4rl1ngt0n
  */
 
@@ -554,3 +554,156 @@ add_action('manage_eg_sitepage_posts_custom_column', static function ($col, $id)
     $slug = (string) get_post_meta($id, 'eg_page_slug', true);
     echo $slug !== '' ? '<a href="' . esc_url('https://eurasiengesellschaft.de/' . $slug . '.html') . '" target="_blank" rel="noopener">/' . esc_html($slug) . '.html</a>' : '–';
 }, 10, 2);
+
+/* =====================================================================
+ * Design (Website → Gestaltung), administrators only: the three house colours and the heading font.
+ * Written as a small <style> into every page; without saved settings the pages stay as they are.
+ * Fonts are system fonts (no download from Google or elsewhere, so no data protection issue).
+ * ===================================================================== */
+
+function eg_sb_color_defaults()
+{
+    return array(
+        'blue' => array('#0032A0', 'Blau (Struktur: Überschriften, Menü, Flächen)'),
+        'red'  => array('#DA291C', 'Rot (Handlung: Knöpfe, Hervorhebungen, Symbole)'),
+        'gold' => array('#E1A734', 'Gold (Orientierung: Linien, Akzente)'),
+    );
+}
+
+function eg_sb_fonts()
+{
+    return array(
+        ''        => array('Standard (wie bisher)', ''),
+        'georgia' => array('Klassische Serifenschrift (Georgia)', 'Georgia,"Times New Roman",serif'),
+        'modern'  => array('Moderne Serifenschrift (Charter / Cambria)', 'Charter,"Bitstream Charter","Sitka Text",Cambria,Georgia,serif'),
+        'sans'    => array('Serifenlos, wie der Fließtext', '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif'),
+        'elegant' => array('Elegante Serifenlose (Optima / Candara)', 'Optima,Candara,"Noto Sans","Segoe UI",sans-serif'),
+    );
+}
+
+function eg_sb_design()
+{
+    $v = get_option('eg_site_design', array());
+    return is_array($v) ? $v : array();
+}
+
+function eg_sb_design_css()
+{
+    $d = eg_sb_design();
+    $vars = '';
+    foreach (array('blue', 'red', 'gold') as $k) {
+        if (!empty($d[$k]) && preg_match('/^#[0-9a-fA-F]{6}$/', $d[$k])) {
+            $vars .= '--brand-' . $k . ':' . $d[$k] . ';';
+        }
+    }
+    $fonts = eg_sb_fonts();
+    if (!empty($d['font']) && isset($fonts[$d['font']]) && $fonts[$d['font']][1] !== '') {
+        $vars .= '--serif:' . $fonts[$d['font']][1] . ';';
+    }
+    return $vars !== '' ? '<style id="eg-design">:root{' . $vars . '}</style>' : '';
+}
+
+/** Called by eg_render_global for every page. */
+function eg_sb_apply_design($html)
+{
+    $css = eg_sb_design_css();
+    if ($css === '' || stripos($html, '</head>') === false) {
+        return $html;
+    }
+    return preg_replace('~</head>~i', $css . "\n</head>", $html, 1);
+}
+
+function eg_sb_design_save($data)
+{
+    $d = array();
+    foreach (array('blue', 'red', 'gold') as $k) {
+        $c = strtoupper(trim((string) ($data[$k] ?? '')));
+        if (preg_match('/^#[0-9A-F]{6}$/', $c) && $c !== eg_sb_color_defaults()[$k][0]) {
+            $d[$k] = $c;
+        }
+    }
+    $f = (string) ($data['font'] ?? '');
+    if ($f !== '' && isset(eg_sb_fonts()[$f])) {
+        $d['font'] = $f;
+    }
+    if ($d) {
+        update_option('eg_site_design', $d, false);
+    } else {
+        delete_option('eg_site_design');
+    }
+    if (function_exists('eg_render_touch_stamp')) {
+        eg_render_touch_stamp();
+    }
+    return true;
+}
+
+add_action('admin_menu', static function () {
+    add_submenu_page('eg-website', 'Gestaltung', 'Gestaltung', eg_sb_cap(), 'eg-design', 'eg_sb_design_page');
+}, 40);
+
+function eg_sb_design_page()
+{
+    if (!current_user_can(eg_sb_cap())) {
+        wp_die('Keine Berechtigung.');
+    }
+    $d = eg_sb_design();
+    echo '<div class="wrap"><h1>Gestaltung der Website</h1>';
+    if (isset($_GET['eg_saved'])) {
+        echo '<div class="notice notice-success is-dismissible"><p>Gespeichert. Alle Seiten zeigen die neue Gestaltung ab sofort (im Browser neu laden).</p></div>';
+    }
+    echo '<p>Die drei Hausfarben und die Schrift der Überschriften gelten für die ganze Website. Bitte auf gute Lesbarkeit achten: Text in Blau steht auf Weiß, weiße Schrift auf blauen Flächen. Der Mitgliederbereich und die E-Mails behalten ihre Farben.</p>';
+    echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+    wp_nonce_field('eg_sb_design', 'eg_sb_nonce');
+    echo '<input type="hidden" name="action" value="eg_sb_design"><table class="form-table" role="presentation">';
+    foreach (eg_sb_color_defaults() as $k => $def) {
+        $val = !empty($d[$k]) ? $d[$k] : $def[0];
+        echo '<tr><th>' . esc_html($def[1]) . '</th><td><input type="color" name="' . esc_attr($k) . '" id="eg-c-' . esc_attr($k) . '" value="' . esc_attr($val) . '" style="width:70px;height:38px;vertical-align:middle"> '
+            . '<code id="eg-v-' . esc_attr($k) . '">' . esc_html($val) . '</code> '
+            . '<button type="button" class="button eg-reset" data-k="' . esc_attr($k) . '" data-def="' . esc_attr($def[0]) . '">Standard (' . esc_html($def[0]) . ')</button></td></tr>';
+    }
+    $opts = '';
+    foreach (eg_sb_fonts() as $k => $f) {
+        $opts .= '<option value="' . esc_attr($k) . '"' . selected((string) ($d['font'] ?? ''), $k, false) . ($f[1] !== '' ? ' style="font-family:' . esc_attr($f[1]) . ';font-size:16px"' : '') . '>' . esc_html($f[0]) . '</option>';
+    }
+    echo '<tr><th>Schrift der Überschriften</th><td><select name="font">' . $opts . '</select><p class="description">Systemschriften: werden nicht aus dem Internet geladen (datenschutzfreundlich).</p></td></tr>';
+    echo '</table><p><button type="submit" class="button button-primary">Speichern</button> <a class="button" href="https://eurasiengesellschaft.de/" target="_blank" rel="noopener">Website ansehen ↗</a></p></form>';
+    if ($d) {
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+        wp_nonce_field('eg_sb_design', 'eg_sb_nonce');
+        echo '<input type="hidden" name="action" value="eg_sb_design"><input type="hidden" name="reset" value="1"><button type="submit" class="button" onclick="return confirm(&quot;Alle Farben und die Schrift auf den Standard zurücksetzen?&quot;)">Alles auf Standard zurücksetzen</button></form>';
+    }
+    echo '</div><script>document.querySelectorAll(".eg-reset").forEach(function(b){b.addEventListener("click",function(){var i=document.getElementById("eg-c-"+b.dataset.k);i.value=b.dataset.def;document.getElementById("eg-v-"+b.dataset.k).textContent=b.dataset.def;});});'
+        . 'document.querySelectorAll("input[type=color]").forEach(function(i){i.addEventListener("input",function(){document.getElementById("eg-v-"+i.name).textContent=i.value.toUpperCase();});});</script>';
+}
+
+add_action('admin_post_eg_sb_design', static function () {
+    if (!current_user_can(eg_sb_cap()) || !isset($_POST['eg_sb_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['eg_sb_nonce'])), 'eg_sb_design')) {
+        wp_die('Keine Berechtigung.');
+    }
+    if (!empty($_POST['reset'])) {
+        eg_sb_design_save(array());
+    } else {
+        eg_sb_design_save(array(
+            'blue' => isset($_POST['blue']) ? wp_unslash($_POST['blue']) : '', 'red' => isset($_POST['red']) ? wp_unslash($_POST['red']) : '',
+            'gold' => isset($_POST['gold']) ? wp_unslash($_POST['gold']) : '', 'font' => isset($_POST['font']) ? wp_unslash($_POST['font']) : '',
+        ));
+    }
+    wp_safe_redirect(admin_url('admin.php?page=eg-design&eg_saved=1'));
+    exit;
+});
+
+add_action('rest_api_init', static function () {
+    register_rest_route('eg/v1', '/design', array(
+        array('methods' => 'GET', 'permission_callback' => static function () {
+            return current_user_can(eg_sb_cap());
+        }, 'callback' => static function () {
+            return array('design' => eg_sb_design(), 'css' => eg_sb_design_css());
+        }),
+        array('methods' => 'POST', 'permission_callback' => static function () {
+            return current_user_can(eg_sb_cap());
+        }, 'callback' => static function (WP_REST_Request $r) {
+            eg_sb_design_save((array) $r->get_json_params());
+            return array('saved' => true, 'design' => eg_sb_design());
+        }),
+    ));
+});
